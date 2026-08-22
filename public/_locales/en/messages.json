@@ -108,11 +108,42 @@
     "message": "Bindings ($COUNT$)",
     "placeholders": { "count": { "content": "$1" } }
   },
+  "bindingUsageKv": {
+    "message": "$REQUESTS$ requests · $KEYS$ keys · $SIZE$ stored",
+    "placeholders": {
+      "requests": { "content": "$1" },
+      "keys": { "content": "$2" },
+      "size": { "content": "$3" }
+    }
+  },
+  "bindingUsageD1": {
+    "message": "$READS$ reads · $WRITES$ writes",
+    "placeholders": { "reads": { "content": "$1" }, "writes": { "content": "$2" } }
+  },
+  "bindingUsageD1WithStorage": {
+    "message": "$READS$ reads · $WRITES$ writes · $SIZE$ stored",
+    "placeholders": {
+      "reads": { "content": "$1" },
+      "writes": { "content": "$2" },
+      "size": { "content": "$3" }
+    }
+  },
+  "bindingUsageR2": {
+    "message": "$CLASS_A$ Class A · $CLASS_B$ Class B ops · $SIZE$ stored",
+    "placeholders": {
+      "class_a": { "content": "$1" },
+      "class_b": { "content": "$2" },
+      "size": { "content": "$3" }
+    }
+  },
   "recentVersionsHeading": {
     "message": "Recent versions not in this deployment"
   },
   "recentVersionsNoPreview": {
     "message": "No preview available"
+  },
+  "recentVersionsNeverDeployed": {
+    "message": "Not in recent deployment history — rollback may not work"
   },
   "versionSwitcherActive": {
     "message": "Active for you"
@@ -125,6 +156,9 @@
   },
   "versionSwitcherPermissionDenied": {
     "message": "Permission to modify requests to this site was denied."
+  },
+  "versionSwitcherActivationError": {
+    "message": "Something went wrong activating the preview. Try again."
   },
   "recentErrorsHeading": {
     "message": "Recent errors (last 30 min)"

@@ -108,11 +108,42 @@
     "message": "绑定的资源（$COUNT$ 个）",
     "placeholders": { "count": { "content": "$1" } }
   },
+  "bindingUsageKv": {
+    "message": "$REQUESTS$ 次请求 · $KEYS$ 个 key · 已存 $SIZE$",
+    "placeholders": {
+      "requests": { "content": "$1" },
+      "keys": { "content": "$2" },
+      "size": { "content": "$3" }
+    }
+  },
+  "bindingUsageD1": {
+    "message": "$READS$ 次读 · $WRITES$ 次写",
+    "placeholders": { "reads": { "content": "$1" }, "writes": { "content": "$2" } }
+  },
+  "bindingUsageD1WithStorage": {
+    "message": "$READS$ 次读 · $WRITES$ 次写 · 已存 $SIZE$",
+    "placeholders": {
+      "reads": { "content": "$1" },
+      "writes": { "content": "$2" },
+      "size": { "content": "$3" }
+    }
+  },
+  "bindingUsageR2": {
+    "message": "$CLASS_A$ 次 A 类 · $CLASS_B$ 次 B 类操作 · 已存 $SIZE$",
+    "placeholders": {
+      "class_a": { "content": "$1" },
+      "class_b": { "content": "$2" },
+      "size": { "content": "$3" }
+    }
+  },
   "recentVersionsHeading": {
     "message": "不在当前部署中的最近版本"
   },
   "recentVersionsNoPreview": {
     "message": "无可用预览"
+  },
+  "recentVersionsNeverDeployed": {
+    "message": "不在最近的部署历史中，回滚可能会失败"
   },
   "versionSwitcherActive": {
     "message": "已为你启用"
@@ -125,6 +156,9 @@
   },
   "versionSwitcherPermissionDenied": {
     "message": "未获得修改该站点请求的权限。"
+  },
+  "versionSwitcherActivationError": {
+    "message": "激活预览时出了点问题，请重试。"
   },
   "recentErrorsHeading": {
     "message": "最近报错（近 30 分钟）"
