@@ -45,10 +45,6 @@ export function queueDashboardUrl(accountId: string, queueId: string): string {
 // equivalent for zone-scoped pages — unlike workerDashboardUrl above, these
 // haven't been checked against a real example yet.
 
-export function zoneVersioningUrl(accountId: string, zoneName: string): string {
-  return `${DASHBOARD_BASE}/?to=/${accountId}/${zoneName}/versioning`;
-}
-
 export function zoneOverviewUrl(accountId: string, zoneName: string): string {
   return `${DASHBOARD_BASE}/?to=/${accountId}/${zoneName}/`;
 }
