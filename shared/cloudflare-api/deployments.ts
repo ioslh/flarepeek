@@ -70,3 +70,23 @@ export async function rollbackToVersion(
 ): Promise<void> {
   await setDeploymentSplit(client, accountId, scriptName, [{ versionId, percentage: 100 }]);
 }
+
+// getCurrentDeploymentVersions only reads deployments[0] (the live one) —
+// this reads the rest of that same response to answer a different question:
+// "has this version ever been part of a deployment Cloudflare still shows
+// us history for". Used as a proxy for rollback eligibility in
+// use-recent-versions.ts — Cloudflare's own rollback feature only accepts a
+// version that's shown up in recent deployment history, and this is the
+// same history, not a separate guess at "the last 10" (the API gives no way
+// to request more or fewer than whatever it already returns here).
+export async function listDeployedVersionIds(
+  client: Cloudflare,
+  accountId: string,
+  scriptName: string,
+): Promise<Set<string>> {
+  const response = await client.workers.scripts.deployments.list(scriptName, {
+    account_id: accountId,
+  });
+  const parsed = deploymentListResponseSchema.parse(response);
+  return new Set(parsed.deployments.flatMap((d) => d.versions.map((v) => v.version_id)));
+}

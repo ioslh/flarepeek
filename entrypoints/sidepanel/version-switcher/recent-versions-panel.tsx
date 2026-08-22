@@ -54,6 +54,11 @@ export function RecentVersionsPanel({
                 {version.authorEmail && (
                   <span className="text-xs text-neutral-500">{version.authorEmail}</span>
                 )}
+                {!version.everDeployed && (
+                  <span className="text-xs text-amber-600">
+                    {browser.i18n.getMessage('recentVersionsNeverDeployed')}
+                  </span>
+                )}
               </div>
 
               {previewUrl ? (
