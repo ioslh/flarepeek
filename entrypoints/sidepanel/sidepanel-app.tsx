@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTokens } from '@/shared/storage/use-tokens';
 import { usePinnedHostname } from '@/entrypoints/sidepanel/use-pinned-hostname';
 import { TabChangedBanner } from '@/entrypoints/sidepanel/tab-changed-banner';
@@ -17,6 +17,17 @@ export function SidepanelApp() {
   // Best-guess account label before the lookup resolves — see the identical
   // comment in popup-app.tsx.
   const resolvedToken = lookup.status === 'ready' ? lookup.resolved.token : (tokens?.[0] ?? null);
+
+  // If the token this panel was forced to now got removed (or replaced) in
+  // Options, fall back to auto-detect rather than silently querying with
+  // zero candidate tokens forever — see useWorkerLookup, which treats an
+  // unmatched forcedTokenId as "no tokens to try" and reports the site as
+  // not-a-worker-site, which would otherwise be misleading here.
+  useEffect(() => {
+    if (forcedTokenId && tokens && !tokens.some((token) => token.id === forcedTokenId)) {
+      setForcedTokenId(null);
+    }
+  }, [forcedTokenId, tokens]);
 
   const refresh = () => {
     if (pin.hostname) clearWorkerLookupCache(pin.hostname);

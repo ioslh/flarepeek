@@ -3,7 +3,7 @@ import type Cloudflare from 'cloudflare';
 import { resolveWorkerForHostname } from '@/shared/cloudflare-api/resolve-worker-for-hostname';
 import type { WorkerForHostname } from '@/shared/cloudflare-api/worker-lookup';
 import type { CloudflareApiErrorKind } from '@/shared/cloudflare-api/errors';
-import type { StoredToken } from '@/shared/storage/token-storage';
+import { watchTokens, type StoredToken } from '@/shared/storage/token-storage';
 
 export interface ResolvedWorker {
   worker: WorkerForHostname;
@@ -34,6 +34,17 @@ export function clearWorkerLookupCache(hostname: string): void {
 export function resetWorkerLookupCache(): void {
   resolvedCache.clear();
 }
+
+// A cached entry pins a specific token's `client` to a hostname — if that
+// token gets deleted (or a new one is added that should now win instead),
+// the cache would otherwise keep serving the stale resolution until a
+// manual refresh. This subscription runs once at module load (the cache
+// itself is module-level, not React state, so this belongs alongside it
+// rather than inside the hook), and errs on the side of invalidating
+// everything rather than figuring out which hostnames a given token change
+// actually affects — token add/remove is rare enough that over-invalidating
+// costs a few extra lookups, not a real problem.
+watchTokens(() => resetWorkerLookupCache());
 
 // Tries every stored token against `hostname` (see resolveWorkerForHostname)
 // so the caller never has to know in advance which identity owns this site.
