@@ -28,6 +28,15 @@ export default tseslint.config(
     },
   },
   {
+    // The marketing site (site/) is plain static JS outside the extension's
+    // own TS/webextension world — just needs browser globals, nothing else
+    // above applies to it.
+    files: ['site/**/*.js'],
+    languageOptions: {
+      globals: { ...globals.browser },
+    },
+  },
+  {
     // React/hooks rules only apply where React components and hooks actually live.
     files: ['entrypoints/**/*.{ts,tsx}', 'shared/**/*.{ts,tsx}'],
     plugins: {
