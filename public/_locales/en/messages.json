@@ -1,0 +1,215 @@
+{
+  "extensionName": {
+    "message": "Flarepeek"
+  },
+  "extensionDescription": {
+    "message": "Developer tools for Cloudflare Workers on your production domains."
+  },
+  "sidepanelHeading": {
+    "message": "Flarepeek"
+  },
+  "sidepanelTokenMissingTitle": {
+    "message": "No API token configured"
+  },
+  "sidepanelTokenMissingBody": {
+    "message": "Add a Cloudflare API token to start using this extension."
+  },
+  "sidepanelOpenSettings": {
+    "message": "Open settings"
+  },
+  "badgeTitleNoToken": {
+    "message": "No Cloudflare API token configured. Click to set one up."
+  },
+  "tabChangedBannerLabel": {
+    "message": "Current tab: $NAME$",
+    "placeholders": { "name": { "content": "$1" } }
+  },
+  "tabChangedBannerButton": {
+    "message": "View"
+  },
+  "refreshButtonLabel": {
+    "message": "Refresh"
+  },
+  "popupOpenFullPanel": {
+    "message": "Open full panel"
+  },
+  "versionSwitcherLoading": {
+    "message": "Looking up this site's Worker…"
+  },
+  "versionSwitcherNotAWorkerSite": {
+    "message": "This site isn't served by a Cloudflare Worker you have access to."
+  },
+  "versionSwitcherErrorUnauthenticated": {
+    "message": "Your API token is invalid or expired."
+  },
+  "versionSwitcherErrorForbidden": {
+    "message": "Your API token doesn't have permission to inspect this Worker."
+  },
+  "versionSwitcherErrorRateLimited": {
+    "message": "Too many requests to the Cloudflare API. Try again shortly."
+  },
+  "versionSwitcherErrorNetwork": {
+    "message": "Couldn't reach the Cloudflare API."
+  },
+  "versionSwitcherErrorUnknown": {
+    "message": "Something went wrong looking up this Worker."
+  },
+  "versionSwitcherWorkerLabel": {
+    "message": "Worker: $NAME$",
+    "placeholders": { "name": { "content": "$1" } }
+  },
+  "versionSwitcherZoneLabel": {
+    "message": "Zone: $NAME$",
+    "placeholders": { "name": { "content": "$1" } }
+  },
+  "versionSwitcherNoVersions": {
+    "message": "No deployment found for this Worker."
+  },
+  "versionSwitcherVersionsHeading": {
+    "message": "Versions in the current deployment"
+  },
+  "versionSwitcherPercentageLabel": {
+    "message": "$PERCENTAGE$% traffic",
+    "placeholders": { "percentage": { "content": "$1" } }
+  },
+  "versionSwitcherVersionIdLabel": {
+    "message": "Version $VERSION_ID$",
+    "placeholders": { "version_id": { "content": "$1" } }
+  },
+  "versionSwitcherActivate": {
+    "message": "Preview this version"
+  },
+  "versionSwitcherOpenPreview": {
+    "message": "Open preview URL ↗"
+  },
+  "deploymentSplitHeading": {
+    "message": "Gradual deployment split"
+  },
+  "deploymentSplitApply": {
+    "message": "Apply split"
+  },
+  "deploymentSplitConfirm": {
+    "message": "Confirm — changes live traffic"
+  },
+  "deploymentSplitSetFull": {
+    "message": "Set $VERSION_ID$ to 100%",
+    "placeholders": { "version_id": { "content": "$1" } }
+  },
+  "workerStatsRequests": {
+    "message": "Requests (24h)"
+  },
+  "workerStatsErrorRate": {
+    "message": "Error rate"
+  },
+  "workerStatsCpuP99": {
+    "message": "CPU p99"
+  },
+  "bindingsHeading": {
+    "message": "Bindings ($COUNT$)",
+    "placeholders": { "count": { "content": "$1" } }
+  },
+  "recentVersionsHeading": {
+    "message": "Recent versions not in this deployment"
+  },
+  "recentVersionsNoPreview": {
+    "message": "No preview available"
+  },
+  "versionSwitcherActive": {
+    "message": "Active for you"
+  },
+  "versionSwitcherDeactivate": {
+    "message": "Stop previewing"
+  },
+  "versionSwitcherRequesting": {
+    "message": "Requesting permission…"
+  },
+  "versionSwitcherPermissionDenied": {
+    "message": "Permission to modify requests to this site was denied."
+  },
+  "recentErrorsHeading": {
+    "message": "Recent errors (last 30 min)"
+  },
+  "recentErrorsEmpty": {
+    "message": "No errors in the last 30 minutes."
+  },
+  "recentErrorsObservabilityDisabled": {
+    "message": "This Worker doesn't have Observability/Logs enabled, so no data is being captured — this isn't the same as \"no errors\"."
+  },
+  "recentErrorsUnknownMessage": {
+    "message": "(no error message)"
+  },
+  "recentErrorsStatusCodeLabel": {
+    "message": "status $CODE$",
+    "placeholders": { "code": { "content": "$1" } }
+  },
+  "tokenSwitcherAuto": {
+    "message": "Auto"
+  },
+  "tokenSwitcherResolvedLabel": {
+    "message": "Using: $NAME$",
+    "placeholders": { "name": { "content": "$1" } }
+  },
+  "accountControlManageTokens": {
+    "message": "Manage tokens"
+  },
+  "optionsHeading": {
+    "message": "Cloudflare API Tokens"
+  },
+  "optionsNoTokens": {
+    "message": "No tokens saved yet."
+  },
+  "optionsRemoveToken": {
+    "message": "Remove"
+  },
+  "optionsAddTokenHeading": {
+    "message": "Add a token"
+  },
+  "optionsTokenLabel": {
+    "message": "API Token"
+  },
+  "optionsTokenPlaceholder": {
+    "message": "Paste your scoped API token"
+  },
+  "optionsTokenHelp": {
+    "message": "Needs access to: Workers Scripts (edit), Workers Routes (read), Workers Observability (edit), User Details (read), Account Analytics (read), Workers Queues (read), and Zone (read)."
+  },
+  "optionsCreateTokenLink": {
+    "message": "Create a token with the right permissions"
+  },
+  "optionsAddTokenButton": {
+    "message": "Add"
+  },
+  "optionsAddTokenSuccess": {
+    "message": "Token added."
+  },
+  "optionsTokenNameLabel": {
+    "message": "Name this token"
+  },
+  "optionsTokenNamePlaceholder": {
+    "message": "e.g. Personal, Acme Corp"
+  },
+  "optionsTokenNameHelp": {
+    "message": "Couldn't automatically detect an identity for this token — give it a name so you can tell it apart from your other tokens."
+  },
+  "optionsTokenNameSave": {
+    "message": "Save token"
+  },
+  "optionsVerifying": {
+    "message": "Verifying..."
+  },
+  "optionsVerifyFailureUnauthenticated": {
+    "message": "This token is invalid or expired."
+  },
+  "optionsVerifyFailureForbidden": {
+    "message": "This token doesn't have the required permissions."
+  },
+  "optionsVerifyFailureRateLimited": {
+    "message": "Too many requests to the Cloudflare API. Try again shortly."
+  },
+  "optionsVerifyFailureNetwork": {
+    "message": "Couldn't reach the Cloudflare API. Check your connection."
+  },
+  "optionsVerifyFailureUnknown": {
+    "message": "Something went wrong while verifying this token."
+  }
+}

@@ -1,0 +1,215 @@
+{
+  "extensionName": {
+    "message": "Flarepeek"
+  },
+  "extensionDescription": {
+    "message": "面向 Cloudflare Workers 开发者的生产环境调试工具。"
+  },
+  "sidepanelHeading": {
+    "message": "Flarepeek"
+  },
+  "sidepanelTokenMissingTitle": {
+    "message": "尚未配置 API Token"
+  },
+  "sidepanelTokenMissingBody": {
+    "message": "添加 Cloudflare API Token 后即可开始使用本插件。"
+  },
+  "sidepanelOpenSettings": {
+    "message": "打开设置"
+  },
+  "badgeTitleNoToken": {
+    "message": "尚未配置 Cloudflare API Token，点击开始设置"
+  },
+  "tabChangedBannerLabel": {
+    "message": "当前标签页：$NAME$",
+    "placeholders": { "name": { "content": "$1" } }
+  },
+  "tabChangedBannerButton": {
+    "message": "查看"
+  },
+  "refreshButtonLabel": {
+    "message": "刷新"
+  },
+  "popupOpenFullPanel": {
+    "message": "打开完整面板"
+  },
+  "versionSwitcherLoading": {
+    "message": "正在查找该站点对应的 Worker…"
+  },
+  "versionSwitcherNotAWorkerSite": {
+    "message": "当前站点不是由你有权限的 Cloudflare Worker 提供服务。"
+  },
+  "versionSwitcherErrorUnauthenticated": {
+    "message": "你的 API Token 无效或已过期。"
+  },
+  "versionSwitcherErrorForbidden": {
+    "message": "该 API Token 没有权限查看这个 Worker。"
+  },
+  "versionSwitcherErrorRateLimited": {
+    "message": "Cloudflare API 请求过于频繁，请稍后重试。"
+  },
+  "versionSwitcherErrorNetwork": {
+    "message": "无法连接到 Cloudflare API。"
+  },
+  "versionSwitcherErrorUnknown": {
+    "message": "查找 Worker 信息时发生未知错误。"
+  },
+  "versionSwitcherWorkerLabel": {
+    "message": "Worker：$NAME$",
+    "placeholders": { "name": { "content": "$1" } }
+  },
+  "versionSwitcherZoneLabel": {
+    "message": "Zone：$NAME$",
+    "placeholders": { "name": { "content": "$1" } }
+  },
+  "versionSwitcherNoVersions": {
+    "message": "未找到该 Worker 的部署信息。"
+  },
+  "versionSwitcherVersionsHeading": {
+    "message": "当前部署中的版本"
+  },
+  "versionSwitcherPercentageLabel": {
+    "message": "$PERCENTAGE$% 流量",
+    "placeholders": { "percentage": { "content": "$1" } }
+  },
+  "versionSwitcherVersionIdLabel": {
+    "message": "版本 $VERSION_ID$",
+    "placeholders": { "version_id": { "content": "$1" } }
+  },
+  "versionSwitcherActivate": {
+    "message": "预览此版本"
+  },
+  "versionSwitcherOpenPreview": {
+    "message": "打开预览地址 ↗"
+  },
+  "deploymentSplitHeading": {
+    "message": "灰度部署流量分配"
+  },
+  "deploymentSplitApply": {
+    "message": "应用分配"
+  },
+  "deploymentSplitConfirm": {
+    "message": "确认——会改变线上流量"
+  },
+  "deploymentSplitSetFull": {
+    "message": "把 $VERSION_ID$ 设为 100%",
+    "placeholders": { "version_id": { "content": "$1" } }
+  },
+  "workerStatsRequests": {
+    "message": "请求数（24h）"
+  },
+  "workerStatsErrorRate": {
+    "message": "错误率"
+  },
+  "workerStatsCpuP99": {
+    "message": "CPU p99"
+  },
+  "bindingsHeading": {
+    "message": "绑定的资源（$COUNT$ 个）",
+    "placeholders": { "count": { "content": "$1" } }
+  },
+  "recentVersionsHeading": {
+    "message": "不在当前部署中的最近版本"
+  },
+  "recentVersionsNoPreview": {
+    "message": "无可用预览"
+  },
+  "versionSwitcherActive": {
+    "message": "已为你启用"
+  },
+  "versionSwitcherDeactivate": {
+    "message": "停止预览"
+  },
+  "versionSwitcherRequesting": {
+    "message": "正在请求权限…"
+  },
+  "versionSwitcherPermissionDenied": {
+    "message": "未获得修改该站点请求的权限。"
+  },
+  "recentErrorsHeading": {
+    "message": "最近报错（近 30 分钟）"
+  },
+  "recentErrorsEmpty": {
+    "message": "近 30 分钟没有报错。"
+  },
+  "recentErrorsObservabilityDisabled": {
+    "message": "这个 Worker 没有开启 Observability/Logs，没有在采集数据——不代表没有报错。"
+  },
+  "recentErrorsUnknownMessage": {
+    "message": "（没有错误信息）"
+  },
+  "recentErrorsStatusCodeLabel": {
+    "message": "状态码 $CODE$",
+    "placeholders": { "code": { "content": "$1" } }
+  },
+  "tokenSwitcherAuto": {
+    "message": "自动"
+  },
+  "tokenSwitcherResolvedLabel": {
+    "message": "使用：$NAME$",
+    "placeholders": { "name": { "content": "$1" } }
+  },
+  "accountControlManageTokens": {
+    "message": "管理 Token"
+  },
+  "optionsHeading": {
+    "message": "Cloudflare API Token"
+  },
+  "optionsNoTokens": {
+    "message": "还没有保存任何 Token。"
+  },
+  "optionsRemoveToken": {
+    "message": "删除"
+  },
+  "optionsAddTokenHeading": {
+    "message": "添加 Token"
+  },
+  "optionsTokenLabel": {
+    "message": "API Token"
+  },
+  "optionsTokenPlaceholder": {
+    "message": "粘贴你的 Scoped API Token"
+  },
+  "optionsTokenHelp": {
+    "message": "需要权限：Workers Scripts（读写）、Workers Routes（只读）、Workers Observability（读写）、User Details（只读）、Account Analytics（只读）、Workers Queues（只读）、Zone（只读）。"
+  },
+  "optionsCreateTokenLink": {
+    "message": "创建已预填好权限的 Token"
+  },
+  "optionsAddTokenButton": {
+    "message": "添加"
+  },
+  "optionsAddTokenSuccess": {
+    "message": "Token 已添加。"
+  },
+  "optionsTokenNameLabel": {
+    "message": "给这个 Token 起个名字"
+  },
+  "optionsTokenNamePlaceholder": {
+    "message": "比如：个人、公司"
+  },
+  "optionsTokenNameHelp": {
+    "message": "没能自动识别这个 Token 的身份信息，起个名字方便和其他 Token 区分。"
+  },
+  "optionsTokenNameSave": {
+    "message": "保存 Token"
+  },
+  "optionsVerifying": {
+    "message": "验证中..."
+  },
+  "optionsVerifyFailureUnauthenticated": {
+    "message": "该 Token 无效或已过期。"
+  },
+  "optionsVerifyFailureForbidden": {
+    "message": "该 Token 权限不足。"
+  },
+  "optionsVerifyFailureRateLimited": {
+    "message": "Cloudflare API 请求过于频繁，请稍后重试。"
+  },
+  "optionsVerifyFailureNetwork": {
+    "message": "无法连接到 Cloudflare API，请检查网络。"
+  },
+  "optionsVerifyFailureUnknown": {
+    "message": "验证 Token 时发生未知错误。"
+  }
+}
