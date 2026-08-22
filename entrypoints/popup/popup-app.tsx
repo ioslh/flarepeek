@@ -128,6 +128,11 @@ export function PopupApp() {
                 {browser.i18n.getMessage('versionSwitcherPermissionDenied')}
               </p>
             )}
+            {override.activation.status === 'error' && (
+              <p className="text-sm text-red-600">
+                {browser.i18n.getMessage('versionSwitcherActivationError')}
+              </p>
+            )}
           </div>
         )}
     </main>

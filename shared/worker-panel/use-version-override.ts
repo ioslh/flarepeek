@@ -7,7 +7,10 @@ import {
 } from '@/shared/version-override/version-override';
 
 type ActivationState =
-  { status: 'idle' } | { status: 'requesting' } | { status: 'permission-denied' };
+  | { status: 'idle' }
+  | { status: 'requesting' }
+  | { status: 'permission-denied' }
+  | { status: 'error' };
 
 export function useVersionOverride(hostname: string | null) {
   const [activeVersionId, setActiveVersionId] = useState<string | null>(null);
@@ -36,23 +39,34 @@ export function useVersionOverride(hostname: string | null) {
       if (!hostname) return;
 
       setActivation({ status: 'requesting' });
-      const granted = await requestOverrideHostPermission(hostname);
-      if (!granted) {
-        setActivation({ status: 'permission-denied' });
-        return;
-      }
+      try {
+        const granted = await requestOverrideHostPermission(hostname);
+        if (!granted) {
+          setActivation({ status: 'permission-denied' });
+          return;
+        }
 
-      await enableVersionOverride({ hostname, workerName, versionId });
-      setActiveVersionId(versionId);
-      setActivation({ status: 'idle' });
+        await enableVersionOverride({ hostname, workerName, versionId });
+        setActiveVersionId(versionId);
+        setActivation({ status: 'idle' });
+      } catch {
+        // e.g. Chrome's dynamic-rule quota, or any other declarativeNetRequest
+        // failure — without this, activation state got stuck at 'requesting'
+        // forever with no way to retry.
+        setActivation({ status: 'error' });
+      }
     },
     [hostname],
   );
 
   const deactivate = useCallback(async () => {
     if (!hostname) return;
-    await disableVersionOverride(hostname);
-    setActiveVersionId(null);
+    try {
+      await disableVersionOverride(hostname);
+      setActiveVersionId(null);
+    } catch {
+      setActivation({ status: 'error' });
+    }
   }, [hostname]);
 
   return { activeVersionId, activation, activate, deactivate };
