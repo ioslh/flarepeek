@@ -6,6 +6,13 @@ import {
 } from '@/entrypoints/sidepanel/bindings/use-binding-usage';
 import { cloudflareErrorMessageKey } from '@/shared/cloudflare-api/error-message-key';
 import { bindingDashboardUrl } from '@/shared/cloudflare-api/dashboard-links';
+import { Card } from '@/shared/ui/card';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/shared/ui/accordion';
 import type { WorkerBinding } from '@/shared/cloudflare-api/bindings';
 import type { ResolvedWorker } from '@/shared/worker-panel/use-worker-lookup';
 
@@ -13,11 +20,11 @@ interface BindingsPanelProps {
   resolved: ResolvedWorker;
 }
 
-// Collapsed by default (<details>, no JS state needed for the collapse
-// itself) — useful reference, not something worth taking up popup space on
-// every open. Usage numbers (see use-binding-usage.ts) follow the same
-// philosophy one level further: not fetched until the user actually expands
-// this section.
+// Collapsed by default — useful reference, not something worth taking up
+// panel space on every open. Usage numbers (see use-binding-usage.ts) follow
+// the same philosophy one level further: not fetched until the user
+// actually expands this section (onValueChange is the direct replacement
+// for the old native <details>'s onToggle handler, same lazy-fetch gate).
 export function BindingsPanel({ resolved }: BindingsPanelProps) {
   const state = useBindings(resolved);
   const [isOpen, setIsOpen] = useState(false);
@@ -40,41 +47,48 @@ export function BindingsPanel({ resolved }: BindingsPanelProps) {
   }
 
   return (
-    <details
-      className="flex flex-col gap-2"
-      open={isOpen}
-      onToggle={(event) => setIsOpen(event.currentTarget.open)}
-    >
-      <summary className="cursor-pointer text-xs font-medium text-neutral-400 uppercase">
-        {browser.i18n.getMessage('bindingsHeading', String(state.bindings.length))}
-      </summary>
-      <ul className="flex flex-col gap-1">
-        {state.bindings.map((binding, index) => {
-          const dashboardUrl = bindingDashboardUrl(resolved.worker.accountId, binding);
-          const usage = usageByKey[`${binding.type}:${binding.name}`];
+    <Card className="gap-0 py-0">
+      <Accordion
+        type="single"
+        collapsible
+        value={isOpen ? 'bindings' : ''}
+        onValueChange={(value) => setIsOpen(value === 'bindings')}
+      >
+        <AccordionItem value="bindings" className="border-b-0">
+          <AccordionTrigger className="px-4 py-3 text-xs font-medium text-muted-foreground uppercase hover:no-underline">
+            {browser.i18n.getMessage('bindingsHeading', String(state.bindings.length))}
+          </AccordionTrigger>
+          <AccordionContent className="px-4">
+            <ul className="flex flex-col gap-1">
+              {state.bindings.map((binding, index) => {
+                const dashboardUrl = bindingDashboardUrl(resolved.worker.accountId, binding);
+                const usage = usageByKey[`${binding.type}:${binding.name}`];
 
-          return (
-            <li key={`${binding.type}-${binding.name}-${index}`} className="text-xs">
-              {dashboardUrl ? (
-                <a
-                  href={dashboardUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex flex-col text-neutral-900 hover:underline"
-                >
-                  <BindingRow binding={binding} />
-                </a>
-              ) : (
-                <div className="flex flex-col text-neutral-900">
-                  <BindingRow binding={binding} />
-                </div>
-              )}
-              {usage && <UsageLine usage={usage} />}
-            </li>
-          );
-        })}
-      </ul>
-    </details>
+                return (
+                  <li key={`${binding.type}-${binding.name}-${index}`} className="text-xs">
+                    {dashboardUrl ? (
+                      <a
+                        href={dashboardUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex flex-col text-foreground hover:underline"
+                      >
+                        <BindingRow binding={binding} />
+                      </a>
+                    ) : (
+                      <div className="flex flex-col text-foreground">
+                        <BindingRow binding={binding} />
+                      </div>
+                    )}
+                    {usage && <UsageLine usage={usage} />}
+                  </li>
+                );
+              })}
+            </ul>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+    </Card>
   );
 }
 
@@ -82,7 +96,7 @@ function BindingRow({ binding }: { binding: WorkerBinding }) {
   return (
     <div className="flex items-center justify-between">
       <span>{binding.name}</span>
-      <span className="text-neutral-500">{binding.type.replace(/_/g, ' ')}</span>
+      <span className="text-muted-foreground">{binding.type.replace(/_/g, ' ')}</span>
     </div>
   );
 }
@@ -90,7 +104,7 @@ function BindingRow({ binding }: { binding: WorkerBinding }) {
 function UsageLine({ usage }: { usage: BindingUsage }) {
   if (usage.kind === 'kv') {
     return (
-      <p className="text-neutral-400">
+      <p className="text-muted-foreground">
         {browser.i18n.getMessage('bindingUsageKv', [
           usage.usage.requests.toLocaleString(),
           usage.usage.storedKeys.toLocaleString(),
@@ -102,7 +116,7 @@ function UsageLine({ usage }: { usage: BindingUsage }) {
   if (usage.kind === 'd1') {
     const { readQueries, writeQueries, storageBytes } = usage.usage;
     return (
-      <p className="text-neutral-400">
+      <p className="text-muted-foreground">
         {storageBytes !== null
           ? browser.i18n.getMessage('bindingUsageD1WithStorage', [
               readQueries.toLocaleString(),
@@ -117,7 +131,7 @@ function UsageLine({ usage }: { usage: BindingUsage }) {
     );
   }
   return (
-    <p className="text-neutral-400">
+    <p className="text-muted-foreground">
       {browser.i18n.getMessage('bindingUsageR2', [
         usage.usage.classAOperations.toLocaleString(),
         usage.usage.classBOperations.toLocaleString(),

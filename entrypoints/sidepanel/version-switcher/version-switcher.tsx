@@ -11,7 +11,6 @@ import { DeploymentControl } from '@/entrypoints/sidepanel/version-switcher/depl
 import { RecentErrorsPanel } from '@/entrypoints/sidepanel/recent-errors/recent-errors-panel';
 import { BindingsPanel } from '@/entrypoints/sidepanel/bindings/bindings-panel';
 import { WorkerStatsCard } from '@/entrypoints/sidepanel/version-switcher/worker-stats-card';
-import { SectionCard } from '@/entrypoints/sidepanel/section-card';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Button } from '@/shared/ui/button';
 import { Alert, AlertDescription } from '@/shared/ui/alert';
@@ -191,9 +190,7 @@ export function VersionSwitcher({ lookup, hostname, refreshKey, onRefresh }: Ver
 
       <RecentErrorsPanel resolved={resolved} />
 
-      <SectionCard tone="muted">
-        <BindingsPanel resolved={resolved} />
-      </SectionCard>
+      <BindingsPanel resolved={resolved} />
     </div>
   );
 }
