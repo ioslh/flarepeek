@@ -7,7 +7,9 @@ interface TokenListProps {
 
 export function TokenList({ tokens }: TokenListProps) {
   if (tokens.length === 0) {
-    return <p className="text-sm text-neutral-500">{browser.i18n.getMessage('optionsNoTokens')}</p>;
+    return (
+      <p className="text-sm text-muted-foreground">{browser.i18n.getMessage('optionsNoTokens')}</p>
+    );
   }
 
   return (

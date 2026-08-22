@@ -10,7 +10,7 @@ interface AccountBadgeProps {
 // old native <select> did.
 export function AccountBadge({ resolvedToken }: AccountBadgeProps) {
   return (
-    <p className="truncate text-xs text-neutral-500">
+    <p className="truncate text-xs text-muted-foreground">
       {browser.i18n.getMessage('tokenSwitcherResolvedLabel', resolvedToken.label)}
     </p>
   );
