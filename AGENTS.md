@@ -6,9 +6,10 @@
 
 - 按 WXT 的 entrypoints 约定组织入口：`entrypoints/popup/`、`entrypoints/sidepanel/`、`entrypoints/options/`、`entrypoints/background/`。
   - `popup`：点工具栏图标打开，只做最高频操作（识别当前 tab 的 Worker + 一键预览版本），不放统计/Bindings/灰度控制这类重内容；账号/Token 只读展示，不提供切换（那是低频纠偏操作）。
-  - `sidepanel`：完整工具面板，通过 popup 里的按钮或 Chrome 自带入口打开。**不跟随浏览器 tab 切换自动刷新**——固定在打开时那个 tab，tab 变了只在顶部提示条里提示，用户点了才切换（见 `entrypoints/sidepanel/use-pinned-hostname.ts`）。加新的重数据请求前，想一下是不是应该走这套"手动切换"逻辑，而不是让它跟着 tab 变化自动重新请求。承担账号切换、灰度控制、bindings 等重操作；头部按"操作区"（版本切换）→"参考区"（recent versions/errors、bindings）分层，用 `SectionCard` 的 `tone` 区分主次，不要一路平铺同一种卡片样式。
+  - `sidepanel`：完整工具面板，通过 popup 里的按钮或 Chrome 自带入口打开。**不跟随浏览器 tab 切换自动刷新**——固定在打开时那个 tab，tab 变了只在顶部提示条里提示，用户点了才切换（见 `entrypoints/sidepanel/use-pinned-hostname.ts`）。加新的重数据请求前，想一下是不是应该走这套"手动切换"逻辑，而不是让它跟着 tab 变化自动重新请求。承担账号切换、灰度控制、bindings 等重操作；页面按"操作优先、参考其次"排布——最高频的 Versions 卡片在最前面，且默认收起编辑类控件（如"Manage deployment"），只在用户主动展开时才铺开，不要把大块编辑表单默认展示出来。
 - 入口内部按 feature 分文件夹，不要按 type（`components/`、`hooks/` 大杂烩）分。
 - **popup 和 sidepanel 都要用的、且交互行为一致的 hook/组件放 `shared/worker-panel/`**（如 `use-worker-lookup.ts`、`version-row.tsx`、`identity-header.tsx`），不要在两个 entrypoint 里各写一份。**两边都要展示同一份数据、但交互能力不同时**（例如账号信息 popup 只读、sidepanel 可切换+管理），拆成两个各自归属其 entrypoint 的小组件（如 `entrypoints/sidepanel/account/account-control.tsx` + `entrypoints/popup/account-badge.tsx`），不要塞进一个组件里用 prop 切换模式。只有单个 entrypoint 用的东西才留在它自己的 feature 文件夹里。
+- **`shared/ui/`**：shadcn/ui 生成的纯 UI 基础组件（`Button`、`Card`、`Dialog` 等），不包含任何产品/业务知识，通过 `pnpm dlx shadcn@latest add <name>` 管理；升级 shadcn 版本前不要手改这些文件的核心结构，样式/变体上的小调整可以直接改。与之相对，`shared/worker-panel/` 存放的是有产品知识的业务组件（如 `version-row.tsx`）。
 - 多个 feature 共用的非 UI 逻辑放到顶层 `shared/`（如 `shared/cloudflare-api/`、`shared/storage/`）。
 
 ## 命名规范
