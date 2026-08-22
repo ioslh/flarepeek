@@ -1,3 +1,6 @@
+import { Alert, AlertDescription } from '@/shared/ui/alert';
+import { Button } from '@/shared/ui/button';
+
 interface TabChangedBannerProps {
   liveHostname: string;
   onSwitch: () => void;
@@ -8,17 +11,13 @@ interface TabChangedBannerProps {
 // yanked away from what they're looking at just because they clicked around.
 export function TabChangedBanner({ liveHostname, onSwitch }: TabChangedBannerProps) {
   return (
-    <div className="flex items-center justify-between gap-2 rounded-lg border border-orange-200 bg-orange-50 px-3 py-2 text-sm">
-      <span className="truncate text-orange-800">
+    <Alert className="flex items-center justify-between gap-2 border-orange-200 bg-orange-50 py-2">
+      <AlertDescription className="truncate text-orange-800">
         {browser.i18n.getMessage('tabChangedBannerLabel', liveHostname)}
-      </span>
-      <button
-        type="button"
-        onClick={onSwitch}
-        className="shrink-0 rounded bg-orange-600 px-2 py-1 text-xs font-medium text-white hover:bg-orange-700"
-      >
+      </AlertDescription>
+      <Button size="sm" className="shrink-0" onClick={onSwitch}>
         {browser.i18n.getMessage('tabChangedBannerButton')}
-      </button>
-    </div>
+      </Button>
+    </Alert>
   );
 }
