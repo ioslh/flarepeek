@@ -66,7 +66,7 @@
     "message": "No deployment found for this Worker."
   },
   "versionSwitcherVersionsHeading": {
-    "message": "Versions in the current deployment"
+    "message": "Versions"
   },
   "versionSwitcherPercentageLabel": {
     "message": "$PERCENTAGE$% traffic",
@@ -82,18 +82,48 @@
   "versionSwitcherOpenPreview": {
     "message": "Open preview URL ↗"
   },
-  "deploymentSplitHeading": {
-    "message": "Gradual deployment split"
+  "versionSwitcherUploadedLabel": {
+    "message": "Uploaded $DATE$",
+    "placeholders": { "date": { "content": "$1" } }
   },
-  "deploymentSplitApply": {
-    "message": "Apply split"
+  "deploymentSplitMessagePlaceholder": {
+    "message": "Deployment message (optional)"
   },
-  "deploymentSplitConfirm": {
+  "deploymentControlSlotA": {
+    "message": "First version"
+  },
+  "deploymentControlSlotB": {
+    "message": "Second version"
+  },
+  "deploymentControlNone": {
+    "message": "(None — 100% to first version)"
+  },
+  "deploymentControlSearchPlaceholder": {
+    "message": "Search by tag or version…"
+  },
+  "deploymentControlNoResults": {
+    "message": "No versions found."
+  },
+  "deploymentControlDeploy": {
+    "message": "Deploy"
+  },
+  "deploymentControlManageDeployment": {
+    "message": "Manage deployment"
+  },
+  "deploymentSplitConfirmDialogTitle": {
+    "message": "Confirm deployment change"
+  },
+  "deploymentSplitConfirmDialogDescription": {
+    "message": "This will immediately change live production traffic."
+  },
+  "deploymentSplitConfirmDialogCancel": {
+    "message": "Cancel"
+  },
+  "deploymentSplitConfirmDialogConfirm": {
     "message": "Confirm — changes live traffic"
   },
-  "deploymentSplitSetFull": {
-    "message": "Set $VERSION_ID$ to 100%",
-    "placeholders": { "version_id": { "content": "$1" } }
+  "versionsListLiveHeading": {
+    "message": "Live now"
   },
   "workerStatsRequests": {
     "message": "Requests (24h)"
@@ -136,14 +166,8 @@
       "size": { "content": "$3" }
     }
   },
-  "recentVersionsHeading": {
-    "message": "Recent versions not in this deployment"
-  },
-  "recentVersionsNoPreview": {
-    "message": "No preview available"
-  },
   "recentVersionsNeverDeployed": {
-    "message": "Not in recent deployment history — rollback may not work"
+    "message": "Not recently deployed"
   },
   "versionSwitcherActive": {
     "message": "Active for you"

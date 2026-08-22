@@ -114,7 +114,13 @@ export function PopupApp() {
                   // upload-time (see version-switcher.tsx for where the side
                   // panel does) — keeping popup's request count minimal, per
                   // its "quickest glance" role, wins out over richer labels here.
-                  version={{ ...version, tag: null, message: null, createdOn: null }}
+                  version={{
+                    ...version,
+                    tag: null,
+                    message: null,
+                    createdOn: null,
+                    everDeployed: null,
+                  }}
                   isActive={override.activeVersionId === version.versionId}
                   isRequesting={override.activation.status === 'requesting'}
                   previewUrl={

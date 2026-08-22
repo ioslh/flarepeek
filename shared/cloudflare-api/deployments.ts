@@ -51,6 +51,7 @@ export async function setDeploymentSplit(
   accountId: string,
   scriptName: string,
   versions: DeploymentVersion[],
+  message?: string | null,
 ): Promise<void> {
   await client.workers.scripts.deployments.create(scriptName, {
     account_id: accountId,
@@ -59,6 +60,7 @@ export async function setDeploymentSplit(
       version_id: version.versionId,
       percentage: version.percentage,
     })),
+    ...(message ? { annotations: { 'workers/message': message } } : {}),
   });
 }
 

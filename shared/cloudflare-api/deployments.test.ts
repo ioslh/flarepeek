@@ -89,6 +89,36 @@ describe('setDeploymentSplit', () => {
       ],
     });
   });
+
+  it('includes an annotations.message when a message is given', async () => {
+    const { client, create } = fakeClient([]);
+
+    await setDeploymentSplit(
+      client,
+      'acct-1',
+      'my-worker',
+      [{ versionId: 'v1', percentage: 100 }],
+      'rolling out the new checkout flow',
+    );
+
+    expect(create).toHaveBeenCalledWith('my-worker', {
+      account_id: 'acct-1',
+      strategy: 'percentage',
+      versions: [{ version_id: 'v1', percentage: 100 }],
+      annotations: { 'workers/message': 'rolling out the new checkout flow' },
+    });
+  });
+
+  it('omits annotations entirely when no message is given', async () => {
+    const { client, create } = fakeClient([]);
+
+    await setDeploymentSplit(client, 'acct-1', 'my-worker', [{ versionId: 'v1', percentage: 100 }]);
+
+    expect(create).toHaveBeenCalledWith(
+      'my-worker',
+      expect.not.objectContaining({ annotations: expect.anything() }),
+    );
+  });
 });
 
 describe('rollbackToVersion', () => {

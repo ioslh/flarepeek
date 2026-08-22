@@ -66,7 +66,7 @@
     "message": "未找到该 Worker 的部署信息。"
   },
   "versionSwitcherVersionsHeading": {
-    "message": "当前部署中的版本"
+    "message": "版本"
   },
   "versionSwitcherPercentageLabel": {
     "message": "$PERCENTAGE$% 流量",
@@ -82,18 +82,48 @@
   "versionSwitcherOpenPreview": {
     "message": "打开预览地址 ↗"
   },
-  "deploymentSplitHeading": {
-    "message": "灰度部署流量分配"
+  "versionSwitcherUploadedLabel": {
+    "message": "上传于 $DATE$",
+    "placeholders": { "date": { "content": "$1" } }
   },
-  "deploymentSplitApply": {
-    "message": "应用分配"
+  "deploymentSplitMessagePlaceholder": {
+    "message": "部署说明（可选）"
   },
-  "deploymentSplitConfirm": {
+  "deploymentControlSlotA": {
+    "message": "第一个版本"
+  },
+  "deploymentControlSlotB": {
+    "message": "第二个版本"
+  },
+  "deploymentControlNone": {
+    "message": "（无——第一个版本占 100%）"
+  },
+  "deploymentControlSearchPlaceholder": {
+    "message": "按 tag 或版本号搜索…"
+  },
+  "deploymentControlNoResults": {
+    "message": "未找到版本"
+  },
+  "deploymentControlDeploy": {
+    "message": "部署"
+  },
+  "deploymentControlManageDeployment": {
+    "message": "管理部署"
+  },
+  "deploymentSplitConfirmDialogTitle": {
+    "message": "确认部署变更"
+  },
+  "deploymentSplitConfirmDialogDescription": {
+    "message": "该操作会立即影响生产流量。"
+  },
+  "deploymentSplitConfirmDialogCancel": {
+    "message": "取消"
+  },
+  "deploymentSplitConfirmDialogConfirm": {
     "message": "确认——会改变线上流量"
   },
-  "deploymentSplitSetFull": {
-    "message": "把 $VERSION_ID$ 设为 100%",
-    "placeholders": { "version_id": { "content": "$1" } }
+  "versionsListLiveHeading": {
+    "message": "当前生效"
   },
   "workerStatsRequests": {
     "message": "请求数（24h）"
@@ -136,14 +166,8 @@
       "size": { "content": "$3" }
     }
   },
-  "recentVersionsHeading": {
-    "message": "不在当前部署中的最近版本"
-  },
-  "recentVersionsNoPreview": {
-    "message": "无可用预览"
-  },
   "recentVersionsNeverDeployed": {
-    "message": "不在最近的部署历史中，回滚可能会失败"
+    "message": "近期未部署过"
   },
   "versionSwitcherActive": {
     "message": "已为你启用"

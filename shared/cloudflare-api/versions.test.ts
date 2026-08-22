@@ -29,8 +29,24 @@ describe('listRecentVersions', () => {
       id: 'v1',
       createdOn: '2026-08-20T00:00:00Z',
       authorEmail: 'a@x.com',
+      tag: null,
+      message: null,
     });
     expect(versions.at(1)?.authorEmail).toBeNull();
+  });
+
+  it('reads the tag/message annotations when present', async () => {
+    const client = fakeClient([
+      {
+        id: 'v1',
+        metadata: { created_on: '2026-08-22T00:00:00Z' },
+        annotations: { 'workers/tag': 'v2-canary', 'workers/message': 'testing gradual deploy' },
+      },
+    ]);
+
+    const versions = await listRecentVersions(client, 'acct-1', 'my-worker');
+
+    expect(versions[0]).toMatchObject({ tag: 'v2-canary', message: 'testing gradual deploy' });
   });
 
   it('returns an empty array when there are no versions', async () => {

@@ -41,7 +41,7 @@ export function useDeploymentActions(resolved: ResolvedWorker | null, onSuccess:
   );
 
   const applySplit = useCallback(
-    async (versions: DeploymentVersion[]) => {
+    async (versions: DeploymentVersion[], message?: string | null) => {
       if (!resolved) return;
       setState({ status: 'submitting' });
       try {
@@ -50,6 +50,7 @@ export function useDeploymentActions(resolved: ResolvedWorker | null, onSuccess:
           resolved.worker.accountId,
           resolved.worker.scriptName,
           versions,
+          message,
         );
         setState({ status: 'idle' });
         onSuccess();

@@ -6,7 +6,6 @@ import {
   type CloudflareApiErrorKind,
 } from '@/shared/cloudflare-api/errors';
 import type { ResolvedWorker } from '@/shared/worker-panel/use-worker-lookup';
-import type { DeploymentVersionsState } from '@/shared/worker-panel/use-deployment-versions';
 
 export interface RecentVersionEntry extends RecentVersion {
   // Whether this version id has ever shown up in the Worker's deployment
@@ -25,14 +24,13 @@ export type RecentVersionsState =
   | { status: 'error'; kind: CloudflareApiErrorKind }
   | { status: 'ready'; versions: RecentVersionEntry[] };
 
-// Recently uploaded versions that are NOT part of the current deployment —
-// Version Overrides can't target these (see version-override.ts), so all
-// they're good for is a quick jump to their preview URL, or a rollback if
-// they're still in the deployment history.
-export function useRecentVersions(
-  resolved: ResolvedWorker | null,
-  deployment: DeploymentVersionsState,
-): RecentVersionsState {
+// Every recently-uploaded version — deliberately NOT filtered to "not in the
+// current deployment" here anymore (that used to happen inside this hook).
+// version-switcher.tsx now does that filtering itself, since it also reuses
+// this same fetch to enrich the *currently deployed* versions' tag/message
+// for VersionRow/DeploymentSplitControl — filtering here would throw that
+// data away before it could be reused.
+export function useRecentVersions(resolved: ResolvedWorker | null): RecentVersionsState {
   const [state, setState] = useState<RecentVersionsState>({ status: 'idle' });
 
   useEffect(() => {
@@ -60,14 +58,12 @@ export function useRecentVersions(
         ]);
         if (cancelled) return;
 
-        const currentlyDeployedIds = new Set(
-          deployment.status === 'ready' ? deployment.versions.map((v) => v.versionId) : [],
-        );
         setState({
           status: 'ready',
-          versions: versions
-            .filter((version) => !currentlyDeployedIds.has(version.id))
-            .map((version) => ({ ...version, everDeployed: deployedVersionIds.has(version.id) })),
+          versions: versions.map((version) => ({
+            ...version,
+            everDeployed: deployedVersionIds.has(version.id),
+          })),
         });
       } catch (error) {
         if (!cancelled) setState({ status: 'error', kind: classifyCloudflareError(error).kind });
@@ -77,7 +73,7 @@ export function useRecentVersions(
     return () => {
       cancelled = true;
     };
-  }, [resolved, deployment]);
+  }, [resolved]);
 
   return state;
 }
