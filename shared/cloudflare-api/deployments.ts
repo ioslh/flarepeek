@@ -20,25 +20,42 @@ export interface DeploymentVersion {
   percentage: number;
 }
 
-// The first deployment returned by the API is the one actively serving
-// traffic; it holds one version (100%) or two (a gradual rollout split).
-// Version Overrides can only target a version that appears in this list.
+function toDeploymentVersions(
+  deployment: z.infer<typeof deploymentSchema> | undefined,
+): DeploymentVersion[] {
+  if (!deployment) return [];
+  return deployment.versions.map((version) => ({
+    versionId: version.version_id,
+    percentage: version.percentage,
+  }));
+}
+
+export interface DeploymentSnapshot {
+  // The deployment actively serving traffic; one version (100%) or two (a
+  // gradual rollout split). Version Overrides can only target a version
+  // that appears here.
+  current: DeploymentVersion[];
+  // The deployment immediately before `current`, or null if there isn't
+  // one (e.g. a Worker on its first deployment). Used to tell whether a
+  // version in `current` is one that was already there ("keep") or one
+  // this deployment just introduced ("new") — see version-roles.ts.
+  previous: DeploymentVersion[] | null;
+}
+
 export async function getCurrentDeploymentVersions(
   client: Cloudflare,
   accountId: string,
   scriptName: string,
-): Promise<DeploymentVersion[]> {
+): Promise<DeploymentSnapshot> {
   const response = await client.workers.scripts.deployments.list(scriptName, {
     account_id: accountId,
   });
   const parsed = deploymentListResponseSchema.parse(response);
-  const currentDeployment = parsed.deployments[0];
-  if (!currentDeployment) return [];
 
-  return currentDeployment.versions.map((version) => ({
-    versionId: version.version_id,
-    percentage: version.percentage,
-  }));
+  return {
+    current: toDeploymentVersions(parsed.deployments[0]),
+    previous: parsed.deployments[1] ? toDeploymentVersions(parsed.deployments[1]) : null,
+  };
 }
 
 // Creates a new deployment — this is a real production traffic change, not a

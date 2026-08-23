@@ -13,7 +13,11 @@ export type DeploymentVersionsState =
   | { status: 'idle' }
   | { status: 'loading' }
   | { status: 'error'; kind: CloudflareApiErrorKind }
-  | { status: 'ready'; versions: DeploymentVersion[] };
+  | {
+      status: 'ready';
+      versions: DeploymentVersion[];
+      previousVersions: DeploymentVersion[] | null;
+    };
 
 // refreshKey has no meaning of its own — bump it (e.g. after a deployment
 // write in use-deployment-actions.ts) to force a refetch without waiting for
@@ -35,12 +39,18 @@ export function useDeploymentVersions(
 
     (async () => {
       try {
-        const versions = await getCurrentDeploymentVersions(
+        const snapshot = await getCurrentDeploymentVersions(
           resolved.client,
           resolved.worker.accountId,
           resolved.worker.scriptName,
         );
-        if (!cancelled) setState({ status: 'ready', versions });
+        if (!cancelled) {
+          setState({
+            status: 'ready',
+            versions: snapshot.current,
+            previousVersions: snapshot.previous,
+          });
+        }
       } catch (error) {
         if (!cancelled) setState({ status: 'error', kind: classifyCloudflareError(error).kind });
       }

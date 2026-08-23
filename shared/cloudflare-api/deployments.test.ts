@@ -23,7 +23,7 @@ function fakeClient(deployments: unknown[]) {
 }
 
 describe('getCurrentDeploymentVersions', () => {
-  it('returns the versions from the latest (first) deployment', async () => {
+  it('returns the versions from the latest (first) deployment as current', async () => {
     const { client } = fakeClient([
       {
         id: 'deploy-1',
@@ -35,15 +35,32 @@ describe('getCurrentDeploymentVersions', () => {
       { id: 'deploy-0', versions: [{ version_id: 'v0', percentage: 100 }] },
     ]);
 
-    expect(await getCurrentDeploymentVersions(client, 'acct-1', 'my-worker')).toEqual([
-      { versionId: 'v1', percentage: 95 },
-      { versionId: 'v2', percentage: 5 },
-    ]);
+    expect(await getCurrentDeploymentVersions(client, 'acct-1', 'my-worker')).toEqual({
+      current: [
+        { versionId: 'v1', percentage: 95 },
+        { versionId: 'v2', percentage: 5 },
+      ],
+      previous: [{ versionId: 'v0', percentage: 100 }],
+    });
   });
 
-  it('returns an empty array when there are no deployments', async () => {
+  it('returns previous: null when there is only one deployment in history', async () => {
+    const { client } = fakeClient([
+      { id: 'deploy-0', versions: [{ version_id: 'v0', percentage: 100 }] },
+    ]);
+
+    expect(await getCurrentDeploymentVersions(client, 'acct-1', 'my-worker')).toEqual({
+      current: [{ versionId: 'v0', percentage: 100 }],
+      previous: null,
+    });
+  });
+
+  it('returns empty current and null previous when there are no deployments', async () => {
     const { client } = fakeClient([]);
-    expect(await getCurrentDeploymentVersions(client, 'acct-1', 'my-worker')).toEqual([]);
+    expect(await getCurrentDeploymentVersions(client, 'acct-1', 'my-worker')).toEqual({
+      current: [],
+      previous: null,
+    });
   });
 });
 

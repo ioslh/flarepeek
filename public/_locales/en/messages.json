@@ -122,8 +122,86 @@
   "deploymentSplitConfirmDialogConfirm": {
     "message": "Confirm — changes live traffic"
   },
-  "versionsListLiveHeading": {
-    "message": "Live now"
+  "deploymentBarHeadingSingle": {
+    "message": "Current deployment · single version"
+  },
+  "deploymentBarHeadingDouble": {
+    "message": "Current deployment · two versions"
+  },
+  "deploymentBarHeadingEdit": {
+    "message": "Adjust traffic split"
+  },
+  "deploymentBarToggleEdit": {
+    "message": "Adjust traffic / deploy"
+  },
+  "deploymentBarCollapse": {
+    "message": "Collapse"
+  },
+  "deploymentBarRoleKeep": {
+    "message": "Kept"
+  },
+  "deploymentBarRoleNew": {
+    "message": "New this rollout"
+  },
+  "deploymentBarRoleUnknown": {
+    "message": "Role unclear"
+  },
+  "deploymentBarPinned": {
+    "message": "Pinned"
+  },
+  "deploymentBarPin": {
+    "message": "Pin this version (you only)"
+  },
+  "deploymentBarUnpin": {
+    "message": "Unpin"
+  },
+  "deploymentBarHandleLabel": {
+    "message": "Drag to adjust the traffic split between the two versions"
+  },
+  "deploymentBarNoteRandom": {
+    "message": "You're currently hitting either version at random — refreshing may switch you. Pin ⌖ a version to reliably reproduce it."
+  },
+  "deploymentBarNotePinned": {
+    "message": "This tab is locked to the pinned version — live traffic is unaffected. Remember to unpin when you're done investigating; while pinned, you won't see real production behavior."
+  },
+  "deploymentBarNoteSingle": {
+    "message": "Single-version deployment — every request is served by it."
+  },
+  "deploymentBarDeltaAdvance": {
+    "message": "↗ Advancing +$PP$pp",
+    "placeholders": { "pp": { "content": "$1" } }
+  },
+  "deploymentBarDeltaRetreat": {
+    "message": "↩ Retreating −$PP$pp",
+    "placeholders": { "pp": { "content": "$1" } }
+  },
+  "deploymentBarDeltaNone": {
+    "message": "Δ 0pp"
+  },
+  "deploymentBarDeltaAffected": {
+    "message": "About $PERCENT$% of users will switch versions",
+    "placeholders": { "percent": { "content": "$1" } }
+  },
+  "deploymentBarDeltaNoChange": {
+    "message": "No one flips unless you deploy this"
+  },
+  "deploymentBarWarningRetreat": {
+    "message": "A retreat flips the same share of users as an advance would. If you just want to pause and observe, leaving this alone costs nothing."
+  },
+  "deploymentBarWarningPushToFull": {
+    "message": "Pushing to 100% removes the other version from the deployment — it can no longer be pinned afterward."
+  },
+  "deploymentBarWarningZeroPinnable": {
+    "message": "At 0% this version is still part of the deployment, and can still be pinned to verify it."
+  },
+  "deploymentBarWarningSlotAChanged": {
+    "message": "The first slot's version changed too — this is no longer a gradual rollout but two new versions side by side, so every Durable Object's affinity will be recalculated."
+  },
+  "deploymentBarEmptyTitle": {
+    "message": "Not deployed yet"
+  },
+  "deploymentBarEmptyDescription": {
+    "message": "Choose a version to make the first deployment."
   },
   "workerStatsRequests": {
     "message": "Requests (24h)"

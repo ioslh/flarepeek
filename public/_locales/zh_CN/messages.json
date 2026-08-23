@@ -122,8 +122,86 @@
   "deploymentSplitConfirmDialogConfirm": {
     "message": "确认——会改变线上流量"
   },
-  "versionsListLiveHeading": {
-    "message": "当前生效"
+  "deploymentBarHeadingSingle": {
+    "message": "当前部署 · 单版本"
+  },
+  "deploymentBarHeadingDouble": {
+    "message": "当前部署 · 两个版本"
+  },
+  "deploymentBarHeadingEdit": {
+    "message": "调整流量 / 发布"
+  },
+  "deploymentBarToggleEdit": {
+    "message": "调整流量 / 发布"
+  },
+  "deploymentBarCollapse": {
+    "message": "收起"
+  },
+  "deploymentBarRoleKeep": {
+    "message": "沿用"
+  },
+  "deploymentBarRoleNew": {
+    "message": "本轮新引入"
+  },
+  "deploymentBarRoleUnknown": {
+    "message": "角色未定"
+  },
+  "deploymentBarPinned": {
+    "message": "已钉住"
+  },
+  "deploymentBarPin": {
+    "message": "钉住此版本（仅你自己）"
+  },
+  "deploymentBarUnpin": {
+    "message": "取消钉住"
+  },
+  "deploymentBarHandleLabel": {
+    "message": "拖动调整两个版本的流量占比"
+  },
+  "deploymentBarNoteRandom": {
+    "message": "当前是随机命中，刷新页面可能会切换到另一个版本。要稳定复现，请点击 ⌖ 钉住某个版本。"
+  },
+  "deploymentBarNotePinned": {
+    "message": "本标签页已锁定到已钉住的版本，线上用户不受影响。排查完记得取消钉住——钉住时你看不到真实的线上行为。"
+  },
+  "deploymentBarNoteSingle": {
+    "message": "单版本部署，所有请求都由它应答。"
+  },
+  "deploymentBarDeltaAdvance": {
+    "message": "↗ 推进 +$PP$pp",
+    "placeholders": { "pp": { "content": "$1" } }
+  },
+  "deploymentBarDeltaRetreat": {
+    "message": "↩ 回撤 −$PP$pp",
+    "placeholders": { "pp": { "content": "$1" } }
+  },
+  "deploymentBarDeltaNone": {
+    "message": "Δ 0pp"
+  },
+  "deploymentBarDeltaAffected": {
+    "message": "约 $PERCENT$% 的用户会切换版本",
+    "placeholders": { "percent": { "content": "$1" } }
+  },
+  "deploymentBarDeltaNoChange": {
+    "message": "不创建新部署就没有任何用户翻转"
+  },
+  "deploymentBarWarningRetreat": {
+    "message": "回撤和推进代价对称，会翻转同等比例的用户。如果只是想暂停观察，保持不动是零成本的。"
+  },
+  "deploymentBarWarningPushToFull": {
+    "message": "推满 100% 会把另一个版本移出部署，之后不能再被钉住。"
+  },
+  "deploymentBarWarningZeroPinnable": {
+    "message": "0% 时该版本仍在部署内，仍然可以被钉住用于验证。"
+  },
+  "deploymentBarWarningSlotAChanged": {
+    "message": "左侧版本也变了——这不再是灰度推进，而是两个新版本对照，所有 Durable Object 的归属都会重新计算。"
+  },
+  "deploymentBarEmptyTitle": {
+    "message": "尚未部署"
+  },
+  "deploymentBarEmptyDescription": {
+    "message": "选择一个版本作为首次部署。"
   },
   "workerStatsRequests": {
     "message": "请求数（24h）"
