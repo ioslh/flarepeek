@@ -106,20 +106,6 @@
       }
     }
   },
-  "versionSwitcherZoneLabel": {
-    "message": "Zone：$NAME$",
-    "placeholders": {
-      "name": {
-        "content": "$1"
-      }
-    }
-  },
-  "versionSwitcherNoVersions": {
-    "message": "未找到该 Worker 的部署信息。"
-  },
-  "versionSwitcherVersionsHeading": {
-    "message": "版本"
-  },
   "versionSwitcherPercentageLabel": {
     "message": "$PERCENTAGE$% 流量",
     "placeholders": {
@@ -170,9 +156,6 @@
   },
   "deploymentControlDeploy": {
     "message": "部署"
-  },
-  "deploymentControlManageDeployment": {
-    "message": "管理部署"
   },
   "deploymentBarToggleEdit": {
     "message": "调整流量 / 发布"
@@ -410,9 +393,6 @@
   "versionSwitcherActive": {
     "message": "已为你启用"
   },
-  "versionSwitcherDeactivate": {
-    "message": "停止预览"
-  },
   "versionSwitcherRequesting": {
     "message": "正在请求权限…"
   },
@@ -516,20 +496,5 @@
   },
   "optionsVerifying": {
     "message": "验证中..."
-  },
-  "optionsVerifyFailureUnauthenticated": {
-    "message": "该 Token 无效或已过期。"
-  },
-  "optionsVerifyFailureForbidden": {
-    "message": "该 Token 权限不足。"
-  },
-  "optionsVerifyFailureRateLimited": {
-    "message": "Cloudflare API 请求过于频繁，请稍后重试。"
-  },
-  "optionsVerifyFailureNetwork": {
-    "message": "无法连接到 Cloudflare API，请检查网络。"
-  },
-  "optionsVerifyFailureUnknown": {
-    "message": "验证 Token 时发生未知错误。"
   }
 }

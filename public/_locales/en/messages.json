@@ -106,20 +106,6 @@
       }
     }
   },
-  "versionSwitcherZoneLabel": {
-    "message": "Zone: $NAME$",
-    "placeholders": {
-      "name": {
-        "content": "$1"
-      }
-    }
-  },
-  "versionSwitcherNoVersions": {
-    "message": "No deployment found for this Worker."
-  },
-  "versionSwitcherVersionsHeading": {
-    "message": "Versions"
-  },
   "versionSwitcherPercentageLabel": {
     "message": "$PERCENTAGE$% traffic",
     "placeholders": {
@@ -170,9 +156,6 @@
   },
   "deploymentControlDeploy": {
     "message": "Deploy"
-  },
-  "deploymentControlManageDeployment": {
-    "message": "Manage deployment"
   },
   "deploymentBarToggleEdit": {
     "message": "Adjust traffic / deploy"
@@ -410,9 +393,6 @@
   "versionSwitcherActive": {
     "message": "Active for you"
   },
-  "versionSwitcherDeactivate": {
-    "message": "Stop previewing"
-  },
   "versionSwitcherRequesting": {
     "message": "Requesting permission…"
   },
@@ -516,20 +496,5 @@
   },
   "optionsVerifying": {
     "message": "Verifying..."
-  },
-  "optionsVerifyFailureUnauthenticated": {
-    "message": "This token is invalid or expired."
-  },
-  "optionsVerifyFailureForbidden": {
-    "message": "This token doesn't have the required permissions."
-  },
-  "optionsVerifyFailureRateLimited": {
-    "message": "Too many requests to the Cloudflare API. Try again shortly."
-  },
-  "optionsVerifyFailureNetwork": {
-    "message": "Couldn't reach the Cloudflare API. Check your connection."
-  },
-  "optionsVerifyFailureUnknown": {
-    "message": "Something went wrong while verifying this token."
   }
 }
