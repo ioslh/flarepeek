@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
   getCurrentDeploymentVersions,
+  type DeploymentHistoryEntry,
   type DeploymentVersion,
 } from '@/shared/cloudflare-api/deployments';
 import {
@@ -18,6 +19,7 @@ export type DeploymentVersionsState =
       versions: DeploymentVersion[];
       previousVersions: DeploymentVersion[] | null;
       boundaryTrail: number[];
+      history: DeploymentHistoryEntry[];
     };
 
 // refreshKey has no meaning of its own — bump it (e.g. after a deployment
@@ -51,6 +53,7 @@ export function useDeploymentVersions(
             versions: snapshot.current,
             previousVersions: snapshot.previous,
             boundaryTrail: snapshot.boundaryTrail,
+            history: snapshot.history,
           });
         }
       } catch (error) {

@@ -9,6 +9,17 @@ const deploymentSchema = z.object({
       percentage: z.number(),
     }),
   ),
+  // All optional: confirmed present on the SDK's Deployment type, but this
+  // schema stays tolerant so a response missing them degrades to a history
+  // entry without a timestamp rather than failing the whole parse.
+  created_on: z.string().optional(),
+  author_email: z.string().optional(),
+  annotations: z
+    .object({
+      'workers/message': z.string().optional(),
+      'workers/triggered_by': z.string().optional(),
+    })
+    .optional(),
 });
 
 const deploymentListResponseSchema = z.object({
@@ -64,6 +75,14 @@ function computeBoundaryTrail(deployments: z.infer<typeof deploymentSchema>[]): 
   return trail;
 }
 
+export interface DeploymentHistoryEntry {
+  id: string;
+  createdOn: string | null;
+  message: string | null;
+  authorEmail: string | null;
+  versions: DeploymentVersion[];
+}
+
 export interface DeploymentSnapshot {
   // The deployment actively serving traffic; one version (100%) or two (a
   // gradual rollout split). Version Overrides can only target a version
@@ -78,6 +97,10 @@ export interface DeploymentSnapshot {
   // newest first — drawn as faint marks above the deployment bar so the
   // Worker's rollout trajectory is visible at a glance.
   boundaryTrail: number[];
+  // The whole list the API returned, newest first, for the read-only history
+  // menu behind the deployment id. Comes free with the call above — no extra
+  // request — which is why the menu can open instantly.
+  history: DeploymentHistoryEntry[];
 }
 
 export async function getCurrentDeploymentVersions(
@@ -94,6 +117,13 @@ export async function getCurrentDeploymentVersions(
     current: toDeploymentVersions(parsed.deployments[0]),
     previous: parsed.deployments[1] ? toDeploymentVersions(parsed.deployments[1]) : null,
     boundaryTrail: computeBoundaryTrail(parsed.deployments),
+    history: parsed.deployments.map((deployment) => ({
+      id: deployment.id,
+      createdOn: deployment.created_on ?? null,
+      message: deployment.annotations?.['workers/message'] ?? null,
+      authorEmail: deployment.author_email ?? null,
+      versions: toDeploymentVersions(deployment),
+    })),
   };
 }
 

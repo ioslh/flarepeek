@@ -178,8 +178,20 @@
   "deploymentBarToggleEdit": {
     "message": "调整流量 / 发布"
   },
-  "deploymentBarCollapse": {
-    "message": "收起"
+  "deploymentBarDiscard": {
+    "message": "放弃"
+  },
+  "deploymentBarHoldDeploy": {
+    "message": "按住发布"
+  },
+  "deploymentBarHoldRetreat": {
+    "message": "按住回撤"
+  },
+  "deploymentHistoryCaption": {
+    "message": "最近的部署 · 只读参考"
+  },
+  "deploymentHistoryCurrent": {
+    "message": "当前"
   },
   "deploymentBarRoleKeep": {
     "message": "沿用"
@@ -262,6 +274,9 @@
   },
   "deploymentBarWarningZeroPinnable": {
     "message": "0% 时该版本仍在部署内，仍然可以被钉住用于验证。"
+  },
+  "deploymentBarWarningAffinity": {
+    "message": "这次发布会让流量开始分裂。同一用户的连续请求（含页面刷新、静态资源加载）可能由不同版本应答。如果你的应用对此敏感（例如页面引用了版本相关的资源），需要先配置版本亲和：https://developers.cloudflare.com/workers/versions-and-deployments/gradual-deployments/version-affinity/ — 无状态、两版本兼容的 Worker 则无需处理。"
   },
   "deploymentBarWarningSlotAChanged": {
     "message": "左侧版本也变了——这不再是灰度推进，而是两个新版本对照，所有 Durable Object 的归属都会重新计算。"

@@ -1,6 +1,12 @@
 // Quick-pick percentages shown as buttons under the bar in edit mode, and
 // the step size the drag handle jumps by on ArrowLeft/ArrowRight.
-export const PERCENTAGE_LADDER = [0, 1, 5, 10, 25, 40, 50, 75, 100];
+//
+// Descending on purpose: these set slot B's share, and a larger share pushes
+// the bar's boundary further *left*. Rendered left-to-right, a descending
+// ladder therefore puts each button on the same side as the boundary it
+// produces. Ascending would read more naturally as numbers but would move
+// the opposite way from the control it drives.
+export const PERCENTAGE_LADDER = [100, 75, 50, 40, 25, 10, 5, 1, 0];
 
 // Snaps a raw drag position to a resolution that gets coarser as the value
 // grows — fine-grained near 0 (where a canary's first percentage point

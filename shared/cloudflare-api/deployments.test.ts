@@ -42,6 +42,25 @@ describe('getCurrentDeploymentVersions', () => {
       ],
       previous: [{ versionId: 'v0', percentage: 100 }],
       boundaryTrail: [],
+      history: [
+        {
+          id: 'deploy-1',
+          createdOn: null,
+          message: null,
+          authorEmail: null,
+          versions: [
+            { versionId: 'v1', percentage: 95 },
+            { versionId: 'v2', percentage: 5 },
+          ],
+        },
+        {
+          id: 'deploy-0',
+          createdOn: null,
+          message: null,
+          authorEmail: null,
+          versions: [{ versionId: 'v0', percentage: 100 }],
+        },
+      ],
     });
   });
 
@@ -54,6 +73,15 @@ describe('getCurrentDeploymentVersions', () => {
       current: [{ versionId: 'v0', percentage: 100 }],
       previous: null,
       boundaryTrail: [],
+      history: [
+        {
+          id: 'deploy-0',
+          createdOn: null,
+          message: null,
+          authorEmail: null,
+          versions: [{ versionId: 'v0', percentage: 100 }],
+        },
+      ],
     });
   });
 
@@ -63,6 +91,7 @@ describe('getCurrentDeploymentVersions', () => {
       current: [],
       previous: null,
       boundaryTrail: [],
+      history: [],
     });
   });
 });
@@ -138,6 +167,46 @@ describe('getCurrentDeploymentVersions boundaryTrail', () => {
     expect(
       (await getCurrentDeploymentVersions(client, 'acct-1', 'my-worker')).boundaryTrail,
     ).toEqual([50, 40, 30, 20]);
+  });
+});
+
+describe('getCurrentDeploymentVersions history', () => {
+  it('carries timestamp, message and author through from the same list call', async () => {
+    const { client } = fakeClient([
+      {
+        id: 'deploy-1',
+        created_on: '2026-08-25T10:00:00Z',
+        author_email: 'me@acme.test',
+        annotations: { 'workers/message': 'push to 40%' },
+        versions: [
+          { version_id: 'v1', percentage: 60 },
+          { version_id: 'v2', percentage: 40 },
+        ],
+      },
+    ]);
+
+    const { history } = await getCurrentDeploymentVersions(client, 'acct-1', 'my-worker');
+    expect(history).toEqual([
+      {
+        id: 'deploy-1',
+        createdOn: '2026-08-25T10:00:00Z',
+        message: 'push to 40%',
+        authorEmail: 'me@acme.test',
+        versions: [
+          { versionId: 'v1', percentage: 60 },
+          { versionId: 'v2', percentage: 40 },
+        ],
+      },
+    ]);
+  });
+
+  it('degrades to nulls rather than failing when the optional metadata is absent', async () => {
+    const { client } = fakeClient([
+      { id: 'deploy-1', versions: [{ version_id: 'v1', percentage: 100 }] },
+    ]);
+
+    const { history } = await getCurrentDeploymentVersions(client, 'acct-1', 'my-worker');
+    expect(history[0]).toMatchObject({ createdOn: null, message: null, authorEmail: null });
   });
 });
 

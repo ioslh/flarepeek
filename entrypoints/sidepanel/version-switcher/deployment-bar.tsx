@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { DeployConfirmDialog } from '@/entrypoints/sidepanel/version-switcher/deploy-confirm-dialog';
+import { DeploymentHistoryMenu } from '@/entrypoints/sidepanel/version-switcher/deployment-history-menu';
 import { DeploymentBarTrack } from '@/entrypoints/sidepanel/version-switcher/deployment-bar-track';
 import {
   type DeploymentBarWarningId,
@@ -10,6 +10,7 @@ import {
   PERCENTAGE_LADDER,
 } from '@/entrypoints/sidepanel/version-switcher/percentage-ladder';
 import { useDeploymentBarEdit } from '@/entrypoints/sidepanel/version-switcher/use-deployment-bar-edit';
+import { HoldToConfirmButton } from '@/entrypoints/sidepanel/version-switcher/hold-to-confirm-button';
 import { OverrideModeBar } from '@/entrypoints/sidepanel/version-switcher/override-mode-bar';
 import { VersionSlot } from '@/entrypoints/sidepanel/version-switcher/version-slot';
 import { computeVersionRoles } from '@/entrypoints/sidepanel/version-switcher/version-roles';
@@ -26,7 +27,6 @@ import { PanelSection } from '@/entrypoints/sidepanel/panel-section';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
 import { Skeleton } from '@/shared/ui/skeleton';
-import { VersionCombobox } from '@/entrypoints/sidepanel/version-switcher/version-combobox';
 import { cn } from '@/shared/ui/utils';
 import type { DisplayVersion } from '@/shared/worker-panel/version-row';
 import type { ResolvedWorker } from '@/shared/worker-panel/use-worker-lookup';
@@ -52,6 +52,8 @@ function warningMessageKey(id: DeploymentBarWarningId) {
       return 'deploymentBarWarningZeroPinnable';
     case 'slot-a-changed':
       return 'deploymentBarWarningSlotAChanged';
+    case 'affinity':
+      return 'deploymentBarWarningAffinity';
   }
 }
 
@@ -68,11 +70,11 @@ export function DeploymentBar({ resolved, hostname, refreshKey, onRefresh }: Dep
   const recentVersions = useRecentVersions(resolved);
   const deploymentActions = useDeploymentActions(resolved, onRefresh);
   const [mode, setMode] = useState<'view' | 'edit'>('view');
-  const [confirmOpen, setConfirmOpen] = useState(false);
 
   const live = deployment.status === 'ready' ? deployment.versions : [];
   const previous = deployment.status === 'ready' ? deployment.previousVersions : null;
   const boundaryTrail = deployment.status === 'ready' ? deployment.boundaryTrail : [];
+  const history = deployment.status === 'ready' ? deployment.history : [];
 
   const metaById = new Map(
     recentVersions.status === 'ready' ? recentVersions.versions.map((v) => [v.id, v]) : [],
@@ -132,11 +134,13 @@ export function DeploymentBar({ resolved, hostname, refreshKey, onRefresh }: Dep
     );
   }
 
-  // Never-deployed Worker: no split to view or drag, just a single-slot
-  // picker that makes the first deployment at 100%.
+  // Never-deployed Worker: there is no split to show, but the way *out* of
+  // that state is the same edit surface as any other change — two pickers
+  // with slot B optional — rather than a one-off single-picker form. Same
+  // controls, same hold-to-confirm gate, one code path to reason about.
   if (live.length === 0) {
     return (
-      <PanelSection>
+      <PanelSection className="gap-3">
         <div>
           <p className="text-sm font-medium text-foreground">
             {browser.i18n.getMessage('deploymentBarEmptyTitle')}
@@ -145,32 +149,35 @@ export function DeploymentBar({ resolved, hostname, refreshKey, onRefresh }: Dep
             {browser.i18n.getMessage('deploymentBarEmptyDescription')}
           </p>
         </div>
-        <VersionCombobox
-          ariaLabel={browser.i18n.getMessage('deploymentControlSlotA')}
-          candidates={editState.pickerCandidates}
-          selected={editState.slotA}
-          onSelect={editState.setSlotA}
-          allowNone={false}
-          disabled={deploymentActions.state.status === 'submitting'}
-        />
-        <Button
+
+        <div className="flex items-start gap-3">
+          <VersionSlot
+            mode="edit"
+            align="left"
+            candidates={editState.pickerCandidates}
+            selected={editState.slotA}
+            onSelect={editState.setSlotA}
+            allowNone={false}
+            disabled={deploymentActions.state.status === 'submitting'}
+          />
+          <VersionSlot
+            mode="edit"
+            align="right"
+            candidates={editState.pickerCandidates}
+            selected={editState.slotB}
+            onSelect={editState.selectSlotB}
+            allowNone
+            disabled={deploymentActions.state.status === 'submitting'}
+          />
+        </div>
+
+        <HoldToConfirmButton
+          label={browser.i18n.getMessage('deploymentBarHoldDeploy')}
+          ariaLabel={browser.i18n.getMessage('deploymentControlDeploy')}
           disabled={deploymentActions.state.status === 'submitting' || !editState.slotA}
-          onClick={() => setConfirmOpen(true)}
-        >
-          {browser.i18n.getMessage('deploymentControlDeploy')}
-        </Button>
-        <DeployConfirmDialog
-          open={confirmOpen}
-          onOpenChange={setConfirmOpen}
-          proposed={editState.proposed}
-          versionLabels={editState.versionLabels}
-          message={trimmedMessage}
-          isSubmitting={deploymentActions.state.status === 'submitting'}
-          onConfirm={() => {
-            void deploymentActions.applySplit(editState.proposed, trimmedMessage);
-            setConfirmOpen(false);
-          }}
+          onConfirm={() => void deploymentActions.applySplit(editState.proposed, trimmedMessage)}
         />
+
         {deploymentActions.state.status === 'error' && (
           <Alert variant="destructive">
             <AlertDescription>
@@ -196,13 +203,6 @@ export function DeploymentBar({ resolved, hostname, refreshKey, onRefresh }: Dep
   const delta =
     mode === 'edit' && editState.slotB ? editState.draftPercentage - liveSlotBPercentage : 0;
 
-  const headingKey =
-    mode === 'edit'
-      ? 'deploymentBarHeadingEdit'
-      : hasSlotB
-        ? 'deploymentBarHeadingDouble'
-        : 'deploymentBarHeadingSingle';
-
   const pinnedDisplay =
     override.activeVersionId === null
       ? null
@@ -210,8 +210,26 @@ export function DeploymentBar({ resolved, hostname, refreshKey, onRefresh }: Dep
 
   return (
     <PanelSection
-      title={browser.i18n.getMessage(headingKey)}
-      titleTone={mode === 'edit' ? 'accent' : 'default'}
+      titleSlot={
+        <DeploymentHistoryMenu
+          history={history}
+          currentId={history[0]?.id ?? ''}
+          tone={mode === 'edit' ? 'accent' : 'default'}
+        />
+      }
+      action={
+        mode === 'view' ? (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="h-7 text-xs"
+            onClick={() => setMode('edit')}
+          >
+            {browser.i18n.getMessage('deploymentBarToggleEdit')}
+          </Button>
+        ) : null
+      }
       className="gap-3"
       banner={
         pinnedDisplay && (
@@ -400,30 +418,39 @@ export function DeploymentBar({ resolved, hostname, refreshKey, onRefresh }: Dep
         </div>
       )}
 
-      <div className="flex items-center gap-2">
-        {mode === 'edit' && (
+      {/* Discard sits beside the deploy button, not up in the heading: the
+          only way out of an edit that will change live traffic belongs next
+          to the decision, and "discard" says what it does where "collapse"
+          made it sound like folding a panel away. */}
+      {mode === 'edit' && (
+        <div className="flex items-center gap-2">
           <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={deploymentActions.state.status === 'submitting'}
+            onClick={() => setMode('view')}
+          >
+            {browser.i18n.getMessage('deploymentBarDiscard')}
+          </Button>
+          <HoldToConfirmButton
+            label={browser.i18n.getMessage(
+              delta < 0 ? 'deploymentBarHoldRetreat' : 'deploymentBarHoldDeploy',
+            )}
+            ariaLabel={browser.i18n.getMessage('deploymentControlDeploy')}
+            danger={delta < 0}
             disabled={
               deploymentActions.state.status === 'submitting' ||
               !editState.slotA ||
               editState.matchesLive
             }
-            onClick={() => setConfirmOpen(true)}
-          >
-            {browser.i18n.getMessage('deploymentControlDeploy')}
-          </Button>
-        )}
-        <Button
-          type="button"
-          variant="link"
-          className="h-auto p-0 text-xs text-muted-foreground"
-          onClick={() => setMode((current) => (current === 'view' ? 'edit' : 'view'))}
-        >
-          {browser.i18n.getMessage(
-            mode === 'edit' ? 'deploymentBarCollapse' : 'deploymentBarToggleEdit',
-          )}
-        </Button>
-      </div>
+            onConfirm={() => {
+              void deploymentActions.applySplit(editState.proposed, trimmedMessage);
+              setMode('view');
+            }}
+          />
+        </div>
+      )}
 
       {deploymentActions.state.status === 'error' && (
         <Alert variant="destructive">
@@ -432,19 +459,6 @@ export function DeploymentBar({ resolved, hostname, refreshKey, onRefresh }: Dep
           </AlertDescription>
         </Alert>
       )}
-
-      <DeployConfirmDialog
-        open={confirmOpen}
-        onOpenChange={setConfirmOpen}
-        proposed={editState.proposed}
-        versionLabels={editState.versionLabels}
-        message={trimmedMessage}
-        isSubmitting={deploymentActions.state.status === 'submitting'}
-        onConfirm={() => {
-          void deploymentActions.applySplit(editState.proposed, trimmedMessage);
-          setConfirmOpen(false);
-        }}
-      />
     </PanelSection>
   );
 }

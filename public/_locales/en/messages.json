@@ -178,8 +178,20 @@
   "deploymentBarToggleEdit": {
     "message": "Adjust traffic / deploy"
   },
-  "deploymentBarCollapse": {
-    "message": "Collapse"
+  "deploymentBarDiscard": {
+    "message": "Discard"
+  },
+  "deploymentBarHoldDeploy": {
+    "message": "Hold to deploy"
+  },
+  "deploymentBarHoldRetreat": {
+    "message": "Hold to roll back"
+  },
+  "deploymentHistoryCaption": {
+    "message": "Recent deployments — read-only"
+  },
+  "deploymentHistoryCurrent": {
+    "message": "live"
   },
   "deploymentBarRoleKeep": {
     "message": "Kept"
@@ -262,6 +274,9 @@
   },
   "deploymentBarWarningZeroPinnable": {
     "message": "At 0% this version is still part of the deployment, and can still be pinned to verify it."
+  },
+  "deploymentBarWarningAffinity": {
+    "message": "Traffic starts splitting with this deploy. Consecutive requests from one user — page reloads and asset fetches included — can be served by different versions. If that breaks your app (say it serves HTML referencing version-specific assets), set up version affinity first: https://developers.cloudflare.com/workers/versions-and-deployments/gradual-deployments/version-affinity/ — a stateless Worker whose two versions are compatible needs nothing."
   },
   "deploymentBarWarningSlotAChanged": {
     "message": "The first slot's version changed too — this is no longer a gradual rollout but two new versions side by side, so every Durable Object's affinity will be recalculated."

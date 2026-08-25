@@ -59,6 +59,63 @@ describe('computeDeploymentBarWarnings', () => {
     ).toEqual([]);
   });
 
+  it('flags affinity when a single-version deployment gains a real split', () => {
+    expect(
+      computeDeploymentBarWarnings({
+        liveSlotAVersionId: 'v1',
+        liveSlotBPercentage: 0,
+        draftSlotAVersionId: 'v1',
+        draftSlotBVersionId: 'v2',
+        draftPercentage: 25,
+      }),
+    ).toContainEqual({ id: 'affinity', tone: 'danger' });
+  });
+
+  it('flags affinity when a 0% smoke test is pushed to real traffic', () => {
+    // Two versions were already deployed, but all traffic went to one of
+    // them — this is the deploy where it actually starts splitting.
+    expect(
+      computeDeploymentBarWarnings({
+        liveSlotAVersionId: 'v1',
+        liveSlotBPercentage: 0,
+        draftSlotAVersionId: 'v1',
+        draftSlotBVersionId: 'v2',
+        draftPercentage: 40,
+      }),
+    ).toContainEqual({ id: 'affinity', tone: 'danger' });
+  });
+
+  it('stays quiet about affinity once a real split already exists', () => {
+    expect(computeDeploymentBarWarnings({ ...base, draftPercentage: 75 })).not.toContainEqual({
+      id: 'affinity',
+      tone: 'danger',
+    });
+  });
+
+  it('does not flag affinity for a draft that keeps everything on one version', () => {
+    expect(
+      computeDeploymentBarWarnings({
+        liveSlotAVersionId: 'v1',
+        liveSlotBPercentage: 0,
+        draftSlotAVersionId: 'v1',
+        draftSlotBVersionId: 'v2',
+        draftPercentage: 100,
+      }),
+    ).not.toContainEqual({ id: 'affinity', tone: 'danger' });
+  });
+
+  it('does not flag affinity when slot B is left empty', () => {
+    expect(
+      computeDeploymentBarWarnings({
+        liveSlotAVersionId: 'v1',
+        liveSlotBPercentage: 0,
+        draftSlotAVersionId: 'v1',
+        draftSlotBVersionId: null,
+        draftPercentage: 40,
+      }),
+    ).not.toContainEqual({ id: 'affinity', tone: 'danger' });
+  });
+
   it('can flag both retreat and slot-a-changed at once', () => {
     expect(
       computeDeploymentBarWarnings({ ...base, draftSlotAVersionId: 'v3', draftPercentage: 10 }),
