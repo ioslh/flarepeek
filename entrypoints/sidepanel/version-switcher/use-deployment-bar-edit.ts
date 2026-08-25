@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { computeDeploymentBarWarnings } from '@/entrypoints/sidepanel/version-switcher/deployment-bar-warnings';
 import type { DeploymentVersion } from '@/shared/cloudflare-api/deployments';
-import type { DisplayVersion } from '@/shared/worker-panel/version-row';
+import type { DisplayVersion } from '@/shared/worker-panel/display-version';
 
 function labelFor(version: DisplayVersion): string {
   return (

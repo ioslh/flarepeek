@@ -5,7 +5,7 @@
 ## 目录结构
 
 - 按 WXT 的 entrypoints 约定组织入口：`entrypoints/popup/`、`entrypoints/sidepanel/`、`entrypoints/options/`、`entrypoints/background/`。
-  - `popup`：点工具栏图标打开，只做最高频操作（识别当前 tab 的 Worker + 一键预览版本），不放统计/Bindings/灰度控制这类重内容；账号/Token 只读展示，不提供切换（那是低频纠偏操作）。
+  - `popup`：点工具栏图标打开，做**当前站点的只读速览**——识别 Worker、看当前部署的流量分配和版本、一键预览版本（override）、跳转 Cloudflare Dashboard。**不放统计数字/Bindings/灰度控制这类重内容，也不放任何编辑操作**；账号/Token 只读展示，不提供切换（那是低频纠偏操作）。判断标准是两条：会改动线上流量的一律不放；为回答某个问题需要额外 API 请求的，掂量清楚再放（popup 每多一个请求都直接拖慢"点开就看"的体验）。
   - `sidepanel`：完整工具面板，通过 popup 里的按钮或 Chrome 自带入口打开。**不跟随浏览器 tab 切换自动刷新**——固定在打开时那个 tab，tab 变了只在顶部提示条里提示，用户点了才切换（见 `entrypoints/sidepanel/use-pinned-hostname.ts`）。加新的重数据请求前，想一下是不是应该走这套"手动切换"逻辑，而不是让它跟着 tab 变化自动重新请求。承担账号切换、灰度控制、bindings 等重操作；页面按"操作优先、参考其次"排布——最高频的 Versions 卡片在最前面，且默认收起编辑类控件（如"Manage deployment"），只在用户主动展开时才铺开，不要把大块编辑表单默认展示出来。
 - 入口内部按 feature 分文件夹，不要按 type（`components/`、`hooks/` 大杂烩）分。
 - **popup 和 sidepanel 都要用的、且交互行为一致的 hook/组件放 `shared/worker-panel/`**（如 `use-worker-lookup.ts`、`version-row.tsx`、`identity-header.tsx`），不要在两个 entrypoint 里各写一份。**两边都要展示同一份数据、但交互能力不同时**（例如账号信息 popup 只读、sidepanel 可切换+管理），拆成两个各自归属其 entrypoint 的小组件（如 `entrypoints/sidepanel/account/account-control.tsx` + `entrypoints/popup/account-badge.tsx`），不要塞进一个组件里用 prop 切换模式。只有单个 entrypoint 用的东西才留在它自己的 feature 文件夹里。

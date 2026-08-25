@@ -387,9 +387,6 @@
       }
     }
   },
-  "recentVersionsNeverDeployed": {
-    "message": "近期未部署过"
-  },
   "versionSwitcherActive": {
     "message": "已为你启用"
   },

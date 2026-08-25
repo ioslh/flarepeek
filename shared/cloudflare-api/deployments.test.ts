@@ -2,7 +2,6 @@ import { describe, expect, it, vi } from 'vitest';
 import type Cloudflare from 'cloudflare';
 import {
   getCurrentDeploymentVersions,
-  listDeployedVersionIds,
   rollbackToVersion,
   setDeploymentSplit,
 } from '@/shared/cloudflare-api/deployments';
@@ -207,30 +206,6 @@ describe('getCurrentDeploymentVersions history', () => {
 
     const { history } = await getCurrentDeploymentVersions(client, 'acct-1', 'my-worker');
     expect(history[0]).toMatchObject({ createdOn: null, message: null, authorEmail: null });
-  });
-});
-
-describe('listDeployedVersionIds', () => {
-  it('collects version ids across every deployment in the history, not just the latest', async () => {
-    const { client } = fakeClient([
-      {
-        id: 'deploy-1',
-        versions: [
-          { version_id: 'v1', percentage: 95 },
-          { version_id: 'v2', percentage: 5 },
-        ],
-      },
-      { id: 'deploy-0', versions: [{ version_id: 'v0', percentage: 100 }] },
-    ]);
-
-    expect(await listDeployedVersionIds(client, 'acct-1', 'my-worker')).toEqual(
-      new Set(['v1', 'v2', 'v0']),
-    );
-  });
-
-  it('returns an empty set when there is no deployment history', async () => {
-    const { client } = fakeClient([]);
-    expect(await listDeployedVersionIds(client, 'acct-1', 'my-worker')).toEqual(new Set());
   });
 });
 

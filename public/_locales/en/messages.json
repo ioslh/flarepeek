@@ -387,9 +387,6 @@
       }
     }
   },
-  "recentVersionsNeverDeployed": {
-    "message": "Not recently deployed"
-  },
   "versionSwitcherActive": {
     "message": "Active for you"
   },

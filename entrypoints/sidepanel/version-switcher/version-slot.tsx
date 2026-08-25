@@ -4,7 +4,7 @@ import { Badge } from '@/shared/ui/badge';
 import { Button } from '@/shared/ui/button';
 import { cn } from '@/shared/ui/utils';
 import type { VersionRole } from '@/entrypoints/sidepanel/version-switcher/version-roles';
-import type { DisplayVersion } from '@/shared/worker-panel/version-row';
+import type { DisplayVersion } from '@/shared/worker-panel/display-version';
 
 interface ViewVersionSlotProps {
   mode: 'view';

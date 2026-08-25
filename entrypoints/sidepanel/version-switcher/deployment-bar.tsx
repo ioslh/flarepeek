@@ -15,7 +15,7 @@ import { OverrideModeBar } from '@/entrypoints/sidepanel/version-switcher/overri
 import { VersionSlot } from '@/entrypoints/sidepanel/version-switcher/version-slot';
 import { computeVersionRoles } from '@/entrypoints/sidepanel/version-switcher/version-roles';
 import { useDeploymentActions } from '@/entrypoints/sidepanel/version-switcher/use-deployment-actions';
-import { useRecentVersions } from '@/entrypoints/sidepanel/version-switcher/use-recent-versions';
+import { useRecentVersions } from '@/shared/worker-panel/use-recent-versions';
 import { useVersionErrorRates } from '@/entrypoints/sidepanel/version-switcher/use-version-error-rates';
 import { useDeploymentVersions } from '@/shared/worker-panel/use-deployment-versions';
 import { usePreviewUrlConfig } from '@/shared/worker-panel/use-preview-url-config';
@@ -29,7 +29,7 @@ import { PanelSection } from '@/entrypoints/sidepanel/panel-section';
 import { Input } from '@/shared/ui/input';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { cn } from '@/shared/ui/utils';
-import type { DisplayVersion } from '@/shared/worker-panel/version-row';
+import type { DisplayVersion } from '@/shared/worker-panel/display-version';
 import type { ResolvedWorker } from '@/shared/worker-panel/use-worker-lookup';
 
 interface DeploymentBarProps {
@@ -90,7 +90,6 @@ export function DeploymentBar({ resolved, hostname, refreshKey, onRefresh }: Dep
       message: meta?.message ?? null,
       createdOn: meta?.createdOn ?? null,
       authorEmail: meta?.authorEmail ?? null,
-      everDeployed: true,
     };
   });
   const candidateVersions: DisplayVersion[] =
@@ -102,7 +101,6 @@ export function DeploymentBar({ resolved, hostname, refreshKey, onRefresh }: Dep
           message: version.message,
           createdOn: version.createdOn,
           authorEmail: version.authorEmail,
-          everDeployed: version.everDeployed,
         }))
       : [];
 

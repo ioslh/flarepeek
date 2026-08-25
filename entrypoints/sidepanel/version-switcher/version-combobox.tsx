@@ -10,7 +10,7 @@ import {
 } from '@/shared/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui/popover';
 import { cn } from '@/shared/ui/utils';
-import type { DisplayVersion } from '@/shared/worker-panel/version-row';
+import type { DisplayVersion } from '@/shared/worker-panel/display-version';
 
 interface VersionComboboxProps {
   ariaLabel: string;
