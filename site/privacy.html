@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Privacy — FlarePeek</title>
+    <meta
+      name="description"
+      content="What FlarePeek stores, what it sends and where. There is no FlarePeek server: your browser talks directly to Cloudflare's API."
+    />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="nav">
+      <div class="wrap nav-inner">
+        <a class="brand" href="/">
+          <svg viewBox="0 0 128 128" class="brand-mark" aria-hidden="true">
+            <path
+              fill="#ea580c"
+              d="M70 4 C 98 30 118 56 118 84 C 118 109 94 124 66 124 C 38 124 14 109 14 84 C 14 62 28 42 42 26 C 34 46 42 58 52 62 C 46 44 52 24 70 4 Z"
+            />
+            <circle cx="68" cy="72" r="22" fill="#ffffff" />
+            <circle cx="68" cy="72" r="9" fill="#ea580c" />
+          </svg>
+          <span>FlarePeek</span>
+        </a>
+        <nav class="nav-links">
+          <a href="/#features">Features</a>
+          <a href="/#how-it-works">How it works</a>
+        </nav>
+        <a
+          class="btn btn-primary btn-small"
+          data-cta="install"
+          href="#"
+          target="_blank"
+          rel="noreferrer"
+          >Add to Chrome</a
+        >
+      </div>
+    </header>
+
+    <main class="legal">
+      <div class="wrap legal-inner">
+        <p class="eyebrow">Privacy</p>
+        <h1>What FlarePeek does with your data</h1>
+        <p class="legal-date">Last updated 26 August 2026</p>
+
+        <p class="legal-lede">
+          There is no FlarePeek server. Nothing you do in the extension is sent to us, because there
+          is nowhere for it to be sent — no analytics, no telemetry, no crash reporting, no account.
+          Your browser talks directly to Cloudflare's API using your own API token, the same way
+          <code>wrangler</code> does on your machine.
+        </p>
+
+        <h2>What is stored on your device</h2>
+        <p>
+          All of it lives in your browser's local extension storage, on the machine you are using.
+          None of it is written to Chrome's <em>sync</em> storage, so none of it is uploaded to your
+          Google account or copied to your other devices.
+        </p>
+        <ul>
+          <li>
+            <strong>Your Cloudflare API tokens</strong>, along with whatever label you gave each one
+            and the account email Cloudflare reports for it.
+          </li>
+          <li>
+            <strong>The sites you have pinned</strong> in the panel, and any Cloudflare account you
+            have locked a particular site to.
+          </li>
+          <li>
+            <strong>A small cache</strong> mapping a site's address to whichever of your tokens last
+            matched it, so the extension does not have to try each token again next time.
+          </li>
+          <li><strong>Your detection-mode setting</strong> — automatic or manual.</li>
+          <li>
+            <strong>Any active version override</strong>, as a browser request rule for the specific
+            site you applied it to. It is removed when you unpin the version.
+          </li>
+        </ul>
+        <p>
+          Removing the extension removes all of it. You can also delete tokens individually from the
+          extension's settings page at any time.
+        </p>
+
+        <h2>What is sent, and where</h2>
+        <p>
+          Exactly one destination: <code>api.cloudflare.com</code>. Every request carries your own
+          API token and is made by your browser directly, with nothing in between.
+        </p>
+        <ul>
+          <li>
+            <strong>The address of the site you are looking at.</strong> To tell you whether a site
+            is served by one of your Workers, FlarePeek has to ask Cloudflare about it. In the
+            default automatic mode this happens for each site you visit while the panel is open.
+            <strong>If you would rather it did not</strong>, switch the panel to
+            <em>manual detection</em>: it then shows the site's name and asks Cloudflare nothing at
+            all until you click.
+          </li>
+          <li>
+            <strong>Your Worker's own data</strong> — versions, deployments, traffic split,
+            bindings, statistics and recent errors — read from your account when you have a site
+            open.
+          </li>
+          <li>
+            <strong>Changes you make</strong>, when you deploy a traffic split or roll one back.
+            These are ordinary Cloudflare API writes performed under your token, and take a
+            deliberate press-and-hold to trigger.
+          </li>
+        </ul>
+        <p>
+          What Cloudflare then does with those requests is governed by
+          <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noreferrer"
+            >Cloudflare's own privacy policy</a
+          >, not this one.
+        </p>
+
+        <h2>Browser permissions</h2>
+        <p>
+          FlarePeek reads the current tab's address so it knows which site to look up, and can add a
+          request header to a site you have chosen — that header is how Cloudflare's Version
+          Overrides feature serves an unreleased version to your browser alone. Permission to touch
+          a given site is requested from you at the moment you first preview a version there, one
+          site at a time, never up front.
+        </p>
+        <p>
+          The extension does not read, alter or inject anything into the pages you visit. It ships
+          all of its own code; nothing is downloaded and run at runtime.
+        </p>
+
+        <h2>What never happens</h2>
+        <ul>
+          <li>No data is sold, shared or transferred to anyone.</li>
+          <li>No advertising, profiling or creditworthiness use.</li>
+          <li>No tracking across sites, and no analytics of any kind inside the extension.</li>
+          <li>Your API token is never logged, never displayed after saving, and never synced.</li>
+        </ul>
+
+        <h2>This website</h2>
+        <p>
+          flarepeek.com is a handful of static files with no scripts from anyone else, no cookies
+          and no analytics. It is hosted on Cloudflare, which keeps ordinary server logs of requests
+          to it, as any web host does.
+        </p>
+
+        <h2>Changes</h2>
+        <p>
+          If this policy changes in a way that affects what is stored or sent, the date at the top
+          changes with it, and the change will be described in the extension's release notes rather
+          than made quietly.
+        </p>
+
+        <h2>Contact</h2>
+        <p>
+          Questions about any of the above:
+          <a href="mailto:contact@flarepeek.com">contact@flarepeek.com</a>.
+        </p>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="wrap footer-inner">
+        <span>FlarePeek isn't affiliated with or endorsed by Cloudflare, Inc.</span>
+        <span>&copy; <span id="year"></span> FlarePeek</span>
+      </div>
+    </footer>
+
+    <script src="/config.js" defer></script>
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+  </body>
+</html>

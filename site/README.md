@@ -36,8 +36,13 @@ these files aren't Worker invocations. `flarepeek.com` and `www.flarepeek.com` a
 custom domains, so Cloudflare manages their DNS records and certificates — both must already exist
 as a zone in the same Cloudflare account, or the deploy fails.
 
-`.assetsignore` keeps `wrangler.jsonc` and this README out of the upload. Without it they'd be
-fetchable at `flarepeek.com/wrangler.jsonc` and `/README.md`.
+`.assetsignore` keeps `wrangler.jsonc`, this README and `.wrangler/` out of the upload. The first two
+would otherwise be fetchable at `flarepeek.com/wrangler.jsonc` and `/README.md`. The third is the
+nastier one: `pnpm site:dev` writes miniflare's local state into `site/.wrangler/`, _inside_ the
+asset directory, so previewing the site would publish those `.sqlite` files to production on the
+next deploy. It happened once. Note that `wrangler deploy`'s "Read N files" line counts files
+**before** `.assetsignore` is applied, so it can't be used to confirm an exclusion worked — check
+with `curl` instead.
 
 The first deploy needs `wrangler login` (or a `CLOUDFLARE_API_TOKEN` in the environment) — note
 wrangler v4 warns that the older `CF_API_TOKEN` name is deprecated.

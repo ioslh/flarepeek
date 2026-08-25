@@ -4,3 +4,9 @@
 # /README.md would both be publicly fetchable.
 wrangler.jsonc
 README.md
+
+# `wrangler dev --config site/wrangler.jsonc` writes its local miniflare state
+# here, inside the asset directory. Without this line those .sqlite files get
+# uploaded and served — previewing the site would silently publish scratch
+# state to flarepeek.com.
+.wrangler

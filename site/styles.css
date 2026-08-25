@@ -512,6 +512,72 @@ code {
   font-variant-numeric: tabular-nums;
 }
 
+/* Legal / prose pages (privacy) — the landing page has no long-form text
+   styles of its own, and running body copy needs a measure and a rhythm the
+   marketing sections never had to provide. */
+.legal {
+  padding: 56px 0 72px;
+}
+
+.legal-inner {
+  max-width: 68ch;
+}
+
+.legal h1 {
+  font-size: clamp(30px, 5vw, 40px);
+  line-height: 1.1;
+  margin: 0 0 10px;
+}
+
+.legal-date {
+  margin: 0 0 28px;
+  font-size: 13px;
+  color: var(--muted-2);
+}
+
+.legal-lede {
+  font-size: 17px;
+  color: var(--muted);
+  margin: 0 0 8px;
+}
+
+.legal h2 {
+  font-size: 20px;
+  margin: 40px 0 10px;
+}
+
+.legal p {
+  color: var(--muted);
+  margin: 0 0 14px;
+}
+
+.legal ul {
+  margin: 0 0 14px;
+  padding-left: 20px;
+  color: var(--muted);
+}
+
+.legal li {
+  margin-bottom: 8px;
+}
+
+.legal strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.legal code {
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 0.9em;
+}
+
+.legal a {
+  color: var(--flare);
+}
+
 /* Value statement */
 .value {
   padding: 8px 0 56px;
