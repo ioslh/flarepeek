@@ -1,12 +1,12 @@
 {
   "extensionName": {
-    "message": "Flarepeek"
+    "message": "FlarePeek"
   },
   "extensionDescription": {
     "message": "Developer tools for Cloudflare Workers on your production domains."
   },
   "sidepanelHeading": {
-    "message": "Flarepeek"
+    "message": "FlarePeek"
   },
   "sidepanelTokenMissingTitle": {
     "message": "No API token configured"

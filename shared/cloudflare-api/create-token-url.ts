@@ -48,6 +48,6 @@ const PERMISSION_GROUPS = [
 // verification here. accountId=* and zoneId=all keep the token usable across
 // every account/zone the user can see, matching how findZoneForHostname works.
 const permissionGroupKeys = encodeURIComponent(JSON.stringify(PERMISSION_GROUPS));
-const name = encodeURIComponent('Flarepeek Extension');
+const name = encodeURIComponent('FlarePeek Extension');
 
 export const CREATE_API_TOKEN_URL = `https://dash.cloudflare.com/profile/api-tokens?permissionGroupKeys=${permissionGroupKeys}&accountId=*&zoneId=all&name=${name}`;

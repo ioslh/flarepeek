@@ -1,4 +1,4 @@
-# Flarepeek
+# FlarePeek
 
 面向 Cloudflare Workers 开发者的 Chrome 插件。用户登录 Cloudflare 账号后，打开一个由 Workers 提供服务的 zone 域名时，插件自动识别对应的 Worker，并提供开发辅助工具——例如一键把生产域名的流量临时切换到某个 preview version（基于 [Version Overrides](https://developers.cloudflare.com/workers/versions-and-deployments/version-overrides/)），查看灰度部署状态、Worker 请求/错误指标等。
 
