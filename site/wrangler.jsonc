@@ -1,0 +1,25 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "flarepeek-site",
+  "compatibility_date": "2026-08-25",
+
+  // An assets-only Worker: there is no `main`, because nothing here needs to
+  // run server-side. Cloudflare serves the files directly, which also means
+  // requests for them never count as Worker invocations.
+  "assets": {
+    "directory": ".",
+    // Serves 404.html for anything that doesn't match a file, instead of
+    // Cloudflare's bare default page.
+    "not_found_handling": "404-page",
+  },
+
+  // Custom domains rather than routes: a custom domain makes Cloudflare
+  // create and manage the DNS record and certificate for the hostname, which
+  // is what you want for an apex a site is actually served on. Both
+  // hostnames must already exist as a zone in the same Cloudflare account —
+  // `wrangler deploy` fails with a clear error if flarepeek.com isn't there.
+  "routes": [
+    { "pattern": "flarepeek.com", "custom_domain": true },
+    { "pattern": "www.flarepeek.com", "custom_domain": true },
+  ],
+}

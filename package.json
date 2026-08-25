@@ -1,8 +1,8 @@
 {
   "name": "flarepeek",
-  "description": "Flarepeek — Chrome extension devtools for Cloudflare Workers developers",
+  "description": "FlarePeek \u2014 Chrome extension devtools for Cloudflare Workers developers",
   "private": true,
-  "version": "0.0.2",
+  "version": "0.0.3",
   "type": "module",
   "scripts": {
     "dev": "wxt",
@@ -11,6 +11,8 @@
     "build:firefox": "wxt build -b firefox",
     "zip": "wxt zip",
     "zip:firefox": "wxt zip -b firefox",
+    "site:dev": "wrangler dev --config site/wrangler.jsonc",
+    "site:deploy": "wrangler deploy --config site/wrangler.jsonc",
     "compile": "tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -57,6 +59,7 @@
     "typescript-eslint": "^8",
     "vitest": "^4.1.11",
     "web-ext": "^10.5.0",
+    "wrangler": "^4.125.0",
     "wxt": "^0.21.3"
   }
 }

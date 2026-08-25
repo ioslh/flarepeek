@@ -1,32 +1,43 @@
-# Flarepeek marketing site
+# FlarePeek marketing site
 
 Static site for flarepeek.com — no build step, no framework. Just `index.html` + `styles.css` +
 `config.js`, kept intentionally simple for a single landing page (see the extension's own
 [README](../README.md) for why the extension itself doesn't use this approach — different scale of
 UI, different call).
 
-## Before shipping
+## Keeping it honest
 
-`config.js` has a placeholder Chrome Web Store URL:
+Every install CTA points at the real Web Store listing via `config.js` — nothing is a placeholder
+any more.
 
-```js
-const CHROME_WEB_STORE_URL = 'https://chromewebstore.google.com/detail/REPLACE_WITH_REAL_ID';
-```
-
-Swap that for the real listing URL once Flarepeek is published — it's the only thing wired to a
-placeholder.
+The hero mockup in `index.html` is hand-built CSS, not a screenshot, so it drifts silently whenever
+the extension's UI changes. It currently depicts the tab strip, the traffic bar, the version legs
+with per-version error rates, and the stats row. **If you change the panel's layout, change the
+mockup too** — and check the feature copy while you're there, since claims like "one click" have
+gone stale before.
 
 ## Preview locally
 
-Any static file server works, e.g.:
-
 ```sh
-cd site
-python3 -m http.server 8000
-# open http://localhost:8000
+pnpm site:dev
 ```
+
+Runs it the way production will — same asset routing, same 404 handling — rather than a plain file
+server, which would happily serve files production excludes.
 
 ## Deploy
 
-Static files, no build — works on Cloudflare Pages, GitHub Pages, Netlify, etc. For Cloudflare
-Pages: set the project root to `site/`, no build command, output directory `site/`.
+```sh
+pnpm site:deploy
+```
+
+An assets-only Worker (`wrangler.jsonc`): no `main`, nothing runs server-side, and requests for
+these files aren't Worker invocations. `flarepeek.com` and `www.flarepeek.com` are configured as
+custom domains, so Cloudflare manages their DNS records and certificates — both must already exist
+as a zone in the same Cloudflare account, or the deploy fails.
+
+`.assetsignore` keeps `wrangler.jsonc` and this README out of the upload. Without it they'd be
+fetchable at `flarepeek.com/wrangler.jsonc` and `/README.md`.
+
+The first deploy needs `wrangler login` (or a `CLOUDFLARE_API_TOKEN` in the environment) — note
+wrangler v4 warns that the older `CF_API_TOKEN` name is deprecated.

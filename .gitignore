@@ -32,3 +32,6 @@ test-results
 *.njsproj
 *.sln
 *.sw?
+
+# wrangler build/dev scratch (site deploys)
+.wrangler

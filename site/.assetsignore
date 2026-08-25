@@ -1,0 +1,6 @@
+# Files that live in this directory but must not be served from it.
+# Same syntax as .gitignore; wrangler skips anything matched here when
+# uploading static assets. Without this, flarepeek.com/wrangler.jsonc and
+# /README.md would both be publicly fetchable.
+wrangler.jsonc
+README.md

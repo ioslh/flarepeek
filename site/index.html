@@ -3,19 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Flarepeek — Peek at your Cloudflare Worker before it ships</title>
+    <title>FlarePeek — Peek at your Cloudflare Worker before it ships</title>
     <meta
       name="description"
-      content="Flarepeek previews any Cloudflare Worker version on your real production domain, right from the browser — no staging environment, no separate deploy."
+      content="FlarePeek previews any Cloudflare Worker version on your real production domain, right from the browser — no staging environment, no separate deploy."
     />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <meta
       property="og:title"
-      content="Flarepeek — Peek at your Cloudflare Worker before it ships"
+      content="FlarePeek — Peek at your Cloudflare Worker before it ships"
     />
     <meta
       property="og:description"
-      content="One-click preview of any Worker version on your real production domain, plus gradual deployment control, bindings, stats, and recent errors — all from a browser extension."
+      content="One-click preview of any Worker version on your real production domain, plus gradual rollout control, per-version error rates, bindings and stats — for several sites at once, from a browser extension."
     />
     <meta property="og:image" content="/og-icon.png" />
     <meta property="og:type" content="website" />
@@ -34,7 +34,7 @@
             <circle cx="68" cy="72" r="22" fill="#ffffff" />
             <circle cx="68" cy="72" r="9" fill="#ea580c" />
           </svg>
-          <span>Flarepeek</span>
+          <span>FlarePeek</span>
         </a>
         <nav class="nav-links">
           <a href="#features">Features</a>
@@ -59,7 +59,7 @@
             <p class="eyebrow">For Cloudflare Workers developers</p>
             <h1>Peek before it ships.</h1>
             <p class="lede">
-              Flarepeek previews any deployed-but-not-live Worker version on your
+              FlarePeek previews any deployed-but-not-live Worker version on your
               <strong>real production domain</strong> — no staging environment, no separate deploy.
               Just open the site, pick a version, and look.
             </p>
@@ -83,45 +83,66 @@
                 <span class="mock-dot"></span>
                 <span class="mock-dot"></span>
                 <span class="mock-dot"></span>
-                <span class="mock-url">shop.example.com</span>
+                <span class="mock-url">shop.acme.com</span>
               </div>
               <div class="mock-body">
                 <div class="mock-page"></div>
                 <div class="mock-panel">
-                  <div class="mock-panel-header">
-                    <div>
-                      <div class="mock-host">shop.example.com</div>
-                      <div class="mock-worker">shop-frontend ↗ · example.com ↗</div>
-                    </div>
-                    <div class="mock-chip">Acme Corp ▾</div>
+                  <div class="mock-tabs">
+                    <span class="mock-tab mock-tab-on"><b>SHOP.ACME.COM</b></span>
+                    <span class="mock-tab-sep"></span>
+                    <span class="mock-tab"><i class="mock-live"></i><b>API.ACME.COM</b></span>
+                    <span class="mock-avatar">A</span>
                   </div>
+
+                  <div class="mock-nav">
+                    <span class="mock-crumb">shop-frontend <em>›</em> acme.com</span>
+                    <span class="mock-dash">↗ Dashboard ▾</span>
+                  </div>
+
+                  <div class="mock-deploy">
+                    <div class="mock-dep-id">Current deployment: 7c04ab19 ▾</div>
+
+                    <div class="mock-bar">
+                      <span class="mock-field-a"></span>
+                      <span class="mock-field-b"></span>
+                      <span class="mock-ticks"></span>
+                      <svg class="mock-wave" viewBox="0 0 12 44" preserveAspectRatio="none">
+                        <path
+                          d="M 0 -6 L 6.9 -6 L 5.2 -1 L 7.1 4 L 5.0 9 L 7.2 14 L 5.1 19 L 6.8 24 L 5.3 29 L 7.0 34 L 5.4 39 L 6.6 44 L 0 44 Z"
+                          fill="#44424a"
+                        />
+                        <path
+                          d="M 12 -6 L 6.9 -6 L 5.2 -1 L 7.1 4 L 5.0 9 L 7.2 14 L 5.1 19 L 6.8 24 L 5.3 29 L 7.0 34 L 5.4 39 L 6.6 44 L 12 44 Z"
+                          fill="#ea580c"
+                        />
+                      </svg>
+                      <b class="mock-pct-a">60%</b>
+                      <b class="mock-pct-b">40%</b>
+                    </div>
+
+                    <div class="mock-legs">
+                      <div class="mock-leg">
+                        <span class="mock-badge-row"></span>
+                        <span class="mock-v">v3-experiment</span>
+                        <span class="mock-vid">e9d5eb91</span>
+                        <span class="mock-verr">0.1% errors · 24h</span>
+                      </div>
+                      <div class="mock-leg mock-leg-r">
+                        <span class="mock-badge-row"
+                          ><span class="mock-badge">NEW THIS ROLLOUT</span></span
+                        >
+                        <span class="mock-v">v4-experiment</span>
+                        <span class="mock-vid">d37afb02</span>
+                        <span class="mock-verr mock-verr-hot">6.2% errors · 24h</span>
+                      </div>
+                    </div>
+                  </div>
+
                   <div class="mock-stats">
-                    <div><b>128.4k</b><span>Requests</span></div>
-                    <div><b>0.3%</b><span>Error rate</span></div>
-                    <div><b>12ms</b><span>CPU p99</span></div>
-                  </div>
-                  <div class="mock-card mock-card-primary">
-                    <div class="mock-card-title">Versions</div>
-                    <div class="mock-version-row">
-                      <div>
-                        <div class="mock-version-id">Version 8f2a91c…</div>
-                        <div class="mock-version-pct">80% traffic</div>
-                      </div>
-                      <span class="mock-tag mock-tag-active">Active for you</span>
-                    </div>
-                    <div class="mock-version-row">
-                      <div>
-                        <div class="mock-version-id">Version c14e02b…</div>
-                        <div class="mock-version-pct">20% traffic</div>
-                      </div>
-                      <span class="mock-tag">Preview</span>
-                    </div>
-                    <div class="mock-slider">
-                      <div class="mock-slider-track"><div class="mock-slider-fill"></div></div>
-                    </div>
-                  </div>
-                  <div class="mock-card mock-card-muted">
-                    <div class="mock-card-title">Bindings (4)</div>
+                    <div><span>REQUESTS</span><b>128.4k</b></div>
+                    <div><span>ERROR RATE</span><b>2.6%</b></div>
+                    <div><span>CPU P99</span><b>12ms</b></div>
                   </div>
                 </div>
               </div>
@@ -142,7 +163,7 @@
               >Version Overrides</a
             >
             already let you serve an unreleased version on your real domain, for just your own
-            browser — Flarepeek is the one-click front end for it, plus the rest of the toolkit you
+            browser — FlarePeek is the one-click front end for it, plus the rest of the toolkit you
             reach for once a version's actually live.
           </p>
         </div>
@@ -164,8 +185,18 @@
               <div class="feature-icon">🎚️</div>
               <h3>Gradual deployment control</h3>
               <p>
-                Dial traffic between two versions with a slider, or roll back to 100% in one click —
-                right from the tab you're already on.
+                Drag the traffic split between two versions, or roll back, right from the tab you're
+                already on. Both take a deliberate press-and-hold — nothing that moves production
+                traffic happens on a stray click.
+              </p>
+            </article>
+            <article class="feature-card">
+              <div class="feature-icon">🗂️</div>
+              <h3>Several sites at once</h3>
+              <p>
+                Pin the sites you're watching and switch between them in the panel. One more tab
+                follows whatever you're browsing, so a site you've never pinned is still one glance
+                away.
               </p>
             </article>
             <article class="feature-card">
@@ -178,10 +209,11 @@
             </article>
             <article class="feature-card">
               <div class="feature-icon">📊</div>
-              <h3>24h stats, at a glance</h3>
+              <h3>Error rates, per version</h3>
               <p>
-                Requests, error rate, and CPU p99 for the last 24 hours, without opening the
-                Cloudflare dashboard.
+                Requests, error rate and CPU p99 for the last 24 hours — plus each version's own
+                error rate, because a 6% failure on a 40% slice reads as 2.6% overall and that is
+                exactly the number that hides a bad rollout.
               </p>
             </article>
             <article class="feature-card">
@@ -193,11 +225,11 @@
               </p>
             </article>
             <article class="feature-card">
-              <div class="feature-icon">🗂️</div>
+              <div class="feature-icon">🔑</div>
               <h3>Multi-account auto-detect</h3>
               <p>
                 Store more than one Cloudflare API token — work, personal, client accounts.
-                Flarepeek figures out which one owns the site you're on, automatically.
+                FlarePeek figures out which one owns the site you're on, automatically.
               </p>
             </article>
           </div>
@@ -213,7 +245,7 @@
               <div>
                 <h3>Create a scoped API token</h3>
                 <p>
-                  Flarepeek gives you a pre-filled link straight to Cloudflare's token page, with
+                  FlarePeek gives you a pre-filled link straight to Cloudflare's token page, with
                   exactly the permissions it needs and nothing more.
                 </p>
               </div>
@@ -223,7 +255,7 @@
               <div>
                 <h3>Open a site your Worker serves</h3>
                 <p>
-                  Flarepeek recognizes it automatically and shows you what's deployed — the toolbar
+                  FlarePeek recognizes it automatically and shows you what's deployed — the toolbar
                   icon tells you at a glance, before you even click.
                 </p>
               </div>
@@ -233,8 +265,8 @@
               <div>
                 <h3>Preview, adjust, or roll back</h3>
                 <p>
-                  Pick a version to preview, nudge the traffic split, or roll back — right there,
-                  without touching the Cloudflare dashboard.
+                  Pick a version to preview, drag the traffic split, or roll back — right there.
+                  Changes to live traffic take a press-and-hold, so nothing ships by accident.
                 </p>
               </div>
             </li>
@@ -246,11 +278,18 @@
         <div class="wrap privacy-inner">
           <div class="privacy-icon">🔒</div>
           <div>
-            <h2>Nothing leaves your browser</h2>
+            <h2>No server in the middle, and a switch for the rest</h2>
             <p>
               Your API token lives only in local browser storage — never synced, never sent anywhere
-              but Cloudflare's own API. There's no Flarepeek server in between: your browser talks
+              but Cloudflare's own API. There's no FlarePeek server in between: your browser talks
               directly to <code>api.cloudflare.com</code>, the same way <code>wrangler</code> does.
+            </p>
+            <p>
+              To tell you whether a site is yours, FlarePeek has to ask Cloudflare about it — so by
+              default, the address of each site you visit is checked against your account. If you'd
+              rather that didn't happen for everything you browse, switch the panel to
+              <strong>manual detection</strong>: it then shows the site's name and waits, and asks
+              Cloudflare nothing until you click.
             </p>
           </div>
         </div>
@@ -268,8 +307,8 @@
 
     <footer class="footer">
       <div class="wrap footer-inner">
-        <span>Flarepeek isn't affiliated with or endorsed by Cloudflare, Inc.</span>
-        <span>&copy; <span id="year"></span> Flarepeek</span>
+        <span>FlarePeek isn't affiliated with or endorsed by Cloudflare, Inc.</span>
+        <span>&copy; <span id="year"></span> FlarePeek</span>
       </div>
     </footer>
 

@@ -1,5 +1,8 @@
-// TODO: replace with the real Chrome Web Store listing URL once Flarepeek is published.
-const CHROME_WEB_STORE_URL = 'https://chromewebstore.google.com/detail/REPLACE_WITH_REAL_ID';
+// The id-only form; the Web Store redirects it to the canonical
+// /detail/<slug>/<id> URL, so this stays correct even if the listing name
+// changes later.
+const CHROME_WEB_STORE_URL =
+  'https://chromewebstore.google.com/detail/ffdbljcgdjkbbbbodnjbbgpahhnkfbnl';
 
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('[data-cta="install"]').forEach((el) => {
