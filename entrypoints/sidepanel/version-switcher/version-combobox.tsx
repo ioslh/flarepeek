@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { Check, ChevronsUpDown } from 'lucide-react';
-import { Button } from '@/shared/ui/button';
+import { Check, ChevronDown } from 'lucide-react';
 import {
   Command,
   CommandEmpty,
@@ -26,6 +25,9 @@ interface VersionComboboxProps {
   // Only true for the second slot — "no second version" means "the first
   // slot gets 100%", not a third state to model separately.
   allowNone: boolean;
+  // Mirrors the slot it sits in, so the trigger reads outward from the
+  // boundary the way the version legs either side of the bar do.
+  align?: 'left' | 'right';
   disabled?: boolean;
 }
 
@@ -46,35 +48,49 @@ function searchValue(version: DisplayVersion): string {
   return [version.tag, version.message, version.versionId].filter(Boolean).join(' ');
 }
 
+// Styled to match the deployment history menu rather than shadcn's default
+// combobox: a rule-underlined trigger instead of a bordered pill, and rows
+// separated by hairlines instead of filled chips. The panel's language is
+// type and spacing, not boxes — an outline button here read as imported from
+// a different product.
+//
+// The one shadcn part kept is cmdk's filtering: there can be dozens of
+// versions, and search is the only way through them.
 export function VersionCombobox({
   ariaLabel,
   candidates,
   selected,
   onSelect,
   allowNone,
+  align = 'left',
   disabled,
 }: VersionComboboxProps) {
   const [open, setOpen] = useState(false);
+  const isRight = align === 'right';
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          type="button"
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          aria-label={ariaLabel}
-          disabled={disabled}
-          className="w-full min-w-0 justify-between font-normal"
-        >
-          <span className="truncate">
-            {selected ? labelFor(selected) : browser.i18n.getMessage('deploymentControlNone')}
-          </span>
-          <ChevronsUpDown className="size-3.5 shrink-0 opacity-50" />
-        </Button>
+      <PopoverTrigger
+        aria-label={ariaLabel}
+        disabled={disabled}
+        className={cn(
+          'flex w-full min-w-0 items-center gap-1 border-b border-border pb-1',
+          'font-mono text-sm text-foreground transition-colors',
+          'hover:border-primary hover:text-primary',
+          'focus-visible:border-primary focus-visible:outline-none',
+          'disabled:cursor-not-allowed disabled:opacity-50',
+          isRight && 'flex-row-reverse',
+        )}
+      >
+        <span className="truncate">
+          {selected ? labelFor(selected) : browser.i18n.getMessage('deploymentControlNone')}
+        </span>
+        <ChevronDown
+          className={cn('size-3 shrink-0 text-muted-foreground', !isRight && 'ml-auto')}
+        />
       </PopoverTrigger>
-      <PopoverContent className="w-64 p-0" align="start">
+
+      <PopoverContent className="w-72 p-0" align={isRight ? 'end' : 'start'}>
         <Command
           filter={(value, search) => {
             if (value === NONE_VALUE) return 1;
@@ -83,24 +99,29 @@ export function VersionCombobox({
         >
           <CommandInput
             placeholder={browser.i18n.getMessage('deploymentControlSearchPlaceholder')}
+            className="text-xs"
           />
-          <CommandList className="max-h-56">
-            <CommandEmpty>{browser.i18n.getMessage('deploymentControlNoResults')}</CommandEmpty>
-            <CommandGroup>
+          <CommandList className="max-h-64 p-1.5">
+            <CommandEmpty className="py-4 text-center text-xs text-muted-foreground">
+              {browser.i18n.getMessage('deploymentControlNoResults')}
+            </CommandEmpty>
+            <CommandGroup className="p-0">
               {allowNone && (
                 <CommandItem
                   value={NONE_VALUE}
+                  className="rounded-md px-1.5 py-2 font-mono text-xs"
                   onSelect={() => {
                     onSelect(null);
                     setOpen(false);
                   }}
                 >
-                  <span className="truncate">
+                  <span className="truncate text-muted-foreground">
                     {browser.i18n.getMessage('deploymentControlNone')}
                   </span>
-                  <Check className={cn('ml-auto size-4', selected !== null && 'opacity-0')} />
+                  <Check className={cn('ml-auto size-3.5', selected !== null && 'opacity-0')} />
                 </CommandItem>
               )}
+
               {/* A version uploaded without a tag or message shows only a
                   hash, which tells you nothing about which build it is. The
                   upload time and author come back on the same fetch and are
@@ -112,28 +133,30 @@ export function VersionCombobox({
                 <CommandItem
                   key={version.versionId}
                   value={searchValue(version)}
-                  className="flex-col items-start gap-0.5 py-2"
+                  className="flex-col items-start gap-0.5 rounded-md border-t border-border/60 px-1.5 py-2 first:border-t-0"
                   onSelect={() => {
                     onSelect(version);
                     setOpen(false);
                   }}
                 >
                   <div className="flex w-full items-center gap-1.5">
-                    <span className="truncate font-medium">{labelFor(version)}</span>
+                    <span className="truncate font-mono text-xs text-foreground">
+                      {labelFor(version)}
+                    </span>
                     {version.percentage !== null && (
-                      <span className="shrink-0 rounded-sm border border-primary/40 bg-primary/10 px-1 font-mono text-[9px] text-primary">
+                      <span className="shrink-0 rounded-sm border border-primary/40 bg-primary/10 px-1 font-mono text-[8.5px] text-primary">
                         {browser.i18n.getMessage('versionComboboxLive', String(version.percentage))}
                       </span>
                     )}
                     <Check
                       className={cn(
-                        'ml-auto size-4 shrink-0',
+                        'ml-auto size-3.5 shrink-0',
                         selected?.versionId !== version.versionId && 'opacity-0',
                       )}
                     />
                   </div>
 
-                  <div className="flex w-full min-w-0 items-center gap-1.5 font-mono text-[10px] text-muted-foreground">
+                  <div className="flex w-full min-w-0 items-center gap-1.5 font-mono text-[9.5px] text-muted-foreground">
                     {version.tag && (
                       <span className="shrink-0">{version.versionId.slice(0, 8)}</span>
                     )}

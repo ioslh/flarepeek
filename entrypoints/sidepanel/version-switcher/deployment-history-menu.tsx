@@ -1,9 +1,9 @@
-import { ChevronDown } from 'lucide-react';
 import { PANEL_SECTION_HEADING_CLASS } from '@/entrypoints/sidepanel/panel-section';
 import { formatPercentage } from '@/entrypoints/sidepanel/version-switcher/percentage-ladder';
+import type { DeploymentHistoryEntry } from '@/shared/cloudflare-api/deployments';
 import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui/popover';
 import { cn } from '@/shared/ui/utils';
-import type { DeploymentHistoryEntry } from '@/shared/cloudflare-api/deployments';
+import { ChevronDown } from 'lucide-react';
 
 interface DeploymentHistoryMenuProps {
   history: DeploymentHistoryEntry[];
@@ -45,7 +45,7 @@ export function DeploymentHistoryMenu({
           tone === 'accent' ? 'text-primary' : 'text-foreground hover:text-primary',
         )}
       >
-        <span className="truncate">
+        <span className="truncate uppercase">
           {browser.i18n.getMessage('deploymentBarHeadingCurrent', shortId(currentId))}
         </span>
         <ChevronDown className="size-3 shrink-0 text-muted-foreground" />

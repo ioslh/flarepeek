@@ -1,13 +1,13 @@
-import { useRef, useState } from 'react';
+import { DashboardMenu } from '@/entrypoints/sidepanel/dashboard-menu';
 import { FetchControl } from '@/entrypoints/sidepanel/tabs/fetch-control';
 import { ManualDetectionPending } from '@/entrypoints/sidepanel/tabs/manual-detection-pending';
 import { useManualDetectionEnabled } from '@/entrypoints/sidepanel/tabs/use-manual-detection';
-import { DashboardMenu } from '@/entrypoints/sidepanel/dashboard-menu';
 import { VersionSwitcher } from '@/entrypoints/sidepanel/version-switcher/version-switcher';
+import type { StoredToken } from '@/shared/storage/token-storage';
+import { cn } from '@/shared/ui/utils';
 import { clearWorkerLookupCache, useWorkerLookup } from '@/shared/worker-panel/use-worker-lookup';
 import { WorkerBreadcrumb } from '@/shared/worker-panel/worker-breadcrumb';
-import { cn } from '@/shared/ui/utils';
-import type { StoredToken } from '@/shared/storage/token-storage';
+import { useRef, useState } from 'react';
 
 interface PanelTabPaneProps {
   hostname: string;
@@ -83,7 +83,7 @@ export function PanelTabPane({
   };
 
   return (
-    <div className={cn('flex flex-col gap-3', className)}>
+    <div className={cn('flex flex-col gap-3 py-4', className)}>
       {/* The navigation row: which Cloudflare asset this is, and the way in
           to its dashboard pages. The hostname is deliberately absent — the
           tab strip above already carries it in large type, and repeating it

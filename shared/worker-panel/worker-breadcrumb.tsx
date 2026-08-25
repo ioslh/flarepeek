@@ -1,7 +1,7 @@
 import { workerDashboardUrl, zoneOverviewUrl } from '@/shared/cloudflare-api/dashboard-links';
+import type { WorkerForHostname } from '@/shared/cloudflare-api/worker-lookup';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/ui/tooltip';
 import { cn } from '@/shared/ui/utils';
-import type { WorkerForHostname } from '@/shared/cloudflare-api/worker-lookup';
 
 interface WorkerBreadcrumbProps {
   // null while the worker hasn't resolved yet (loading / no-token /
@@ -20,14 +20,19 @@ export function WorkerBreadcrumb({ worker, className }: WorkerBreadcrumbProps) {
   if (!worker) return null;
 
   return (
-    <div className={cn('flex min-w-0 items-center gap-1 font-mono text-sm', className)}>
+    <div
+      className={cn(
+        'flex min-w-0 items-center uppercase gap-1 font-mono text-xl font-semibold',
+        className,
+      )}
+    >
       <Tooltip>
         <TooltipTrigger asChild>
           <a
             href={workerDashboardUrl(worker.accountId, worker.scriptName)}
             target="_blank"
             rel="noreferrer"
-            className="truncate font-medium text-foreground hover:text-primary hover:underline"
+            className="truncate text-foreground hover:text-primary hover:underline"
           >
             {worker.scriptName}
           </a>

@@ -48,7 +48,7 @@ export function VersionSlot(props: VersionSlotProps) {
       <div
         className={cn('flex min-w-0 flex-1 flex-col gap-1.5', isRight && 'items-end text-right')}
       >
-        <span className="font-mono text-[9px] tracking-widest text-muted-foreground uppercase">
+        <span className="font-stretch-extra-condensed font-sans text-[10px] tracking-wider text-neutral-400 uppercase">
           {browser.i18n.getMessage(slotLabelKey)}
         </span>
         <VersionCombobox
@@ -57,6 +57,7 @@ export function VersionSlot(props: VersionSlotProps) {
           selected={props.selected}
           onSelect={props.onSelect}
           allowNone={props.allowNone}
+          align={props.align}
           disabled={props.disabled}
         />
       </div>

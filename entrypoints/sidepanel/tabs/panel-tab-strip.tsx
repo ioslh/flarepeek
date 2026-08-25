@@ -57,7 +57,7 @@ function TabEntry({ hostname, isActive, onSelect, action, isLive }: TabEntryProp
       tabIndex={0}
       onClick={onSelect}
       onKeyDown={handleKeyDown}
-      className="group flex shrink-0 cursor-pointer items-center rounded-md py-1"
+      className="group flex shrink-0 cursor-pointer items-center rounded-md py-0.5"
     >
       {isLive && (
         <>
@@ -87,7 +87,7 @@ function TabEntry({ hostname, isActive, onSelect, action, isLive }: TabEntryProp
       )}
       <span
         className={cn(
-          'max-w-60 truncate font-stretch-extra-condensed font-sans text-2xl tracking-tight uppercase',
+          'max-w-60 truncate font-stretch-extra-condensed font-sans text-lg tracking-tight uppercase',
           isActive ? 'text-primary' : 'text-neutral-500 group-hover:text-neutral-800',
         )}
       >
@@ -156,7 +156,7 @@ export function PanelTabStrip({
   const showGroupDivider = pinnedTabs.length > 0 && (showDynamicEntry || showDynamicEmpty);
 
   return (
-    <div role="tablist" className="flex min-w-0 flex-1 items-center gap-4 overflow-x-auto">
+    <div role="tablist" className="flex min-w-0 flex-1 items-center gap-2 overflow-x-auto">
       {pinnedTabs.map((tab) => (
         <TabEntry
           key={tab.hostname}
