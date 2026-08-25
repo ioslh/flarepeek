@@ -16,6 +16,7 @@ import { VersionSlot } from '@/entrypoints/sidepanel/version-switcher/version-sl
 import { computeVersionRoles } from '@/entrypoints/sidepanel/version-switcher/version-roles';
 import { useDeploymentActions } from '@/entrypoints/sidepanel/version-switcher/use-deployment-actions';
 import { useRecentVersions } from '@/entrypoints/sidepanel/version-switcher/use-recent-versions';
+import { useVersionErrorRates } from '@/entrypoints/sidepanel/version-switcher/use-version-error-rates';
 import { useDeploymentVersions } from '@/shared/worker-panel/use-deployment-versions';
 import { usePreviewUrlConfig } from '@/shared/worker-panel/use-preview-url-config';
 import { useVersionOverride } from '@/shared/worker-panel/use-version-override';
@@ -69,6 +70,7 @@ export function DeploymentBar({ resolved, hostname, refreshKey, onRefresh }: Dep
   const previewConfig = usePreviewUrlConfig(resolved);
   const recentVersions = useRecentVersions(resolved);
   const deploymentActions = useDeploymentActions(resolved, onRefresh);
+  const versionErrorRates = useVersionErrorRates(resolved, refreshKey);
   const [mode, setMode] = useState<'view' | 'edit'>('view');
 
   const live = deployment.status === 'ready' ? deployment.versions : [];
@@ -101,6 +103,10 @@ export function DeploymentBar({ resolved, hostname, refreshKey, onRefresh }: Dep
           everDeployed: version.everDeployed,
         }))
       : [];
+
+  const errorRateByVersion = new Map(
+    (versionErrorRates?.byVersion ?? []).map((entry) => [entry.versionId, entry.errorRate]),
+  );
 
   const roles = computeVersionRoles(live, previous);
   const editState = useDeploymentBarEdit({
@@ -274,6 +280,7 @@ export function DeploymentBar({ resolved, hostname, refreshKey, onRefresh }: Dep
             version={slotADisplay}
             role={roleA}
             canPin={hasSlotB}
+            errorRate={errorRateByVersion.get(slotALive.versionId) ?? null}
             isPinned={override.activeVersionId === slotALive.versionId}
             isPinBusy={override.activation.status === 'requesting'}
             previewUrl={
@@ -309,6 +316,7 @@ export function DeploymentBar({ resolved, hostname, refreshKey, onRefresh }: Dep
               version={slotBDisplay!}
               role={roleB!}
               canPin
+              errorRate={errorRateByVersion.get(slotBLive!.versionId) ?? null}
               isPinned={override.activeVersionId === slotBLive!.versionId}
               isPinBusy={override.activation.status === 'requesting'}
               previewUrl={
@@ -322,6 +330,22 @@ export function DeploymentBar({ resolved, hostname, refreshKey, onRefresh }: Dep
             />
           ))}
       </div>
+
+      {/* Where these numbers come from, stated plainly. The per-version
+          rates and the 24h totals below them come from different datasets
+          with different sampling, so they need not add up — printing them
+          side by side without saying so would invite exactly the wrong
+          inference. */}
+      {mode === 'view' && versionErrorRates !== null && (
+        <p className="font-mono text-[9px] leading-relaxed text-muted-foreground">
+          {browser.i18n.getMessage('versionErrorRateSource')}
+          {versionErrorRates.unattributedRate >= 1 &&
+            ` ${browser.i18n.getMessage(
+              'versionErrorRateUnattributed',
+              versionErrorRates.unattributedRate.toFixed(0),
+            )}`}
+        </p>
+      )}
 
       {/* The pinned case is carried by OverrideModeBar above, so this only
           covers the two unpinned states. Single-version says nothing about

@@ -287,6 +287,17 @@
   "deploymentBarEmptyDescription": {
     "message": "Choose a version to make the first deployment."
   },
+  "versionErrorRateLabel": {
+    "message": "$RATE$% errors · 24h",
+    "placeholders": { "rate": { "content": "$1" } }
+  },
+  "versionErrorRateSource": {
+    "message": "Per-version rates come from Workers Observability, which samples at high volume — the ratios hold, the underlying counts may be low. The 24h figures below come from Analytics and are not sampled, so the two need not reconcile exactly."
+  },
+  "versionErrorRateUnattributed": {
+    "message": "$RATE$% of requests carried no version and are excluded above.",
+    "placeholders": { "rate": { "content": "$1" } }
+  },
   "workerStatsRequests": {
     "message": "Requests (24h)"
   },

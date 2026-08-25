@@ -287,6 +287,17 @@
   "deploymentBarEmptyDescription": {
     "message": "选择一个版本作为首次部署。"
   },
+  "versionErrorRateLabel": {
+    "message": "$RATE$% 错误 · 24h",
+    "placeholders": { "rate": { "content": "$1" } }
+  },
+  "versionErrorRateSource": {
+    "message": "按版本的错误率来自 Workers Observability，高流量下会采样——比率可信，其下的绝对条数可能偏低。下方 24 小时总览来自 Analytics，未经采样，两者不必完全对得上。"
+  },
+  "versionErrorRateUnattributed": {
+    "message": "另有 $RATE$% 的请求未携带版本信息，未计入以上比率。",
+    "placeholders": { "rate": { "content": "$1" } }
+  },
   "workerStatsRequests": {
     "message": "请求数（24h）"
   },

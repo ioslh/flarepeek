@@ -30,6 +30,11 @@ interface ViewVersionSlotProps {
   // nothing to force — the control would be a no-op. Progressive disclosure:
   // the entry appears only where the action does something.
   canPin: boolean;
+  // This version's own error rate over 24h, or null when unavailable. During
+  // a rollout "is the new version erroring" is the real question, and the
+  // panel's overall figure dilutes it — a 6% failure on a 40% slice reads as
+  // 2.6% overall. See shared/cloudflare-api/version-error-rates.ts.
+  errorRate: number | null;
   isPinned: boolean;
   isPinBusy: boolean;
   previewUrl: string | null;
@@ -72,7 +77,7 @@ export function VersionSlot(props: VersionSlotProps) {
     );
   }
 
-  const { version, role, canPin, isPinned, isPinBusy, previewUrl, onTogglePin } = props;
+  const { version, role, canPin, errorRate, isPinned, isPinBusy, previewUrl, onTogglePin } = props;
   const shortId = version.versionId.slice(0, 8);
   const idLabel = browser.i18n.getMessage('versionSwitcherVersionIdLabel', shortId);
 
@@ -115,6 +120,16 @@ export function VersionSlot(props: VersionSlotProps) {
         {version.tag ?? idLabel}
       </span>
       <span className="truncate font-mono text-[10px] text-muted-foreground">{idLabel}</span>
+      {errorRate !== null && (
+        <span
+          className={cn(
+            'truncate font-mono text-[10px] tabular-nums',
+            errorRate > 0 ? 'text-destructive' : 'text-muted-foreground',
+          )}
+        >
+          {browser.i18n.getMessage('versionErrorRateLabel', errorRate.toFixed(1))}
+        </span>
+      )}
       {/* No percentage here: it's read off the deployment bar directly above,
           where the number sits on the field it describes. Repeating it at
           the same size just competed with the bar for the same glance. */}
