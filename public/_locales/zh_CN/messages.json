@@ -193,6 +193,31 @@
   "deploymentBarPinned": {
     "message": "已钉住"
   },
+  "overrideModeBarPinned": {
+    "message": "已钉住 $NAME$ — 仅本标签页，线上流量不受影响",
+    "placeholders": { "name": { "content": "$1" } }
+  },
+  "overrideModeBarClear": {
+    "message": "取消钉住"
+  },
+  "dashboardMenuOpen": {
+    "message": "Dashboard"
+  },
+  "dashboardMenuWorker": {
+    "message": "在 Cloudflare Dashboard 中打开此 Worker"
+  },
+  "dashboardMenuMore": {
+    "message": "其他 Dashboard 页面"
+  },
+  "dashboardMenuZone": {
+    "message": "Zone 概览"
+  },
+  "dashboardMenuAnalytics": {
+    "message": "Workers 分析"
+  },
+  "dashboardMenuLogs": {
+    "message": "Instant Logs"
+  },
   "deploymentBarPin": {
     "message": "钉住此版本（仅你自己）"
   },

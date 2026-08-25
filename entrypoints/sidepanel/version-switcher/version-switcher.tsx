@@ -61,14 +61,18 @@ export function VersionSwitcher({ lookup, hostname, refreshKey, onRefresh }: Ver
     // needs a border of its own. Sections that render null (stats before
     // they load, bindings when there are none) simply don't produce a rule.
     <div className="flex flex-col divide-y divide-border">
-      <WorkerStatsCard resolved={resolved} />
-
+      {/* Deployment first: it is both the signature element and the most
+          actionable one. Stats answer "is the site healthy overall", which
+          is background — the rollout's own health now reads off the version
+          legs inside the bar. Errors and bindings are reference detail. */}
       <DeploymentBar
         resolved={resolved}
         hostname={hostname}
         refreshKey={refreshKey}
         onRefresh={onRefresh}
       />
+
+      <WorkerStatsCard resolved={resolved} />
 
       <RecentErrorsPanel resolved={resolved} />
 

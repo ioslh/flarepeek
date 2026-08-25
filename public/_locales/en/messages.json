@@ -193,6 +193,31 @@
   "deploymentBarPinned": {
     "message": "Pinned"
   },
+  "overrideModeBarPinned": {
+    "message": "Pinned to $NAME$ — this tab only, live traffic is unaffected",
+    "placeholders": { "name": { "content": "$1" } }
+  },
+  "overrideModeBarClear": {
+    "message": "Unpin"
+  },
+  "dashboardMenuOpen": {
+    "message": "Dashboard"
+  },
+  "dashboardMenuWorker": {
+    "message": "Open this Worker in the Cloudflare dashboard"
+  },
+  "dashboardMenuMore": {
+    "message": "Other dashboard pages"
+  },
+  "dashboardMenuZone": {
+    "message": "Zone overview"
+  },
+  "dashboardMenuAnalytics": {
+    "message": "Workers analytics"
+  },
+  "dashboardMenuLogs": {
+    "message": "Instant Logs"
+  },
   "deploymentBarPin": {
     "message": "Pin this version (you only)"
   },

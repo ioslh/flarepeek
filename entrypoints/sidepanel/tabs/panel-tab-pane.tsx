@@ -3,9 +3,10 @@ import { RefreshButton } from '@/entrypoints/sidepanel/refresh-button';
 import { DetectionModeToggle } from '@/entrypoints/sidepanel/tabs/detection-mode-toggle';
 import { ManualDetectionPending } from '@/entrypoints/sidepanel/tabs/manual-detection-pending';
 import { useManualDetectionEnabled } from '@/entrypoints/sidepanel/tabs/use-manual-detection';
+import { DashboardMenu } from '@/entrypoints/sidepanel/dashboard-menu';
 import { VersionSwitcher } from '@/entrypoints/sidepanel/version-switcher/version-switcher';
 import { clearWorkerLookupCache, useWorkerLookup } from '@/shared/worker-panel/use-worker-lookup';
-import { IdentityHeader } from '@/shared/worker-panel/identity-header';
+import { WorkerBreadcrumb } from '@/shared/worker-panel/worker-breadcrumb';
 import { cn } from '@/shared/ui/utils';
 import type { StoredToken } from '@/shared/storage/token-storage';
 
@@ -84,11 +85,22 @@ export function PanelTabPane({
 
   return (
     <div className={cn('flex flex-col gap-3', className)}>
-      <div className="flex items-start justify-between gap-2">
-        <IdentityHeader
-          hostname={hostname}
-          worker={lookup.status === 'ready' ? lookup.resolved.worker : null}
-        />
+      {/* The navigation row: which Cloudflare asset this is, and the way in
+          to its dashboard pages. The hostname is deliberately absent — the
+          tab strip above already carries it in large type, and repeating it
+          here crowded out the worker/zone identity, which is the scarcer
+          information and the thing the dashboard links are keyed on. */}
+      <div className="flex items-center gap-2">
+        {lookup.status === 'ready' ? (
+          <>
+            <WorkerBreadcrumb worker={lookup.resolved.worker} className="flex-1" />
+            <DashboardMenu worker={lookup.resolved.worker} />
+          </>
+        ) : (
+          <span className="min-w-0 flex-1 truncate font-mono text-xs text-muted-foreground">
+            {hostname}
+          </span>
+        )}
         <div className="flex shrink-0 items-center gap-1">
           {isDynamic && <DetectionModeToggle enabled={manualDetectionSetting === true} />}
           <RefreshButton

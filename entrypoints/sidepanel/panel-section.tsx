@@ -11,6 +11,9 @@ export const PANEL_SECTION_HEADING_CLASS =
 
 interface PanelSectionProps {
   title?: string;
+  // Replaces `title` outright when the heading needs to be interactive —
+  // the deployment section's heading is a button that opens its history.
+  titleSlot?: ReactNode;
   // Turns the heading into a link to the Cloudflare dashboard.
   titleHref?: string;
   // 'accent' marks a section that's in an active/editing state — currently
@@ -18,6 +21,9 @@ interface PanelSectionProps {
   titleTone?: 'default' | 'accent';
   // Rendered opposite the heading, e.g. a refresh or expand control.
   action?: ReactNode;
+  // Rendered full-width *above* the heading. For state that qualifies
+  // everything in the section — currently the override mode bar.
+  banner?: ReactNode;
   children: ReactNode;
   className?: string;
 }
@@ -30,9 +36,11 @@ interface PanelSectionProps {
 // on the page.
 export function PanelSection({
   title,
+  titleSlot,
   titleHref,
   titleTone = 'default',
   action,
+  banner,
   children,
   className,
 }: PanelSectionProps) {
@@ -40,8 +48,10 @@ export function PanelSection({
 
   return (
     <section className={cn('flex flex-col gap-2 py-4', className)}>
-      {(title || action) && (
+      {banner}
+      {(title || titleSlot || action) && (
         <div className="flex items-center justify-between gap-2">
+          {titleSlot}
           {title &&
             (titleHref ? (
               <a

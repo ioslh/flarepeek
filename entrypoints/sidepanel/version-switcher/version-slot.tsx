@@ -25,6 +25,11 @@ interface ViewVersionSlotProps {
   align: 'left' | 'right';
   version: DisplayVersion;
   role: VersionRole;
+  // false hides the ⌖ entry entirely. An override forces *your* traffic to
+  // one version of the deployment, so with only one version in it there is
+  // nothing to force — the control would be a no-op. Progressive disclosure:
+  // the entry appears only where the action does something.
+  canPin: boolean;
   isPinned: boolean;
   isPinBusy: boolean;
   previewUrl: string | null;
@@ -67,11 +72,11 @@ export function VersionSlot(props: VersionSlotProps) {
     );
   }
 
-  const { version, role, isPinned, isPinBusy, previewUrl, onTogglePin } = props;
+  const { version, role, canPin, isPinned, isPinBusy, previewUrl, onTogglePin } = props;
   const shortId = version.versionId.slice(0, 8);
   const idLabel = browser.i18n.getMessage('versionSwitcherVersionIdLabel', shortId);
 
-  const pinButton = (
+  const pinButton = canPin ? (
     <Button
       type="button"
       size="icon"
@@ -83,7 +88,7 @@ export function VersionSlot(props: VersionSlotProps) {
     >
       <Crosshair className="size-3.5" />
     </Button>
-  );
+  ) : null;
 
   const badges = (
     <>

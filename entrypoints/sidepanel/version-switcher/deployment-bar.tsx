@@ -10,6 +10,7 @@ import {
   PERCENTAGE_LADDER,
 } from '@/entrypoints/sidepanel/version-switcher/percentage-ladder';
 import { useDeploymentBarEdit } from '@/entrypoints/sidepanel/version-switcher/use-deployment-bar-edit';
+import { OverrideModeBar } from '@/entrypoints/sidepanel/version-switcher/override-mode-bar';
 import { VersionSlot } from '@/entrypoints/sidepanel/version-switcher/version-slot';
 import { computeVersionRoles } from '@/entrypoints/sidepanel/version-switcher/version-roles';
 import { useDeploymentActions } from '@/entrypoints/sidepanel/version-switcher/use-deployment-actions';
@@ -202,11 +203,24 @@ export function DeploymentBar({ resolved, hostname, refreshKey, onRefresh }: Dep
         ? 'deploymentBarHeadingDouble'
         : 'deploymentBarHeadingSingle';
 
+  const pinnedDisplay =
+    override.activeVersionId === null
+      ? null
+      : (liveDisplay.find((version) => version.versionId === override.activeVersionId) ?? null);
+
   return (
     <PanelSection
       title={browser.i18n.getMessage(headingKey)}
       titleTone={mode === 'edit' ? 'accent' : 'default'}
       className="gap-3"
+      banner={
+        pinnedDisplay && (
+          <OverrideModeBar
+            versionLabel={pinnedDisplay.tag ?? pinnedDisplay.versionId.slice(0, 8)}
+            onClear={() => void override.deactivate()}
+          />
+        )
+      }
     >
       <DeploymentBarTrack
         percentageB={
@@ -241,6 +255,7 @@ export function DeploymentBar({ resolved, hostname, refreshKey, onRefresh }: Dep
             align="left"
             version={slotADisplay}
             role={roleA}
+            canPin={hasSlotB}
             isPinned={override.activeVersionId === slotALive.versionId}
             isPinBusy={override.activation.status === 'requesting'}
             previewUrl={
@@ -275,6 +290,7 @@ export function DeploymentBar({ resolved, hostname, refreshKey, onRefresh }: Dep
               align="right"
               version={slotBDisplay!}
               role={roleB!}
+              canPin
               isPinned={override.activeVersionId === slotBLive!.versionId}
               isPinBusy={override.activation.status === 'requesting'}
               previewUrl={
@@ -289,13 +305,15 @@ export function DeploymentBar({ resolved, hostname, refreshKey, onRefresh }: Dep
           ))}
       </div>
 
-      {mode === 'view' && (
+      {/* The pinned case is carried by OverrideModeBar above, so this only
+          covers the two unpinned states. Single-version says nothing about
+          pinning at all — with one version there is nothing to pin to, and
+          the ⌖ buttons are hidden for the same reason. */}
+      {mode === 'view' && !override.activeVersionId && (
         <p className="text-xs leading-relaxed text-muted-foreground">
-          {override.activeVersionId
-            ? browser.i18n.getMessage('deploymentBarNotePinned')
-            : hasSlotB
-              ? browser.i18n.getMessage('deploymentBarNoteRandom')
-              : browser.i18n.getMessage('deploymentBarNoteSingle')}
+          {hasSlotB
+            ? browser.i18n.getMessage('deploymentBarNoteRandom')
+            : browser.i18n.getMessage('deploymentBarNoteSingle')}
         </p>
       )}
 
