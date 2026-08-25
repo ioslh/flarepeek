@@ -21,7 +21,7 @@ import { buildVersionPreviewUrl } from '@/shared/cloudflare-api/preview-url';
 import { cloudflareErrorMessageKey } from '@/shared/cloudflare-api/error-message-key';
 import { Alert, AlertDescription } from '@/shared/ui/alert';
 import { Button } from '@/shared/ui/button';
-import { Card, CardContent } from '@/shared/ui/card';
+import { PanelSection } from '@/entrypoints/sidepanel/panel-section';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
 import { Skeleton } from '@/shared/ui/skeleton';
@@ -71,6 +71,7 @@ export function DeploymentBar({ resolved, hostname, refreshKey, onRefresh }: Dep
 
   const live = deployment.status === 'ready' ? deployment.versions : [];
   const previous = deployment.status === 'ready' ? deployment.previousVersions : null;
+  const boundaryTrail = deployment.status === 'ready' ? deployment.boundaryTrail : [];
 
   const metaById = new Map(
     recentVersions.status === 'ready' ? recentVersions.versions.map((v) => [v.id, v]) : [],
@@ -108,29 +109,25 @@ export function DeploymentBar({ resolved, hostname, refreshKey, onRefresh }: Dep
 
   if (deployment.status === 'loading' || deployment.status === 'idle') {
     return (
-      <Card className="gap-3 py-4">
-        <CardContent className="flex flex-col gap-3 px-4">
-          <Skeleton className="h-9 w-full" />
-          <div className="flex gap-3">
-            <Skeleton className="h-14 flex-1" />
-            <Skeleton className="h-14 flex-1" />
-          </div>
-        </CardContent>
-      </Card>
+      <PanelSection>
+        <Skeleton className="h-16 w-full" />
+        <div className="flex gap-3">
+          <Skeleton className="h-14 flex-1" />
+          <Skeleton className="h-14 flex-1" />
+        </div>
+      </PanelSection>
     );
   }
 
   if (deployment.status === 'error') {
     return (
-      <Card className="gap-3 py-4">
-        <CardContent className="px-4">
-          <Alert variant="destructive">
-            <AlertDescription>
-              {browser.i18n.getMessage(cloudflareErrorMessageKey(deployment.kind))}
-            </AlertDescription>
-          </Alert>
-        </CardContent>
-      </Card>
+      <PanelSection>
+        <Alert variant="destructive">
+          <AlertDescription>
+            {browser.i18n.getMessage(cloudflareErrorMessageKey(deployment.kind))}
+          </AlertDescription>
+        </Alert>
+      </PanelSection>
     );
   }
 
@@ -138,51 +135,49 @@ export function DeploymentBar({ resolved, hostname, refreshKey, onRefresh }: Dep
   // picker that makes the first deployment at 100%.
   if (live.length === 0) {
     return (
-      <Card className="gap-3 py-4">
-        <CardContent className="flex flex-col gap-3 px-4">
-          <div>
-            <p className="text-sm font-medium text-foreground">
-              {browser.i18n.getMessage('deploymentBarEmptyTitle')}
-            </p>
-            <p className="text-xs text-muted-foreground">
-              {browser.i18n.getMessage('deploymentBarEmptyDescription')}
-            </p>
-          </div>
-          <VersionCombobox
-            ariaLabel={browser.i18n.getMessage('deploymentControlSlotA')}
-            candidates={editState.pickerCandidates}
-            selected={editState.slotA}
-            onSelect={editState.setSlotA}
-            allowNone={false}
-            disabled={deploymentActions.state.status === 'submitting'}
-          />
-          <Button
-            disabled={deploymentActions.state.status === 'submitting' || !editState.slotA}
-            onClick={() => setConfirmOpen(true)}
-          >
-            {browser.i18n.getMessage('deploymentControlDeploy')}
-          </Button>
-          <DeployConfirmDialog
-            open={confirmOpen}
-            onOpenChange={setConfirmOpen}
-            proposed={editState.proposed}
-            versionLabels={editState.versionLabels}
-            message={trimmedMessage}
-            isSubmitting={deploymentActions.state.status === 'submitting'}
-            onConfirm={() => {
-              void deploymentActions.applySplit(editState.proposed, trimmedMessage);
-              setConfirmOpen(false);
-            }}
-          />
-          {deploymentActions.state.status === 'error' && (
-            <Alert variant="destructive">
-              <AlertDescription>
-                {browser.i18n.getMessage(cloudflareErrorMessageKey(deploymentActions.state.kind))}
-              </AlertDescription>
-            </Alert>
-          )}
-        </CardContent>
-      </Card>
+      <PanelSection>
+        <div>
+          <p className="text-sm font-medium text-foreground">
+            {browser.i18n.getMessage('deploymentBarEmptyTitle')}
+          </p>
+          <p className="text-xs text-muted-foreground">
+            {browser.i18n.getMessage('deploymentBarEmptyDescription')}
+          </p>
+        </div>
+        <VersionCombobox
+          ariaLabel={browser.i18n.getMessage('deploymentControlSlotA')}
+          candidates={editState.pickerCandidates}
+          selected={editState.slotA}
+          onSelect={editState.setSlotA}
+          allowNone={false}
+          disabled={deploymentActions.state.status === 'submitting'}
+        />
+        <Button
+          disabled={deploymentActions.state.status === 'submitting' || !editState.slotA}
+          onClick={() => setConfirmOpen(true)}
+        >
+          {browser.i18n.getMessage('deploymentControlDeploy')}
+        </Button>
+        <DeployConfirmDialog
+          open={confirmOpen}
+          onOpenChange={setConfirmOpen}
+          proposed={editState.proposed}
+          versionLabels={editState.versionLabels}
+          message={trimmedMessage}
+          isSubmitting={deploymentActions.state.status === 'submitting'}
+          onConfirm={() => {
+            void deploymentActions.applySplit(editState.proposed, trimmedMessage);
+            setConfirmOpen(false);
+          }}
+        />
+        {deploymentActions.state.status === 'error' && (
+          <Alert variant="destructive">
+            <AlertDescription>
+              {browser.i18n.getMessage(cloudflareErrorMessageKey(deploymentActions.state.kind))}
+            </AlertDescription>
+          </Alert>
+        )}
+      </PanelSection>
     );
   }
 
@@ -208,238 +203,230 @@ export function DeploymentBar({ resolved, hostname, refreshKey, onRefresh }: Dep
         : 'deploymentBarHeadingSingle';
 
   return (
-    <Card className="gap-3 py-4">
-      <CardContent className="flex flex-col gap-3 px-4">
-        <p
-          className={cn(
-            'font-mono text-[9px] tracking-widest uppercase',
-            mode === 'edit' ? 'text-primary' : 'text-muted-foreground',
-          )}
-        >
-          {browser.i18n.getMessage(headingKey)}
-        </p>
+    <PanelSection
+      title={browser.i18n.getMessage(headingKey)}
+      titleTone={mode === 'edit' ? 'accent' : 'default'}
+      className="gap-3"
+    >
+      <DeploymentBarTrack
+        percentageB={
+          mode === 'edit'
+            ? editState.slotB
+              ? editState.draftPercentage
+              : null
+            : hasSlotB
+              ? liveSlotBPercentage
+              : null
+        }
+        boundaryTrail={boundaryTrail}
+        editable={mode === 'edit'}
+        disabled={deploymentActions.state.status === 'submitting'}
+        onChangePercentageB={editState.setDraftPercentage}
+      />
 
-        <DeploymentBarTrack
-          percentageB={
-            mode === 'edit'
-              ? editState.slotB
-                ? editState.draftPercentage
-                : null
-              : hasSlotB
-                ? liveSlotBPercentage
-                : null
-          }
-          editable={mode === 'edit'}
-          disabled={deploymentActions.state.status === 'submitting'}
-          onChangePercentageB={editState.setDraftPercentage}
-        />
+      <div className="flex items-start gap-3">
+        {mode === 'edit' ? (
+          <VersionSlot
+            mode="edit"
+            align="left"
+            candidates={editState.pickerCandidates}
+            selected={editState.slotA}
+            onSelect={editState.setSlotA}
+            allowNone={false}
+            disabled={deploymentActions.state.status === 'submitting'}
+          />
+        ) : (
+          <VersionSlot
+            mode="view"
+            align="left"
+            version={slotADisplay}
+            role={roleA}
+            isPinned={override.activeVersionId === slotALive.versionId}
+            isPinBusy={override.activation.status === 'requesting'}
+            previewUrl={
+              previewConfig ? buildVersionPreviewUrl(previewConfig, slotALive.versionId) : null
+            }
+            onTogglePin={() =>
+              override.activeVersionId === slotALive.versionId
+                ? void override.deactivate()
+                : void override.activate(resolved.worker.scriptName, slotALive.versionId)
+            }
+          />
+        )}
 
-        <div className="flex items-start gap-3">
-          {mode === 'edit' ? (
+        {(mode === 'edit' || hasSlotB) &&
+          (mode === 'edit' ? (
             <VersionSlot
               mode="edit"
-              align="left"
+              align="right"
               candidates={editState.pickerCandidates}
-              selected={editState.slotA}
-              onSelect={editState.setSlotA}
-              allowNone={false}
+              selected={editState.slotB}
+              onSelect={editState.selectSlotB}
+              allowNone
               disabled={deploymentActions.state.status === 'submitting'}
             />
           ) : (
+            // This branch only renders when hasSlotB is true (see the
+            // `mode === 'edit' || hasSlotB` guard above), so slot B is
+            // always present here even though TS can't see that through
+            // the nested ternary.
             <VersionSlot
               mode="view"
-              align="left"
-              version={slotADisplay}
-              percentage={slotALive.percentage}
-              role={roleA}
-              isPinned={override.activeVersionId === slotALive.versionId}
+              align="right"
+              version={slotBDisplay!}
+              role={roleB!}
+              isPinned={override.activeVersionId === slotBLive!.versionId}
               isPinBusy={override.activation.status === 'requesting'}
               previewUrl={
-                previewConfig ? buildVersionPreviewUrl(previewConfig, slotALive.versionId) : null
+                previewConfig ? buildVersionPreviewUrl(previewConfig, slotBLive!.versionId) : null
               }
               onTogglePin={() =>
-                override.activeVersionId === slotALive.versionId
+                override.activeVersionId === slotBLive!.versionId
                   ? void override.deactivate()
-                  : void override.activate(resolved.worker.scriptName, slotALive.versionId)
+                  : void override.activate(resolved.worker.scriptName, slotBLive!.versionId)
               }
             />
-          )}
+          ))}
+      </div>
 
-          {(mode === 'edit' || hasSlotB) &&
-            (mode === 'edit' ? (
-              <VersionSlot
-                mode="edit"
-                align="right"
-                candidates={editState.pickerCandidates}
-                selected={editState.slotB}
-                onSelect={editState.selectSlotB}
-                allowNone
+      {mode === 'view' && (
+        <p className="text-xs leading-relaxed text-muted-foreground">
+          {override.activeVersionId
+            ? browser.i18n.getMessage('deploymentBarNotePinned')
+            : hasSlotB
+              ? browser.i18n.getMessage('deploymentBarNoteRandom')
+              : browser.i18n.getMessage('deploymentBarNoteSingle')}
+        </p>
+      )}
+
+      {mode === 'view' && override.activation.status === 'permission-denied' && (
+        <p className="text-xs text-destructive">
+          {browser.i18n.getMessage('versionSwitcherPermissionDenied')}
+        </p>
+      )}
+      {mode === 'view' && override.activation.status === 'error' && (
+        <p className="text-xs text-destructive">
+          {browser.i18n.getMessage('versionSwitcherActivationError')}
+        </p>
+      )}
+
+      {mode === 'edit' && editState.slotB && (
+        <div className="flex flex-col gap-2 rounded-md border border-border bg-muted/40 p-3">
+          <div className="flex flex-wrap gap-1.5">
+            {PERCENTAGE_LADDER.map((value) => (
+              <Button
+                key={value}
+                type="button"
+                size="sm"
+                variant={editState.draftPercentage === value ? 'default' : 'outline'}
+                className="h-7 px-2 font-mono text-xs"
                 disabled={deploymentActions.state.status === 'submitting'}
-              />
-            ) : (
-              // This branch only renders when hasSlotB is true (see the
-              // `mode === 'edit' || hasSlotB` guard above), so slot B is
-              // always present here even though TS can't see that through
-              // the nested ternary.
-              <VersionSlot
-                mode="view"
-                align="right"
-                version={slotBDisplay!}
-                percentage={slotBLive!.percentage}
-                role={roleB!}
-                isPinned={override.activeVersionId === slotBLive!.versionId}
-                isPinBusy={override.activation.status === 'requesting'}
-                previewUrl={
-                  previewConfig ? buildVersionPreviewUrl(previewConfig, slotBLive!.versionId) : null
-                }
-                onTogglePin={() =>
-                  override.activeVersionId === slotBLive!.versionId
-                    ? void override.deactivate()
-                    : void override.activate(resolved.worker.scriptName, slotBLive!.versionId)
-                }
-              />
-            ))}
-        </div>
-
-        {mode === 'view' && (
-          <p className="text-xs leading-relaxed text-muted-foreground">
-            {override.activeVersionId
-              ? browser.i18n.getMessage('deploymentBarNotePinned')
-              : hasSlotB
-                ? browser.i18n.getMessage('deploymentBarNoteRandom')
-                : browser.i18n.getMessage('deploymentBarNoteSingle')}
-          </p>
-        )}
-
-        {mode === 'view' && override.activation.status === 'permission-denied' && (
-          <p className="text-xs text-destructive">
-            {browser.i18n.getMessage('versionSwitcherPermissionDenied')}
-          </p>
-        )}
-        {mode === 'view' && override.activation.status === 'error' && (
-          <p className="text-xs text-destructive">
-            {browser.i18n.getMessage('versionSwitcherActivationError')}
-          </p>
-        )}
-
-        {mode === 'edit' && editState.slotB && (
-          <div className="flex flex-col gap-2 rounded-md border border-border bg-muted/40 p-3">
-            <div className="flex flex-wrap gap-1.5">
-              {PERCENTAGE_LADDER.map((value) => (
-                <Button
-                  key={value}
-                  type="button"
-                  size="sm"
-                  variant={editState.draftPercentage === value ? 'default' : 'outline'}
-                  className="h-7 px-2 font-mono text-xs"
-                  disabled={deploymentActions.state.status === 'submitting'}
-                  onClick={() => editState.setDraftPercentage(value)}
-                >
-                  {formatPercentage(value)}%
-                </Button>
-              ))}
-            </div>
-
-            <div className="font-mono text-xs">
-              <span
-                className={cn(
-                  delta > 0 && 'text-primary',
-                  delta < 0 && 'text-destructive',
-                  delta === 0 && 'text-muted-foreground',
-                )}
+                onClick={() => editState.setDraftPercentage(value)}
               >
-                {delta > 0
-                  ? browser.i18n.getMessage('deploymentBarDeltaAdvance', formatPercentage(delta))
-                  : delta < 0
-                    ? browser.i18n.getMessage('deploymentBarDeltaRetreat', formatPercentage(-delta))
-                    : browser.i18n.getMessage('deploymentBarDeltaNone')}
-              </span>
-              <span className="text-muted-foreground">
-                {' · '}
-                {delta === 0
-                  ? browser.i18n.getMessage('deploymentBarDeltaNoChange')
-                  : browser.i18n.getMessage(
-                      'deploymentBarDeltaAffected',
-                      formatPercentage(Math.abs(delta)),
-                    )}
-              </span>
-            </div>
-
-            {editState.warnings.map((warning) => (
-              <div
-                key={warning.id}
-                className={cn(
-                  'rounded-md border px-2.5 py-1.5 text-xs leading-relaxed',
-                  WARNING_TONE_CLASS[warning.tone],
-                )}
-              >
-                {browser.i18n.getMessage(warningMessageKey(warning.id))}
-              </div>
+                {formatPercentage(value)}%
+              </Button>
             ))}
           </div>
-        )}
 
-        {mode === 'edit' && (
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="deployment-bar-message">
-              {browser.i18n.getMessage('deploymentSplitMessagePlaceholder')}
-            </Label>
-            <Input
-              id="deployment-bar-message"
-              value={editState.message}
-              disabled={deploymentActions.state.status === 'submitting'}
-              onChange={(event) => editState.setMessage(event.target.value)}
-              placeholder={browser.i18n.getMessage('deploymentSplitMessagePlaceholder')}
-            />
-          </div>
-        )}
-
-        <div className="flex items-center gap-2">
-          {mode === 'edit' && (
-            <Button
-              disabled={
-                deploymentActions.state.status === 'submitting' ||
-                !editState.slotA ||
-                editState.matchesLive
-              }
-              onClick={() => setConfirmOpen(true)}
+          <div className="font-mono text-xs">
+            <span
+              className={cn(
+                delta > 0 && 'text-primary',
+                delta < 0 && 'text-destructive',
+                delta === 0 && 'text-muted-foreground',
+              )}
             >
-              {browser.i18n.getMessage('deploymentControlDeploy')}
-            </Button>
-          )}
-          <Button
-            type="button"
-            variant="link"
-            className="h-auto p-0 text-xs text-muted-foreground"
-            onClick={() => setMode((current) => (current === 'view' ? 'edit' : 'view'))}
-          >
-            {browser.i18n.getMessage(
-              mode === 'edit' ? 'deploymentBarCollapse' : 'deploymentBarToggleEdit',
-            )}
-          </Button>
+              {delta > 0
+                ? browser.i18n.getMessage('deploymentBarDeltaAdvance', formatPercentage(delta))
+                : delta < 0
+                  ? browser.i18n.getMessage('deploymentBarDeltaRetreat', formatPercentage(-delta))
+                  : browser.i18n.getMessage('deploymentBarDeltaNone')}
+            </span>
+            <span className="text-muted-foreground">
+              {' · '}
+              {delta === 0
+                ? browser.i18n.getMessage('deploymentBarDeltaNoChange')
+                : browser.i18n.getMessage(
+                    'deploymentBarDeltaAffected',
+                    formatPercentage(Math.abs(delta)),
+                  )}
+            </span>
+          </div>
+
+          {editState.warnings.map((warning) => (
+            <div
+              key={warning.id}
+              className={cn(
+                'rounded-md border px-2.5 py-1.5 text-xs leading-relaxed',
+                WARNING_TONE_CLASS[warning.tone],
+              )}
+            >
+              {browser.i18n.getMessage(warningMessageKey(warning.id))}
+            </div>
+          ))}
         </div>
+      )}
 
-        {deploymentActions.state.status === 'error' && (
-          <Alert variant="destructive">
-            <AlertDescription>
-              {browser.i18n.getMessage(cloudflareErrorMessageKey(deploymentActions.state.kind))}
-            </AlertDescription>
-          </Alert>
+      {mode === 'edit' && (
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="deployment-bar-message">
+            {browser.i18n.getMessage('deploymentSplitMessagePlaceholder')}
+          </Label>
+          <Input
+            id="deployment-bar-message"
+            value={editState.message}
+            disabled={deploymentActions.state.status === 'submitting'}
+            onChange={(event) => editState.setMessage(event.target.value)}
+            placeholder={browser.i18n.getMessage('deploymentSplitMessagePlaceholder')}
+          />
+        </div>
+      )}
+
+      <div className="flex items-center gap-2">
+        {mode === 'edit' && (
+          <Button
+            disabled={
+              deploymentActions.state.status === 'submitting' ||
+              !editState.slotA ||
+              editState.matchesLive
+            }
+            onClick={() => setConfirmOpen(true)}
+          >
+            {browser.i18n.getMessage('deploymentControlDeploy')}
+          </Button>
         )}
+        <Button
+          type="button"
+          variant="link"
+          className="h-auto p-0 text-xs text-muted-foreground"
+          onClick={() => setMode((current) => (current === 'view' ? 'edit' : 'view'))}
+        >
+          {browser.i18n.getMessage(
+            mode === 'edit' ? 'deploymentBarCollapse' : 'deploymentBarToggleEdit',
+          )}
+        </Button>
+      </div>
 
-        <DeployConfirmDialog
-          open={confirmOpen}
-          onOpenChange={setConfirmOpen}
-          proposed={editState.proposed}
-          versionLabels={editState.versionLabels}
-          message={trimmedMessage}
-          isSubmitting={deploymentActions.state.status === 'submitting'}
-          onConfirm={() => {
-            void deploymentActions.applySplit(editState.proposed, trimmedMessage);
-            setConfirmOpen(false);
-          }}
-        />
-      </CardContent>
-    </Card>
+      {deploymentActions.state.status === 'error' && (
+        <Alert variant="destructive">
+          <AlertDescription>
+            {browser.i18n.getMessage(cloudflareErrorMessageKey(deploymentActions.state.kind))}
+          </AlertDescription>
+        </Alert>
+      )}
+
+      <DeployConfirmDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        proposed={editState.proposed}
+        versionLabels={editState.versionLabels}
+        message={trimmedMessage}
+        isSubmitting={deploymentActions.state.status === 'submitting'}
+        onConfirm={() => {
+          void deploymentActions.applySplit(editState.proposed, trimmedMessage);
+          setConfirmOpen(false);
+        }}
+      />
+    </PanelSection>
   );
 }

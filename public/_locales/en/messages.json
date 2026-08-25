@@ -20,18 +20,62 @@
   "badgeTitleNoToken": {
     "message": "No Cloudflare API token configured. Click to set one up."
   },
-  "tabChangedBannerLabel": {
-    "message": "Current tab: $NAME$",
-    "placeholders": { "name": { "content": "$1" } }
-  },
-  "tabChangedBannerButton": {
-    "message": "View"
-  },
   "refreshButtonLabel": {
     "message": "Refresh"
   },
   "popupOpenFullPanel": {
     "message": "Open full panel"
+  },
+  "panelTabPinTooltip": {
+    "message": "Pin this site"
+  },
+  "panelTabUnpinTooltip": {
+    "message": "Unpin"
+  },
+  "panelTabAddTooltip": {
+    "message": "Add a tab"
+  },
+  "panelTabAddLabel": {
+    "message": "Site"
+  },
+  "panelTabAddPlaceholder": {
+    "message": "example.com"
+  },
+  "panelTabAddInvalid": {
+    "message": "Enter a valid hostname or URL."
+  },
+  "panelTabAddSubmit": {
+    "message": "Add"
+  },
+  "panelTabDynamicEmpty": {
+    "message": "No site detected"
+  },
+  "panelTabLiveLabel": {
+    "message": "Follows your active browser tab"
+  },
+  "panelTabDetectTooltip": {
+    "message": "Detect this site"
+  },
+  "detectionModeToggleTooltip": {
+    "message": "Detection mode"
+  },
+  "detectionModePopoverTitle": {
+    "message": "Detection mode"
+  },
+  "detectionModePopoverDescription": {
+    "message": "Auto mode checks every site you switch to against your Cloudflare accounts. Manual mode only shows the hostname until you choose to check it — nothing about the sites you browse leaves your machine until you ask."
+  },
+  "detectionModeSwitchLabel": {
+    "message": "Manual detection"
+  },
+  "manualDetectionPendingTitle": {
+    "message": "Not checked yet"
+  },
+  "manualDetectionPendingBody": {
+    "message": "Manual detection mode is on, so this site hasn't been checked against your Cloudflare accounts yet."
+  },
+  "manualDetectionPendingButton": {
+    "message": "Detect this site"
   },
   "versionSwitcherLoading": {
     "message": "Looking up this site's Worker…"
@@ -287,6 +331,14 @@
   },
   "accountControlManageTokens": {
     "message": "Manage tokens"
+  },
+  "accountControlAutoLabel": {
+    "message": "Account: $NAME$ (auto-detected)",
+    "placeholders": { "name": { "content": "$1" } }
+  },
+  "accountControlLockedLabel": {
+    "message": "Account locked to $NAME$",
+    "placeholders": { "name": { "content": "$1" } }
   },
   "optionsHeading": {
     "message": "Cloudflare API Tokens"

@@ -1,79 +1,88 @@
-import { useEffect, useState } from 'react';
 import { useTokens } from '@/shared/storage/use-tokens';
-import { usePinnedHostname } from '@/entrypoints/sidepanel/use-pinned-hostname';
-import { TabChangedBanner } from '@/entrypoints/sidepanel/tab-changed-banner';
-import { RefreshButton } from '@/entrypoints/sidepanel/refresh-button';
 import { AccountControl } from '@/entrypoints/sidepanel/account/account-control';
-import { VersionSwitcher } from '@/entrypoints/sidepanel/version-switcher/version-switcher';
-import { useWorkerLookup, clearWorkerLookupCache } from '@/shared/worker-panel/use-worker-lookup';
-import { IdentityHeader } from '@/shared/worker-panel/identity-header';
+import { usePanelTabs } from '@/entrypoints/sidepanel/tabs/use-panel-tabs';
+import { PanelTabStrip } from '@/entrypoints/sidepanel/tabs/panel-tab-strip';
+import { PanelTabPane } from '@/entrypoints/sidepanel/tabs/panel-tab-pane';
 import { NoTokenEmptyState } from '@/shared/worker-panel/no-token-empty-state';
+import { useWorkerLookup } from '@/shared/worker-panel/use-worker-lookup';
 import { TooltipProvider } from '@/shared/ui/tooltip';
+import { cn } from '@/shared/ui/utils';
 
 export function SidepanelApp() {
   const tokens = useTokens();
-  const pin = usePinnedHostname();
-  const [forcedTokenId, setForcedTokenId] = useState<string | null>(null);
-  const [refreshKey, setRefreshKey] = useState(0);
-  const lookup = useWorkerLookup(pin.hostname, tokens, forcedTokenId, refreshKey);
-  // Best-guess account label before the lookup resolves — see the identical
-  // comment in popup-app.tsx.
-  const resolvedToken = lookup.status === 'ready' ? lookup.resolved.token : (tokens?.[0] ?? null);
+  const panel = usePanelTabs(tokens);
 
-  // If the token this panel was forced to now got removed (or replaced) in
-  // Options, fall back to auto-detect rather than silently querying with
-  // zero candidate tokens forever — see useWorkerLookup, which treats an
-  // unmatched forcedTokenId as "no tokens to try" and reports the site as
-  // not-a-worker-site, which would otherwise be misleading here.
-  useEffect(() => {
-    if (forcedTokenId && tokens && !tokens.some((token) => token.id === forcedTokenId)) {
-      setForcedTokenId(null);
-    }
-  }, [forcedTokenId, tokens]);
+  // Only for AccountControl's display — each PanelTabPane still resolves its
+  // own worker independently (that's what makes the keep-alive mounting
+  // cheap). A second call for the same hostname just hits
+  // useWorkerLookup's module-level cache once the first one has resolved;
+  // the only cost is a duplicate multi-token trial the very first time a
+  // given hostname is ever seen this session, which is harmless. No
+  // refreshKey — account resolution rarely changes, and the actual Worker
+  // data refresh stays each pane's own concern.
+  const headerLookup = useWorkerLookup(panel.activeHostname, tokens, panel.activeForcedTokenId);
+  const headerResolvedToken =
+    headerLookup.status === 'ready' ? headerLookup.resolved.token : (tokens?.[0] ?? null);
 
-  const refresh = () => {
-    if (pin.hostname) clearWorkerLookupCache(pin.hostname);
-    setRefreshKey((key) => key + 1);
-  };
+  if (!tokens) return null;
 
   return (
     <TooltipProvider delayDuration={300}>
       <main className="flex min-h-screen w-full flex-col gap-3 bg-neutral-50 p-4">
-        <div className="flex items-start justify-between gap-2">
-          {pin.hostname ? (
-            <IdentityHeader
-              hostname={pin.hostname}
-              worker={lookup.status === 'ready' ? lookup.resolved.worker : null}
-            />
-          ) : (
-            <h1 className="text-sm font-semibold text-neutral-900">
-              {browser.i18n.getMessage('sidepanelHeading')}
-            </h1>
-          )}
-          <div className="flex shrink-0 items-center gap-1">
-            <RefreshButton onClick={refresh} />
-            <AccountControl
-              tokens={tokens ?? []}
-              forcedTokenId={forcedTokenId}
-              resolvedToken={resolvedToken}
-              onSelect={setForcedTokenId}
-            />
-          </div>
-        </div>
+        {tokens.length === 0 && <NoTokenEmptyState />}
 
-        {pin.isStale && pin.liveHostname && (
-          <TabChangedBanner liveHostname={pin.liveHostname} onSwitch={pin.switchToLive} />
-        )}
+        {tokens.length > 0 && (
+          <>
+            <div className="flex items-center gap-2 border-b border-border pb-2">
+              <PanelTabStrip
+                pinnedTabs={panel.pinnedTabs}
+                dynamicHostname={panel.dynamicHostname}
+                activeHostname={panel.activeHostname}
+                isActiveDynamic={panel.isActiveDynamic}
+                onSelectPinned={panel.selectPinnedTab}
+                onSelectDynamic={panel.focusDynamicTab}
+                onUnpin={panel.unpin}
+                onPinDynamic={panel.pinCurrentDynamic}
+                onAddManual={panel.addManualTab}
+              />
+              <AccountControl
+                tokens={tokens}
+                forcedTokenId={panel.activeForcedTokenId}
+                resolvedToken={headerResolvedToken}
+                onSelect={panel.setActiveForcedTokenId}
+              />
+            </div>
 
-        {tokens && tokens.length === 0 && <NoTokenEmptyState />}
+            {/* Every pinned tab that's ever been viewed this session stays
+                mounted (hidden, not unmounted) so switching back to it is
+                instant and doesn't re-fetch — see use-panel-tabs.ts. */}
+            {panel.mountedHostnames.map((hostname) => (
+              <PanelTabPane
+                key={hostname}
+                hostname={hostname}
+                tokens={tokens}
+                forcedTokenId={
+                  panel.pinnedTabs.find((tab) => tab.hostname === hostname)?.forcedTokenId ?? null
+                }
+                isDynamic={false}
+                className={cn(
+                  (panel.isActiveDynamic || panel.activeHostname !== hostname) && 'hidden',
+                )}
+              />
+            ))}
 
-        {tokens && tokens.length > 0 && (
-          <VersionSwitcher
-            lookup={lookup}
-            hostname={pin.hostname}
-            refreshKey={refreshKey}
-            onRefresh={() => setRefreshKey((key) => key + 1)}
-          />
+            {/* The dynamic pane never stays mounted across a host change —
+                it's rendered fresh only while it's the active tab. */}
+            {panel.isActiveDynamic && panel.dynamicHostname && (
+              <PanelTabPane
+                key={panel.dynamicHostname}
+                hostname={panel.dynamicHostname}
+                tokens={tokens}
+                forcedTokenId={panel.activeForcedTokenId}
+                isDynamic
+              />
+            )}
+          </>
         )}
       </main>
     </TooltipProvider>

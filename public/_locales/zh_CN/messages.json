@@ -20,18 +20,62 @@
   "badgeTitleNoToken": {
     "message": "尚未配置 Cloudflare API Token，点击开始设置"
   },
-  "tabChangedBannerLabel": {
-    "message": "当前标签页：$NAME$",
-    "placeholders": { "name": { "content": "$1" } }
-  },
-  "tabChangedBannerButton": {
-    "message": "查看"
-  },
   "refreshButtonLabel": {
     "message": "刷新"
   },
   "popupOpenFullPanel": {
     "message": "打开完整面板"
+  },
+  "panelTabPinTooltip": {
+    "message": "固定这个站点"
+  },
+  "panelTabUnpinTooltip": {
+    "message": "取消固定"
+  },
+  "panelTabAddTooltip": {
+    "message": "新建标签"
+  },
+  "panelTabAddLabel": {
+    "message": "站点"
+  },
+  "panelTabAddPlaceholder": {
+    "message": "example.com"
+  },
+  "panelTabAddInvalid": {
+    "message": "请输入有效的 hostname 或 URL。"
+  },
+  "panelTabAddSubmit": {
+    "message": "添加"
+  },
+  "panelTabDynamicEmpty": {
+    "message": "未检测到站点"
+  },
+  "panelTabLiveLabel": {
+    "message": "跟随当前浏览器标签页"
+  },
+  "panelTabDetectTooltip": {
+    "message": "检测此站点"
+  },
+  "detectionModeToggleTooltip": {
+    "message": "检测模式"
+  },
+  "detectionModePopoverTitle": {
+    "message": "检测模式"
+  },
+  "detectionModePopoverDescription": {
+    "message": "自动模式下，你切换到的每个网站都会被拿去和你的 Cloudflare 账号比对。手动模式下机动标签只显示域名，不会主动检测——在你点击之前，你随手逛的网站不会被拿去做任何比对。"
+  },
+  "detectionModeSwitchLabel": {
+    "message": "手动检测"
+  },
+  "manualDetectionPendingTitle": {
+    "message": "尚未检测"
+  },
+  "manualDetectionPendingBody": {
+    "message": "当前是手动检测模式，这个站点还没有和你的 Cloudflare 账号比对过。"
+  },
+  "manualDetectionPendingButton": {
+    "message": "检测此站点"
   },
   "versionSwitcherLoading": {
     "message": "正在查找该站点对应的 Worker…"
@@ -287,6 +331,14 @@
   },
   "accountControlManageTokens": {
     "message": "管理 Token"
+  },
+  "accountControlAutoLabel": {
+    "message": "账号：$NAME$（自动识别）",
+    "placeholders": { "name": { "content": "$1" } }
+  },
+  "accountControlLockedLabel": {
+    "message": "已锁定账号：$NAME$",
+    "placeholders": { "name": { "content": "$1" } }
   },
   "optionsHeading": {
     "message": "Cloudflare API Token"

@@ -30,6 +30,40 @@ function toDeploymentVersions(
   }));
 }
 
+// How many earlier boundary positions the deployment bar draws as trail
+// marks. Past ~4 the marks stop reading as a trajectory and just look like
+// noise on the track.
+const MAX_BOUNDARY_TRAIL = 4;
+
+// Ordered (not sorted) so that the same two versions in swapped slots counts
+// as a different rollout — slot order decides Durable Object affinity, so
+// swapping them really is a different thing, not the same rollout continued.
+function versionSetKey(deployment: z.infer<typeof deploymentSchema>): string {
+  return deployment.versions.map((version) => version.version_id).join('|');
+}
+
+// Where the traffic boundary sat in each preceding deployment *of this same
+// rollout*, newest first. Walks back only while the version set is
+// unchanged: once it differs, that's a different pair of versions and its
+// boundary position says nothing about how the current rollout progressed.
+// Empty for a single-version deployment, which has no boundary to track.
+function computeBoundaryTrail(deployments: z.infer<typeof deploymentSchema>[]): number[] {
+  const current = deployments[0];
+  if (!current || current.versions.length !== 2) return [];
+
+  const currentKey = versionSetKey(current);
+  const trail: number[] = [];
+
+  for (const deployment of deployments.slice(1)) {
+    if (trail.length >= MAX_BOUNDARY_TRAIL) break;
+    if (versionSetKey(deployment) !== currentKey) break;
+    const slotB = deployment.versions[1];
+    if (slotB) trail.push(slotB.percentage);
+  }
+
+  return trail;
+}
+
 export interface DeploymentSnapshot {
   // The deployment actively serving traffic; one version (100%) or two (a
   // gradual rollout split). Version Overrides can only target a version
@@ -40,6 +74,10 @@ export interface DeploymentSnapshot {
   // version in `current` is one that was already there ("keep") or one
   // this deployment just introduced ("new") — see version-roles.ts.
   previous: DeploymentVersion[] | null;
+  // Slot B's percentage in each earlier deployment of this same rollout,
+  // newest first — drawn as faint marks above the deployment bar so the
+  // Worker's rollout trajectory is visible at a glance.
+  boundaryTrail: number[];
 }
 
 export async function getCurrentDeploymentVersions(
@@ -55,6 +93,7 @@ export async function getCurrentDeploymentVersions(
   return {
     current: toDeploymentVersions(parsed.deployments[0]),
     previous: parsed.deployments[1] ? toDeploymentVersions(parsed.deployments[1]) : null,
+    boundaryTrail: computeBoundaryTrail(parsed.deployments),
   };
 }
 

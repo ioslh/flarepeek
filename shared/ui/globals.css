@@ -94,3 +94,22 @@
     @apply bg-background text-foreground;
   }
 }
+
+/*
+ * The deployment bar's boundary is a gently rippling edge that flows
+ * downward, reading as "traffic is streaming through this exact point"
+ * rather than the bar being a static chart. (An earlier opacity pulse was
+ * too easy to miss.) The distance travelled must equal WAVE_TILE_PX in
+ * deployment-bar-track.tsx, whose waveform is built to repeat exactly over
+ * that height — keep the two in sync or the loop will visibly jump.
+ * Applied via motion-safe: so the edge is simply still for users who ask
+ * for reduced motion.
+ */
+@keyframes flarepeek-boundary-flow {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(96px);
+  }
+}

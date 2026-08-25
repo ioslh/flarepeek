@@ -4,15 +4,16 @@ import {
   useBindingUsage,
   type BindingUsage,
 } from '@/entrypoints/sidepanel/bindings/use-binding-usage';
+import { PanelSection, PANEL_SECTION_HEADING_CLASS } from '@/entrypoints/sidepanel/panel-section';
 import { cloudflareErrorMessageKey } from '@/shared/cloudflare-api/error-message-key';
 import { bindingDashboardUrl } from '@/shared/cloudflare-api/dashboard-links';
-import { Card } from '@/shared/ui/card';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from '@/shared/ui/accordion';
+import { cn } from '@/shared/ui/utils';
 import type { WorkerBinding } from '@/shared/cloudflare-api/bindings';
 import type { ResolvedWorker } from '@/shared/worker-panel/use-worker-lookup';
 
@@ -36,9 +37,11 @@ export function BindingsPanel({ resolved }: BindingsPanelProps) {
 
   if (state.status === 'error') {
     return (
-      <p className="text-sm text-red-600">
-        {browser.i18n.getMessage(cloudflareErrorMessageKey(state.kind))}
-      </p>
+      <PanelSection>
+        <p className="text-xs text-destructive">
+          {browser.i18n.getMessage(cloudflareErrorMessageKey(state.kind))}
+        </p>
+      </PanelSection>
     );
   }
 
@@ -47,7 +50,10 @@ export function BindingsPanel({ resolved }: BindingsPanelProps) {
   }
 
   return (
-    <Card className="gap-0 py-0">
+    // No PanelSection title here — the accordion's own trigger *is* the
+    // heading, styled with the shared heading class so it lines up with
+    // every other section label despite being a button.
+    <PanelSection className="gap-0 py-0">
       <Accordion
         type="single"
         collapsible
@@ -55,10 +61,15 @@ export function BindingsPanel({ resolved }: BindingsPanelProps) {
         onValueChange={(value) => setIsOpen(value === 'bindings')}
       >
         <AccordionItem value="bindings" className="border-b-0">
-          <AccordionTrigger className="px-4 py-3 text-xs font-medium text-muted-foreground uppercase hover:no-underline">
+          <AccordionTrigger
+            className={cn(
+              PANEL_SECTION_HEADING_CLASS,
+              'py-4 text-neutral-400 hover:text-neutral-700 hover:no-underline',
+            )}
+          >
             {browser.i18n.getMessage('bindingsHeading', String(state.bindings.length))}
           </AccordionTrigger>
-          <AccordionContent className="px-4">
+          <AccordionContent className="pb-4">
             <ul className="flex flex-col gap-1">
               {state.bindings.map((binding, index) => {
                 const dashboardUrl = bindingDashboardUrl(resolved.worker.accountId, binding);
@@ -88,7 +99,7 @@ export function BindingsPanel({ resolved }: BindingsPanelProps) {
           </AccordionContent>
         </AccordionItem>
       </Accordion>
-    </Card>
+    </PanelSection>
   );
 }
 

@@ -17,6 +17,7 @@ export type DeploymentVersionsState =
       status: 'ready';
       versions: DeploymentVersion[];
       previousVersions: DeploymentVersion[] | null;
+      boundaryTrail: number[];
     };
 
 // refreshKey has no meaning of its own — bump it (e.g. after a deployment
@@ -49,6 +50,7 @@ export function useDeploymentVersions(
             status: 'ready',
             versions: snapshot.current,
             previousVersions: snapshot.previous,
+            boundaryTrail: snapshot.boundaryTrail,
           });
         }
       } catch (error) {

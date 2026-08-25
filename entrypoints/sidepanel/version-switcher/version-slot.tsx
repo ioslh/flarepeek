@@ -1,6 +1,5 @@
 import { Crosshair } from 'lucide-react';
 import { VersionCombobox } from '@/entrypoints/sidepanel/version-switcher/version-combobox';
-import { formatPercentage } from '@/entrypoints/sidepanel/version-switcher/percentage-ladder';
 import { Badge } from '@/shared/ui/badge';
 import { Button } from '@/shared/ui/button';
 import { cn } from '@/shared/ui/utils';
@@ -21,19 +20,10 @@ function roleMessageKey(role: VersionRole) {
   }
 }
 
-// slotColorClass mirrors the bar track: slot A (left) is always the
-// teal/emerald side, slot B (right) is always the brand-orange side —
-// color is tied to position, not to which version happens to be "new".
-const SLOT_TEXT_COLOR: Record<'left' | 'right', string> = {
-  left: 'text-emerald-700',
-  right: 'text-primary',
-};
-
 interface ViewVersionSlotProps {
   mode: 'view';
   align: 'left' | 'right';
   version: DisplayVersion;
-  percentage: number;
   role: VersionRole;
   isPinned: boolean;
   isPinBusy: boolean;
@@ -77,7 +67,7 @@ export function VersionSlot(props: VersionSlotProps) {
     );
   }
 
-  const { version, percentage, role, isPinned, isPinBusy, previewUrl, onTogglePin } = props;
+  const { version, role, isPinned, isPinBusy, previewUrl, onTogglePin } = props;
   const shortId = version.versionId.slice(0, 8);
   const idLabel = browser.i18n.getMessage('versionSwitcherVersionIdLabel', shortId);
 
@@ -120,12 +110,9 @@ export function VersionSlot(props: VersionSlotProps) {
         {version.tag ?? idLabel}
       </span>
       <span className="truncate font-mono text-[10px] text-muted-foreground">{idLabel}</span>
-      <span
-        className={cn('font-mono text-2xl leading-none font-bold', SLOT_TEXT_COLOR[props.align])}
-      >
-        {formatPercentage(percentage)}
-        <span className="ml-0.5 text-xs font-normal opacity-60">%</span>
-      </span>
+      {/* No percentage here: it's read off the deployment bar directly above,
+          where the number sits on the field it describes. Repeating it at
+          the same size just competed with the bar for the same glance. */}
       {previewUrl && (
         <a
           href={previewUrl}

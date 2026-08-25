@@ -12,6 +12,10 @@ export interface ResolvedWorker {
 }
 
 export type WorkerLookupState =
+  // Waiting on the caller to opt in via `enabled` — see the dynamic tab's
+  // manual-detection mode (entrypoints/sidepanel/tabs/panel-tab-pane.tsx),
+  // the only caller that ever passes `enabled: false`.
+  | { status: 'idle' }
   | { status: 'loading' }
   | { status: 'no-token' }
   | { status: 'not-a-worker-site' }
@@ -51,15 +55,26 @@ watchTokens(() => resetWorkerLookupCache());
 // Pass `forcedTokenId` to pin the lookup to one specific token instead — used
 // by the side panel's token switcher override. Bump `refreshKey` to force a
 // re-fetch even when a cache entry exists (e.g. a manual refresh action).
+// `enabled = false` skips fetching entirely and reports 'idle' — flipping it
+// back to true (or bumping refreshKey once already true) triggers a fetch
+// through the same effect, no separate code path needed.
 export function useWorkerLookup(
   hostname: string | null | undefined,
   tokens: StoredToken[] | undefined,
   forcedTokenId?: string | null,
   refreshKey = 0,
+  enabled = true,
 ): WorkerLookupState {
-  const [state, setState] = useState<WorkerLookupState>({ status: 'loading' });
+  const [state, setState] = useState<WorkerLookupState>({
+    status: enabled ? 'loading' : 'idle',
+  });
 
   useEffect(() => {
+    if (!enabled) {
+      setState({ status: 'idle' });
+      return;
+    }
+
     if (hostname === undefined || tokens === undefined) {
       setState({ status: 'loading' });
       return;
@@ -112,7 +127,7 @@ export function useWorkerLookup(
     return () => {
       cancelled = true;
     };
-  }, [hostname, tokens, forcedTokenId, refreshKey]);
+  }, [hostname, tokens, forcedTokenId, refreshKey, enabled]);
 
   return state;
 }

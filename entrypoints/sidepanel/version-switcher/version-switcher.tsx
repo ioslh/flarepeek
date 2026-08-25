@@ -7,18 +7,23 @@ import type { WorkerLookupState } from '@/shared/worker-panel/use-worker-lookup'
 
 interface VersionSwitcherProps {
   lookup: WorkerLookupState;
-  // Pinned hostname (not necessarily the live tab's) — see use-pinned-hostname.ts.
+  // The hostname this pane is showing — see entrypoints/sidepanel/tabs/panel-tab-pane.tsx.
   hostname: string | null | undefined;
   refreshKey: number;
   onRefresh: () => void;
 }
 
 // The content body for a resolved (or resolving) worker — identity, pin
-// staleness, and account switching all live one level up in sidepanel-app.tsx
-// now, since AccountControl needs the same resolved-token state regardless of
-// whether a worker has matched yet.
+// staleness, and account switching all live one level up in
+// entrypoints/sidepanel/tabs/panel-tab-pane.tsx now, since AccountControl
+// needs the same resolved-token state regardless of whether a worker has
+// matched yet.
 export function VersionSwitcher({ lookup, hostname, refreshKey, onRefresh }: VersionSwitcherProps) {
-  if (lookup.status === 'loading') {
+  // Only reachable in theory — the dynamic tab's manual-detection mode
+  // (the only caller of useWorkerLookup that can produce 'idle') renders its
+  // own pending placeholder instead of this component while idle. Handled
+  // here anyway so this stays exhaustive over WorkerLookupState.
+  if (lookup.status === 'idle' || lookup.status === 'loading') {
     return (
       <p className="text-sm text-neutral-500">
         {browser.i18n.getMessage('versionSwitcherLoading')}
@@ -51,7 +56,11 @@ export function VersionSwitcher({ lookup, hostname, refreshKey, onRefresh }: Ver
   const { resolved } = lookup;
 
   return (
-    <div className="flex flex-col gap-3">
+    // divide-y draws the one thin rule between sections; each PanelSection
+    // brings its own vertical padding, so no gap is needed and no section
+    // needs a border of its own. Sections that render null (stats before
+    // they load, bindings when there are none) simply don't produce a rule.
+    <div className="flex flex-col divide-y divide-border">
       <WorkerStatsCard resolved={resolved} />
 
       <DeploymentBar
