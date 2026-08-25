@@ -21,12 +21,12 @@ import { useDeploymentVersions } from '@/shared/worker-panel/use-deployment-vers
 import { usePreviewUrlConfig } from '@/shared/worker-panel/use-preview-url-config';
 import { useVersionOverride } from '@/shared/worker-panel/use-version-override';
 import { buildVersionPreviewUrl } from '@/shared/cloudflare-api/preview-url';
+import { workerDeploymentHistoryUrl } from '@/shared/cloudflare-api/dashboard-links';
 import { cloudflareErrorMessageKey } from '@/shared/cloudflare-api/error-message-key';
 import { Alert, AlertDescription } from '@/shared/ui/alert';
 import { Button } from '@/shared/ui/button';
 import { PanelSection } from '@/entrypoints/sidepanel/panel-section';
 import { Input } from '@/shared/ui/input';
-import { Label } from '@/shared/ui/label';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { cn } from '@/shared/ui/utils';
 import type { DisplayVersion } from '@/shared/worker-panel/version-row';
@@ -89,6 +89,7 @@ export function DeploymentBar({ resolved, hostname, refreshKey, onRefresh }: Dep
       tag: meta?.tag ?? null,
       message: meta?.message ?? null,
       createdOn: meta?.createdOn ?? null,
+      authorEmail: meta?.authorEmail ?? null,
       everDeployed: true,
     };
   });
@@ -100,6 +101,7 @@ export function DeploymentBar({ resolved, hostname, refreshKey, onRefresh }: Dep
           tag: version.tag,
           message: version.message,
           createdOn: version.createdOn,
+          authorEmail: version.authorEmail,
           everDeployed: version.everDeployed,
         }))
       : [];
@@ -220,6 +222,10 @@ export function DeploymentBar({ resolved, hostname, refreshKey, onRefresh }: Dep
         <DeploymentHistoryMenu
           history={history}
           currentId={history[0]?.id ?? ''}
+          historyHref={workerDeploymentHistoryUrl(
+            resolved.worker.accountId,
+            resolved.worker.scriptName,
+          )}
           tone={mode === 'edit' ? 'accent' : 'default'}
         />
       }
@@ -428,18 +434,13 @@ export function DeploymentBar({ resolved, hostname, refreshKey, onRefresh }: Dep
       )}
 
       {mode === 'edit' && (
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="deployment-bar-message">
-            {browser.i18n.getMessage('deploymentSplitMessagePlaceholder')}
-          </Label>
-          <Input
-            id="deployment-bar-message"
-            value={editState.message}
-            disabled={deploymentActions.state.status === 'submitting'}
-            onChange={(event) => editState.setMessage(event.target.value)}
-            placeholder={browser.i18n.getMessage('deploymentSplitMessagePlaceholder')}
-          />
-        </div>
+        <Input
+          aria-label={browser.i18n.getMessage('deploymentSplitMessagePlaceholder')}
+          value={editState.message}
+          disabled={deploymentActions.state.status === 'submitting'}
+          onChange={(event) => editState.setMessage(event.target.value)}
+          placeholder={browser.i18n.getMessage('deploymentSplitMessagePlaceholder')}
+        />
       )}
 
       {/* Discard sits beside the deploy button, not up in the heading: the

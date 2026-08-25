@@ -119,6 +119,7 @@ export function PopupApp() {
                     tag: null,
                     message: null,
                     createdOn: null,
+                    authorEmail: null,
                     everDeployed: null,
                   }}
                   isActive={override.activeVersionId === version.versionId}

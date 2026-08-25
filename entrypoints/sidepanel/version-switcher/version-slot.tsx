@@ -6,20 +6,6 @@ import { cn } from '@/shared/ui/utils';
 import type { VersionRole } from '@/entrypoints/sidepanel/version-switcher/version-roles';
 import type { DisplayVersion } from '@/shared/worker-panel/version-row';
 
-// Returned as a literal so callers type-check against browser.i18n.getMessage's
-// generated overloads (a closed union of known message keys, not `string`) —
-// same reasoning as shared/cloudflare-api/error-message-key.ts.
-function roleMessageKey(role: VersionRole) {
-  switch (role) {
-    case 'keep':
-      return 'deploymentBarRoleKeep';
-    case 'new':
-      return 'deploymentBarRoleNew';
-    case 'unknown':
-      return 'deploymentBarRoleUnknown';
-  }
-}
-
 interface ViewVersionSlotProps {
   mode: 'view';
   align: 'left' | 'right';
@@ -97,9 +83,18 @@ export function VersionSlot(props: VersionSlotProps) {
 
   const badges = (
     <>
-      <Badge variant="outline" className="shrink-0 font-mono text-[9px] font-normal">
-        {browser.i18n.getMessage(roleMessageKey(role))}
-      </Badge>
+      {/* Only "new this rollout" is worth a badge. "Kept" restates the
+          default expectation — the incumbent is where traffic already was —
+          and "role unclear" is noise. Marking just the exception is the same
+          rule the tab strip's live dot follows. */}
+      {role === 'new' && (
+        <Badge
+          variant="outline"
+          className="shrink-0 border-primary/40 bg-primary/10 font-mono text-[9px] font-normal text-primary"
+        >
+          {browser.i18n.getMessage('deploymentBarRoleNew')}
+        </Badge>
+      )}
       {isPinned && (
         <Badge className="shrink-0 bg-primary font-mono text-[9px] font-normal text-primary-foreground">
           {browser.i18n.getMessage('deploymentBarPinned')}

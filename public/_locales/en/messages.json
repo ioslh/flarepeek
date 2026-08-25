@@ -100,11 +100,19 @@
   },
   "versionSwitcherWorkerLabel": {
     "message": "Worker: $NAME$",
-    "placeholders": { "name": { "content": "$1" } }
+    "placeholders": {
+      "name": {
+        "content": "$1"
+      }
+    }
   },
   "versionSwitcherZoneLabel": {
     "message": "Zone: $NAME$",
-    "placeholders": { "name": { "content": "$1" } }
+    "placeholders": {
+      "name": {
+        "content": "$1"
+      }
+    }
   },
   "versionSwitcherNoVersions": {
     "message": "No deployment found for this Worker."
@@ -114,11 +122,19 @@
   },
   "versionSwitcherPercentageLabel": {
     "message": "$PERCENTAGE$% traffic",
-    "placeholders": { "percentage": { "content": "$1" } }
+    "placeholders": {
+      "percentage": {
+        "content": "$1"
+      }
+    }
   },
   "versionSwitcherVersionIdLabel": {
     "message": "Version $VERSION_ID$",
-    "placeholders": { "version_id": { "content": "$1" } }
+    "placeholders": {
+      "version_id": {
+        "content": "$1"
+      }
+    }
   },
   "versionSwitcherActivate": {
     "message": "Preview this version"
@@ -128,7 +144,11 @@
   },
   "versionSwitcherUploadedLabel": {
     "message": "Uploaded $DATE$",
-    "placeholders": { "date": { "content": "$1" } }
+    "placeholders": {
+      "date": {
+        "content": "$1"
+      }
+    }
   },
   "deploymentSplitMessagePlaceholder": {
     "message": "Deployment message (optional)"
@@ -154,27 +174,6 @@
   "deploymentControlManageDeployment": {
     "message": "Manage deployment"
   },
-  "deploymentSplitConfirmDialogTitle": {
-    "message": "Confirm deployment change"
-  },
-  "deploymentSplitConfirmDialogDescription": {
-    "message": "This will immediately change live production traffic."
-  },
-  "deploymentSplitConfirmDialogCancel": {
-    "message": "Cancel"
-  },
-  "deploymentSplitConfirmDialogConfirm": {
-    "message": "Confirm — changes live traffic"
-  },
-  "deploymentBarHeadingSingle": {
-    "message": "Current deployment · single version"
-  },
-  "deploymentBarHeadingDouble": {
-    "message": "Current deployment · two versions"
-  },
-  "deploymentBarHeadingEdit": {
-    "message": "Adjust traffic split"
-  },
   "deploymentBarToggleEdit": {
     "message": "Adjust traffic / deploy"
   },
@@ -187,27 +186,47 @@
   "deploymentBarHoldRetreat": {
     "message": "Hold to roll back"
   },
+  "deploymentBarHeadingCurrent": {
+    "message": "Current deployment: $HASH$",
+    "placeholders": {
+      "hash": {
+        "content": "$1"
+      }
+    }
+  },
+  "deploymentHistoryOpenAll": {
+    "message": "All ↗"
+  },
+  "dashboardMenuZoneTooltip": {
+    "message": "Open this zone in the Cloudflare dashboard"
+  },
+  "versionComboboxLive": {
+    "message": "live $PERCENTAGE$%",
+    "placeholders": {
+      "percentage": {
+        "content": "$1"
+      }
+    }
+  },
   "deploymentHistoryCaption": {
     "message": "Recent deployments — read-only"
   },
   "deploymentHistoryCurrent": {
     "message": "live"
   },
-  "deploymentBarRoleKeep": {
-    "message": "Kept"
-  },
   "deploymentBarRoleNew": {
     "message": "New this rollout"
-  },
-  "deploymentBarRoleUnknown": {
-    "message": "Role unclear"
   },
   "deploymentBarPinned": {
     "message": "Pinned"
   },
   "overrideModeBarPinned": {
     "message": "Pinned to $NAME$ — this tab only, live traffic is unaffected",
-    "placeholders": { "name": { "content": "$1" } }
+    "placeholders": {
+      "name": {
+        "content": "$1"
+      }
+    }
   },
   "overrideModeBarClear": {
     "message": "Unpin"
@@ -242,26 +261,35 @@
   "deploymentBarNoteRandom": {
     "message": "You're currently hitting either version at random — refreshing may switch you. Pin ⌖ a version to reliably reproduce it."
   },
-  "deploymentBarNotePinned": {
-    "message": "This tab is locked to the pinned version — live traffic is unaffected. Remember to unpin when you're done investigating; while pinned, you won't see real production behavior."
-  },
   "deploymentBarNoteSingle": {
     "message": "Single-version deployment — every request is served by it."
   },
   "deploymentBarDeltaAdvance": {
     "message": "↗ Advancing +$PP$pp",
-    "placeholders": { "pp": { "content": "$1" } }
+    "placeholders": {
+      "pp": {
+        "content": "$1"
+      }
+    }
   },
   "deploymentBarDeltaRetreat": {
     "message": "↩ Retreating −$PP$pp",
-    "placeholders": { "pp": { "content": "$1" } }
+    "placeholders": {
+      "pp": {
+        "content": "$1"
+      }
+    }
   },
   "deploymentBarDeltaNone": {
     "message": "Δ 0pp"
   },
   "deploymentBarDeltaAffected": {
     "message": "About $PERCENT$% of users will switch versions",
-    "placeholders": { "percent": { "content": "$1" } }
+    "placeholders": {
+      "percent": {
+        "content": "$1"
+      }
+    }
   },
   "deploymentBarDeltaNoChange": {
     "message": "No one flips unless you deploy this"
@@ -289,14 +317,22 @@
   },
   "versionErrorRateLabel": {
     "message": "$RATE$% errors · 24h",
-    "placeholders": { "rate": { "content": "$1" } }
+    "placeholders": {
+      "rate": {
+        "content": "$1"
+      }
+    }
   },
   "versionErrorRateSource": {
     "message": "Per-version rates come from Workers Observability, which samples at high volume — the ratios hold, the underlying counts may be low. The 24h figures below come from Analytics and are not sampled, so the two need not reconcile exactly."
   },
   "versionErrorRateUnattributed": {
     "message": "$RATE$% of requests carried no version and are excluded above.",
-    "placeholders": { "rate": { "content": "$1" } }
+    "placeholders": {
+      "rate": {
+        "content": "$1"
+      }
+    }
   },
   "workerStatsRequests": {
     "message": "Requests (24h)"
@@ -309,34 +345,63 @@
   },
   "bindingsHeading": {
     "message": "Bindings ($COUNT$)",
-    "placeholders": { "count": { "content": "$1" } }
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
   },
   "bindingUsageKv": {
     "message": "$REQUESTS$ requests · $KEYS$ keys · $SIZE$ stored",
     "placeholders": {
-      "requests": { "content": "$1" },
-      "keys": { "content": "$2" },
-      "size": { "content": "$3" }
+      "requests": {
+        "content": "$1"
+      },
+      "keys": {
+        "content": "$2"
+      },
+      "size": {
+        "content": "$3"
+      }
     }
   },
   "bindingUsageD1": {
     "message": "$READS$ reads · $WRITES$ writes",
-    "placeholders": { "reads": { "content": "$1" }, "writes": { "content": "$2" } }
+    "placeholders": {
+      "reads": {
+        "content": "$1"
+      },
+      "writes": {
+        "content": "$2"
+      }
+    }
   },
   "bindingUsageD1WithStorage": {
     "message": "$READS$ reads · $WRITES$ writes · $SIZE$ stored",
     "placeholders": {
-      "reads": { "content": "$1" },
-      "writes": { "content": "$2" },
-      "size": { "content": "$3" }
+      "reads": {
+        "content": "$1"
+      },
+      "writes": {
+        "content": "$2"
+      },
+      "size": {
+        "content": "$3"
+      }
     }
   },
   "bindingUsageR2": {
     "message": "$CLASS_A$ Class A · $CLASS_B$ Class B ops · $SIZE$ stored",
     "placeholders": {
-      "class_a": { "content": "$1" },
-      "class_b": { "content": "$2" },
-      "size": { "content": "$3" }
+      "class_a": {
+        "content": "$1"
+      },
+      "class_b": {
+        "content": "$2"
+      },
+      "size": {
+        "content": "$3"
+      }
     }
   },
   "recentVersionsNeverDeployed": {
@@ -371,25 +436,41 @@
   },
   "recentErrorsStatusCodeLabel": {
     "message": "status $CODE$",
-    "placeholders": { "code": { "content": "$1" } }
+    "placeholders": {
+      "code": {
+        "content": "$1"
+      }
+    }
   },
   "tokenSwitcherAuto": {
     "message": "Auto"
   },
   "tokenSwitcherResolvedLabel": {
     "message": "Using: $NAME$",
-    "placeholders": { "name": { "content": "$1" } }
+    "placeholders": {
+      "name": {
+        "content": "$1"
+      }
+    }
   },
   "accountControlManageTokens": {
     "message": "Manage tokens"
   },
   "accountControlAutoLabel": {
     "message": "Account: $NAME$ (auto-detected)",
-    "placeholders": { "name": { "content": "$1" } }
+    "placeholders": {
+      "name": {
+        "content": "$1"
+      }
+    }
   },
   "accountControlLockedLabel": {
     "message": "Account locked to $NAME$",
-    "placeholders": { "name": { "content": "$1" } }
+    "placeholders": {
+      "name": {
+        "content": "$1"
+      }
+    }
   },
   "optionsHeading": {
     "message": "Cloudflare API Tokens"

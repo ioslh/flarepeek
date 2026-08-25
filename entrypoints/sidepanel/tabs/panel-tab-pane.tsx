@@ -1,6 +1,5 @@
 import { useRef, useState } from 'react';
-import { RefreshButton } from '@/entrypoints/sidepanel/refresh-button';
-import { DetectionModeToggle } from '@/entrypoints/sidepanel/tabs/detection-mode-toggle';
+import { FetchControl } from '@/entrypoints/sidepanel/tabs/fetch-control';
 import { ManualDetectionPending } from '@/entrypoints/sidepanel/tabs/manual-detection-pending';
 import { useManualDetectionEnabled } from '@/entrypoints/sidepanel/tabs/use-manual-detection';
 import { DashboardMenu } from '@/entrypoints/sidepanel/dashboard-menu';
@@ -70,7 +69,7 @@ export function PanelTabPane({
 
   const lookup = useWorkerLookup(hostname, tokens, forcedTokenId, refreshKey, shouldLoad);
 
-  // The single handler behind both the RefreshButton and the
+  // The single handler behind both the FetchControl and the
   // ManualDetectionPending placeholder's button — "detect this site for the
   // first time" and "refresh already-loaded data" are the same action, just
   // at different points of the same pane's lifecycle.
@@ -101,13 +100,11 @@ export function PanelTabPane({
             {hostname}
           </span>
         )}
-        <div className="flex shrink-0 items-center gap-1">
-          {isDynamic && <DetectionModeToggle enabled={manualDetectionSetting === true} />}
-          <RefreshButton
-            onClick={refresh}
-            label={shouldLoad ? undefined : browser.i18n.getMessage('panelTabDetectTooltip')}
-          />
-        </div>
+        <FetchControl
+          onRefresh={refresh}
+          refreshLabel={shouldLoad ? undefined : browser.i18n.getMessage('panelTabDetectTooltip')}
+          detection={isDynamic ? { manualEnabled: manualDetectionSetting === true } : undefined}
+        />
       </div>
 
       {shouldLoad ? (

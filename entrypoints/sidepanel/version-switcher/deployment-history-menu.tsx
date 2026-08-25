@@ -11,6 +11,9 @@ interface DeploymentHistoryMenuProps {
   // history[0] in practice, passed explicitly so the trigger renders
   // correctly even if the list came back empty.
   currentId: string;
+  // Deep link to the Worker's full deployment history in the dashboard —
+  // this menu only shows what one API page returned.
+  historyHref: string;
   tone: 'default' | 'accent';
 }
 
@@ -26,7 +29,12 @@ function shortId(id: string): string {
 // "roll back to this", and a production traffic change has no business
 // hiding inside a reference dropdown — rollback belongs in the edit surface
 // where it gets the same hold-to-confirm gate as any other deploy.
-export function DeploymentHistoryMenu({ history, currentId, tone }: DeploymentHistoryMenuProps) {
+export function DeploymentHistoryMenu({
+  history,
+  currentId,
+  historyHref,
+  tone,
+}: DeploymentHistoryMenuProps) {
   return (
     <Popover>
       <PopoverTrigger
@@ -37,14 +45,26 @@ export function DeploymentHistoryMenu({ history, currentId, tone }: DeploymentHi
           tone === 'accent' ? 'text-primary' : 'text-foreground hover:text-primary',
         )}
       >
-        <span className="truncate">{shortId(currentId)}</span>
+        <span className="truncate">
+          {browser.i18n.getMessage('deploymentBarHeadingCurrent', shortId(currentId))}
+        </span>
         <ChevronDown className="size-3 shrink-0 text-muted-foreground" />
       </PopoverTrigger>
 
       <PopoverContent align="start" className="max-h-72 w-72 overflow-y-auto p-1.5">
-        <p className="px-1.5 pt-1 pb-2 font-mono text-[9px] leading-relaxed text-muted-foreground">
-          {browser.i18n.getMessage('deploymentHistoryCaption')}
-        </p>
+        <div className="flex items-baseline justify-between gap-2 px-1.5 pt-1 pb-2">
+          <p className="font-mono text-[9px] leading-relaxed text-muted-foreground">
+            {browser.i18n.getMessage('deploymentHistoryCaption')}
+          </p>
+          <a
+            href={historyHref}
+            target="_blank"
+            rel="noreferrer"
+            className="shrink-0 text-[10px] text-muted-foreground hover:text-primary hover:underline"
+          >
+            {browser.i18n.getMessage('deploymentHistoryOpenAll')}
+          </a>
+        </div>
 
         {history.map((entry) => (
           <div

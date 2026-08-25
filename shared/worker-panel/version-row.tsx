@@ -10,6 +10,10 @@ export interface DisplayVersion {
   tag: string | null;
   message: string | null;
   createdOn: string | null;
+  // Who uploaded it. With neither a tag nor a message — a plain
+  // `wrangler versions upload` leaves both unset — the timestamp and author
+  // are all that make one hash tellable from another.
+  authorEmail: string | null;
   // null = unknown — popup never fetches deployment history at all (see
   // popup-app.tsx), so it can't say either way.
   everDeployed: boolean | null;

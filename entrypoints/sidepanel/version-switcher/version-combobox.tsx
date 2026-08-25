@@ -101,22 +101,55 @@ export function VersionCombobox({
                   <Check className={cn('ml-auto size-4', selected !== null && 'opacity-0')} />
                 </CommandItem>
               )}
+              {/* A version uploaded without a tag or message shows only a
+                  hash, which tells you nothing about which build it is. The
+                  upload time and author come back on the same fetch and are
+                  what actually make one hash tellable from another, so every
+                  row carries them; a version already taking live traffic says
+                  so too, since that is the most useful thing to know while
+                  picking. */}
               {candidates.map((version) => (
                 <CommandItem
                   key={version.versionId}
                   value={searchValue(version)}
+                  className="flex-col items-start gap-0.5 py-2"
                   onSelect={() => {
                     onSelect(version);
                     setOpen(false);
                   }}
                 >
-                  <span className="truncate">{labelFor(version)}</span>
-                  <Check
-                    className={cn(
-                      'ml-auto size-4',
-                      selected?.versionId !== version.versionId && 'opacity-0',
+                  <div className="flex w-full items-center gap-1.5">
+                    <span className="truncate font-medium">{labelFor(version)}</span>
+                    {version.percentage !== null && (
+                      <span className="shrink-0 rounded-sm border border-primary/40 bg-primary/10 px-1 font-mono text-[9px] text-primary">
+                        {browser.i18n.getMessage('versionComboboxLive', String(version.percentage))}
+                      </span>
                     )}
-                  />
+                    <Check
+                      className={cn(
+                        'ml-auto size-4 shrink-0',
+                        selected?.versionId !== version.versionId && 'opacity-0',
+                      )}
+                    />
+                  </div>
+
+                  <div className="flex w-full min-w-0 items-center gap-1.5 font-mono text-[10px] text-muted-foreground">
+                    {version.tag && (
+                      <span className="shrink-0">{version.versionId.slice(0, 8)}</span>
+                    )}
+                    {version.createdOn && (
+                      <span className="shrink-0">
+                        {new Date(version.createdOn).toLocaleString()}
+                      </span>
+                    )}
+                    {version.authorEmail && <span className="truncate">{version.authorEmail}</span>}
+                  </div>
+
+                  {version.message && (
+                    <span className="w-full truncate text-[11px] text-muted-foreground italic">
+                      {version.message}
+                    </span>
+                  )}
                 </CommandItem>
               ))}
             </CommandGroup>

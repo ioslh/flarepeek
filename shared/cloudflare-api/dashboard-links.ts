@@ -8,6 +8,14 @@ export function workerDashboardUrl(accountId: string, scriptName: string): strin
   return `${DASHBOARD_BASE}/${accountId}/workers/services/view/${scriptName}/production`;
 }
 
+// Confirmed against a real URL supplied from an actual account. Note this
+// path has NO "view" segment, unlike workerDashboardUrl above — the two were
+// each confirmed separately and are reproduced as seen rather than
+// normalised into one shape on the assumption that both forms work.
+export function workerDeploymentHistoryUrl(accountId: string, scriptName: string): string {
+  return `${DASHBOARD_BASE}/${accountId}/workers/services/${scriptName}/production/deployment-history`;
+}
+
 // Also confirmed against real URLs — same direct-path family as
 // workerDashboardUrl, one level deeper (product/collection/resource-id).
 export function kvNamespaceDashboardUrl(accountId: string, namespaceId: string): string {

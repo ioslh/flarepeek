@@ -9,7 +9,7 @@ interface ManualDetectionPendingProps {
 // manual-detection mode is on and this hostname hasn't been checked yet —
 // see entrypoints/sidepanel/tabs/panel-tab-pane.tsx. Mirrors
 // shared/worker-panel/no-token-empty-state.tsx's structure. onDetect is the
-// exact same handler the header's RefreshButton uses in this state — this
+// exact same handler the header's FetchControl uses in this state — this
 // button is a second, more visible entry point to it, not a separate action.
 export function ManualDetectionPending({ onDetect }: ManualDetectionPendingProps) {
   return (
