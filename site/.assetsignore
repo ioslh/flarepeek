@@ -10,3 +10,8 @@ README.md
 # uploaded and served — previewing the site would silently publish scratch
 # state to flarepeek.com.
 .wrangler
+
+# The Worker's own source and its generated bindings types share this directory
+# with the files being served. Neither belongs on the public site.
+index.ts
+worker-configuration.d.ts

@@ -6,7 +6,7 @@
     <title>FlarePeek — Peek at your Cloudflare Worker before it ships</title>
     <meta
       name="description"
-      content="FlarePeek previews any Cloudflare Worker version on your real production domain, right from the browser — no staging environment, no separate deploy."
+      content="Stage a Cloudflare Worker version at 0% traffic and FlarePeek serves it to you alone on your real production domain — no staging environment, right from the browser."
     />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <meta
@@ -15,7 +15,7 @@
     />
     <meta
       property="og:description"
-      content="One-click preview of any Worker version on your real production domain, plus gradual rollout control, per-version error rates, bindings and stats — for several sites at once, from a browser extension."
+      content="Preview a staged Worker version on your real production domain, plus gradual rollout control, per-version error rates, bindings and stats — for several sites at once, from a browser extension."
     />
     <meta property="og:image" content="/og-icon.png" />
     <meta property="og:type" content="website" />
@@ -59,9 +59,9 @@
             <p class="eyebrow">For Cloudflare Workers developers</p>
             <h1>Peek before it ships.</h1>
             <p class="lede">
-              FlarePeek previews any deployed-but-not-live Worker version on your
-              <strong>real production domain</strong> — no staging environment, no separate deploy.
-              Just open the site, pick a version, and look.
+              Stage a Worker version at 0% traffic and FlarePeek serves it to
+              <strong>you alone</strong> on your real production domain — real DNS, real bindings,
+              no staging environment. Everyone else keeps getting the live version.
             </p>
             <div class="hero-actions">
               <a
@@ -74,6 +74,13 @@
               >
               <a class="btn btn-ghost" href="#how-it-works">See how it works</a>
             </div>
+            <p class="hero-live">
+              <span class="hero-live-dot" aria-hidden="true"></span>
+              This page is a Worker. You are being served version
+              <code data-fp-version>unknown</code>
+              <span class="hero-live-tag" data-fp-version-tag></span>
+              <span class="hero-live-hint">Install FlarePeek and switch it yourself.</span>
+            </p>
             <p class="hero-note">Chrome · Manifest V3 · Works with your own Cloudflare account</p>
           </div>
 
@@ -177,8 +184,9 @@
               <div class="feature-icon">👁️</div>
               <h3>One-click version preview</h3>
               <p>
-                Preview any deployed-but-not-live version on your actual production domain, powered
-                by Cloudflare's Version Overrides — no staging setup required.
+                A version staged in your deployment at 0% traffic is invisible to everyone — until
+                you pin it and see it on your actual production domain. Powered by Cloudflare's
+                Version Overrides; no staging setup required.
               </p>
             </article>
             <article class="feature-card">
@@ -265,8 +273,9 @@
               <div>
                 <h3>Preview, adjust, or roll back</h3>
                 <p>
-                  Pick a version to preview, drag the traffic split, or roll back — right there.
-                  Changes to live traffic take a press-and-hold, so nothing ships by accident.
+                  Put the new version in your deployment at 0%, preview it yourself, then move the
+                  split once it looks right — or roll back. Changes to live traffic take a
+                  press-and-hold, so nothing ships by accident.
                 </p>
               </div>
             </li>

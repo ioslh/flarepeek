@@ -198,8 +198,54 @@ code {
   flex-wrap: wrap;
 }
 
+/* Live version readout. Filled in per request by index.ts, which is the whole
+   reason the site runs as a Worker — it demonstrates the extension on itself. */
+.hero-live {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 22px 0 0;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-soft);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.hero-live-dot {
+  align-self: center;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--flare);
+  box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.15);
+}
+
+.hero-live code {
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.hero-live-tag:not(:empty) {
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--flare-light);
+  color: var(--flare-dark);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.hero-live-hint {
+  color: var(--muted-2);
+}
+
 .hero-note {
-  margin: 18px 0 0;
+  margin: 14px 0 0;
   font-size: 13px;
   color: var(--muted-2);
 }

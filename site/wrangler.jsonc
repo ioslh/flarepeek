@@ -3,14 +3,30 @@
   "name": "flarepeek-site",
   "compatibility_date": "2026-08-25",
 
-  // An assets-only Worker: there is no `main`, because nothing here needs to
-  // run server-side. Cloudflare serves the files directly, which also means
-  // requests for them never count as Worker invocations.
+  // The site is a Worker, not a plain asset bundle, for exactly one reason: so
+  // it can report which version of itself is serving the page. That turns
+  // flarepeek.com into a live demo of the extension — point FlarePeek at this
+  // domain and the version id in the hero changes as you switch versions.
+  "main": "index.ts",
+
   "assets": {
     "directory": ".",
+    "binding": "ASSETS",
     // Serves 404.html for anything that doesn't match a file, instead of
     // Cloudflare's bare default page.
     "not_found_handling": "404-page",
+    // Default routing is asset-first: a request that matches a file never
+    // reaches the Worker, which would leave the version id showing its
+    // placeholder. Listing the two HTML routes inverts that for them alone —
+    // CSS, icons and the OG image still come straight from the asset layer and
+    // cost no Worker invocation.
+    "run_worker_first": ["/", "/privacy"],
+  },
+
+  // Supplies { id, tag, timestamp } for the running version. This binding is
+  // the entire reason `main` exists.
+  "version_metadata": {
+    "binding": "CF_VERSION_METADATA",
   },
 
   // Custom domains rather than routes: a custom domain makes Cloudflare
