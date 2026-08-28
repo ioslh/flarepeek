@@ -1,5 +1,6 @@
 import { DeploymentBar } from '@/entrypoints/sidepanel/version-switcher/deployment-bar';
 import { RecentErrorsPanel } from '@/entrypoints/sidepanel/recent-errors/recent-errors-panel';
+import { LiveTailPanel } from '@/entrypoints/sidepanel/live-tail/live-tail-panel';
 import { BindingsPanel } from '@/entrypoints/sidepanel/bindings/bindings-panel';
 import { WorkerStatsCard } from '@/entrypoints/sidepanel/version-switcher/worker-stats-card';
 import { cloudflareErrorMessageKey } from '@/shared/cloudflare-api/error-message-key';
@@ -75,6 +76,8 @@ export function VersionSwitcher({ lookup, hostname, refreshKey, onRefresh }: Ver
       <WorkerStatsCard resolved={resolved} />
 
       <RecentErrorsPanel resolved={resolved} />
+
+      <LiveTailPanel resolved={resolved} />
 
       <BindingsPanel resolved={resolved} />
     </div>

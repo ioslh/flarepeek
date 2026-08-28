@@ -419,6 +419,92 @@
       }
     }
   },
+  "liveTailHeading": {
+    "message": "Live Tail"
+  },
+  "liveTailLiveBadge": {
+    "message": "Live"
+  },
+  "liveTailOpenInDashboard": {
+    "message": "Open Instant Logs in the Cloudflare Dashboard"
+  },
+  "liveTailIdleDescription": {
+    "message": "Stream this Worker's live requests, console logs, and exceptions."
+  },
+  "liveTailDurableObjectCaution": {
+    "message": "Starting Live Tail may briefly restart this Worker's Durable Objects and disconnect any active WebSocket clients."
+  },
+  "liveTailStart": {
+    "message": "Start"
+  },
+  "liveTailStop": {
+    "message": "Stop"
+  },
+  "liveTailRestart": {
+    "message": "Restart"
+  },
+  "liveTailClear": {
+    "message": "Clear"
+  },
+  "liveTailFilterPlaceholder": {
+    "message": "Filter…"
+  },
+  "liveTailEmpty": {
+    "message": "Waiting for requests…"
+  },
+  "liveTailFilterEmpty": {
+    "message": "No events match this filter."
+  },
+  "liveTailEndedEmpty": {
+    "message": "No events were captured before the session ended."
+  },
+  "liveTailEndedStopped": {
+    "message": "Stopped."
+  },
+  "liveTailEndedClosed": {
+    "message": "Session ended (expired, or the connection dropped)."
+  },
+  "liveTailErrorForbidden": {
+    "message": "Your API token doesn't have the \"Workers Tail\" permission Live Tail needs."
+  },
+  "liveTailErrorForbiddenCta": {
+    "message": "Create a new token with this permission"
+  },
+  "liveTailStatusCodeLabel": {
+    "message": "status $CODE$",
+    "placeholders": {
+      "code": {
+        "content": "$1"
+      }
+    }
+  },
+  "liveTailOutcomeOk": {
+    "message": "OK"
+  },
+  "liveTailOutcomeException": {
+    "message": "Exception"
+  },
+  "liveTailOutcomeExceededCpu": {
+    "message": "Exceeded CPU limit"
+  },
+  "liveTailOutcomeExceededMemory": {
+    "message": "Exceeded memory limit"
+  },
+  "liveTailOutcomeCanceled": {
+    "message": "Canceled"
+  },
+  "liveTailOutcomeScriptNotFound": {
+    "message": "Script not found"
+  },
+  "liveTailOutcomeResponseStreamDisconnected": {
+    "message": "Response stream disconnected"
+  },
+  "liveTailOutcomeUnknown": {
+    "message": "Unknown"
+  },
+  "liveTailOutcomeOther": {
+    "message": "Other"
+  },
   "tokenSwitcherAuto": {
     "message": "Auto"
   },
