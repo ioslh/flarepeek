@@ -22,7 +22,7 @@ Each entry includes: the official link, the official wording (quoted as verbatim
 - Quote: **"You can only create a gradual deployment with the last 100 uploaded versions of your Worker."** — only the most recently uploaded 100 versions can be candidates for a new deployment.
 - Durable Objects special case: **"only one version of each Durable Object can run at a time"** — at any given moment a Durable Object instance runs exactly one version; gradual-rollout percentages are assigned per instance, not randomly per request.
 
-**Impact on FlarePeek**: `DEFAULT_LIMIT = 40` in `listRecentVersions` (`shared/cloudflare-api/versions.ts`) is our own choice of how many versions to *display*, not a Cloudflare limit — the real hard limit is 100, confirmed by this section together with the next one. The candidate list in `version-combobox.tsx` should in principle cover up to 100 (it currently only shows the most recent 40, which is enough for typical use but not the full range).
+**Impact on FlarePeek**: `DEFAULT_LIMIT = 40` in `listRecentVersions` (`shared/cloudflare-api/versions.ts`) is our own choice of how many versions to _display_, not a Cloudflare limit — the real hard limit is 100, confirmed by this section together with the next one. The candidate list in `version-combobox.tsx` should in principle cover up to 100 (it currently only shows the most recent 40, which is enough for typical use but not the full range).
 
 ## Rollback/deployment eligibility window raised from 10 to 100
 

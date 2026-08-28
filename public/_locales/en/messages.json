@@ -428,17 +428,32 @@
   "liveTailOpenInDashboard": {
     "message": "Open Instant Logs in the Cloudflare Dashboard"
   },
-  "liveTailIdleDescription": {
-    "message": "Stream this Worker's live requests, console logs, and exceptions."
-  },
   "liveTailDurableObjectCaution": {
     "message": "Starting Live Tail may briefly restart this Worker's Durable Objects and disconnect any active WebSocket clients."
   },
-  "liveTailStart": {
-    "message": "Start"
+  "liveTailRunningInBackground": {
+    "message": "Live Tail is still running in the background — click to reopen it."
+  },
+  "liveTailConnecting": {
+    "message": "Connecting…"
+  },
+  "liveTailStopping": {
+    "message": "Stopping…"
   },
   "liveTailStop": {
     "message": "Stop"
+  },
+  "liveTailPause": {
+    "message": "Pause"
+  },
+  "liveTailResume": {
+    "message": "Resume"
+  },
+  "liveTailPausedNote": {
+    "message": "Paused — new events won't appear until you resume."
+  },
+  "liveTailClose": {
+    "message": "Close"
   },
   "liveTailRestart": {
     "message": "Restart"

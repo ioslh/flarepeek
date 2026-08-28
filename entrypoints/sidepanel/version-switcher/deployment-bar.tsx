@@ -20,12 +20,19 @@ import { useVersionErrorRates } from '@/entrypoints/sidepanel/version-switcher/u
 import { useDeploymentVersions } from '@/shared/worker-panel/use-deployment-versions';
 import { usePreviewUrlConfig } from '@/shared/worker-panel/use-preview-url-config';
 import { useVersionOverride } from '@/shared/worker-panel/use-version-override';
+import { useLiveTail } from '@/entrypoints/sidepanel/live-tail/use-live-tail';
+import { LiveTailEntryButton } from '@/entrypoints/sidepanel/live-tail/live-tail-entry-button';
+import { LiveTailHeaderControls } from '@/entrypoints/sidepanel/live-tail/live-tail-header-controls';
+import { LiveTailView } from '@/entrypoints/sidepanel/live-tail/live-tail-view';
 import { buildVersionPreviewUrl } from '@/shared/cloudflare-api/preview-url';
-import { workerDeploymentHistoryUrl } from '@/shared/cloudflare-api/dashboard-links';
+import {
+  workerDeploymentHistoryUrl,
+  zoneInstantLogsUrl,
+} from '@/shared/cloudflare-api/dashboard-links';
 import { cloudflareErrorMessageKey } from '@/shared/cloudflare-api/error-message-key';
 import { Alert, AlertDescription } from '@/shared/ui/alert';
 import { Button } from '@/shared/ui/button';
-import { PanelSection } from '@/entrypoints/sidepanel/panel-section';
+import { PanelSection, PANEL_SECTION_HEADING_CLASS } from '@/entrypoints/sidepanel/panel-section';
 import { Input } from '@/shared/ui/input';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { cn } from '@/shared/ui/utils';
@@ -38,6 +45,16 @@ interface DeploymentBarProps {
   hostname: string | null | undefined;
   refreshKey: number;
   onRefresh: () => void;
+  // Live Tail's own state lives here (not lifted to version-switcher.tsx)
+  // because it's only ever driven from this component's header — see
+  // use-live-tail.ts's comment on why calling it here still keeps a session
+  // alive across the view being closed. tailViewOpen only controls whether
+  // *this* takeover UI is showing; version-switcher.tsx owns that bit so it
+  // can also hide WorkerStatsCard/RecentErrorsPanel/BindingsPanel while it's
+  // open, without needing to know anything about tail state itself.
+  tailViewOpen: boolean;
+  onOpenTailView: () => void;
+  onCloseTailView: () => void;
 }
 
 // Returned as a literal so callers type-check against browser.i18n.getMessage's
@@ -64,13 +81,22 @@ const WARNING_TONE_CLASS: Record<WarningTone, string> = {
   info: 'border-border bg-muted text-muted-foreground',
 };
 
-export function DeploymentBar({ resolved, hostname, refreshKey, onRefresh }: DeploymentBarProps) {
+export function DeploymentBar({
+  resolved,
+  hostname,
+  refreshKey,
+  onRefresh,
+  tailViewOpen,
+  onOpenTailView,
+  onCloseTailView,
+}: DeploymentBarProps) {
   const deployment = useDeploymentVersions(resolved, refreshKey);
   const override = useVersionOverride(hostname ?? null);
   const previewConfig = usePreviewUrlConfig(resolved);
   const recentVersions = useRecentVersions(resolved);
   const deploymentActions = useDeploymentActions(resolved, onRefresh);
   const versionErrorRates = useVersionErrorRates(resolved, refreshKey);
+  const tail = useLiveTail(resolved);
   const [mode, setMode] = useState<'view' | 'edit'>('view');
 
   const live = deployment.status === 'ready' ? deployment.versions : [];
@@ -115,6 +141,45 @@ export function DeploymentBar({ resolved, hostname, refreshKey, onRefresh }: Dep
   });
 
   const trimmedMessage = editState.message.trim() || null;
+
+  // Checked after every hook above (so they still run unconditionally on
+  // every render, keeping tail's session alive regardless of which UI is
+  // showing) but before deployment's own loading/error/empty branches below
+  // — the Live Tail takeover doesn't care whether deployment data loaded.
+  if (tailViewOpen) {
+    return (
+      <PanelSection
+        titleSlot={
+          <span
+            className={cn(
+              PANEL_SECTION_HEADING_CLASS,
+              'flex items-center gap-1.5 text-neutral-400',
+            )}
+          >
+            {browser.i18n.getMessage('liveTailHeading')}
+            {tail.state.status === 'streaming' && !tail.state.paused && (
+              <span className="flex items-center gap-1 rounded-full bg-destructive/10 px-1.5 font-mono text-[9px] text-destructive">
+                <span className="size-1.5 animate-pulse rounded-full bg-destructive" />
+                {browser.i18n.getMessage('liveTailLiveBadge')}
+              </span>
+            )}
+            <a
+              href={zoneInstantLogsUrl(resolved.worker.accountId, resolved.worker.zoneName)}
+              target="_blank"
+              rel="noreferrer"
+              title={browser.i18n.getMessage('liveTailOpenInDashboard')}
+              className="rounded-sm px-1 text-[10px] normal-case tracking-normal hover:text-primary"
+            >
+              ↗
+            </a>
+          </span>
+        }
+        action={<LiveTailHeaderControls tail={tail} onClose={onCloseTailView} />}
+      >
+        <LiveTailView tail={tail} />
+      </PanelSection>
+    );
+  }
 
   if (deployment.status === 'loading' || deployment.status === 'idle') {
     return (
@@ -229,15 +294,18 @@ export function DeploymentBar({ resolved, hostname, refreshKey, onRefresh }: Dep
       }
       action={
         mode === 'view' ? (
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="h-7 text-xs"
-            onClick={() => setMode('edit')}
-          >
-            {browser.i18n.getMessage('deploymentBarToggleEdit')}
-          </Button>
+          <div className="flex items-center gap-1.5">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="h-7 text-xs"
+              onClick={() => setMode('edit')}
+            >
+              {browser.i18n.getMessage('deploymentBarToggleEdit')}
+            </Button>
+            <LiveTailEntryButton tail={tail} onOpen={onOpenTailView} />
+          </div>
         ) : null
       }
       className="gap-3"

@@ -1,6 +1,6 @@
+import { useState } from 'react';
 import { DeploymentBar } from '@/entrypoints/sidepanel/version-switcher/deployment-bar';
 import { RecentErrorsPanel } from '@/entrypoints/sidepanel/recent-errors/recent-errors-panel';
-import { LiveTailPanel } from '@/entrypoints/sidepanel/live-tail/live-tail-panel';
 import { BindingsPanel } from '@/entrypoints/sidepanel/bindings/bindings-panel';
 import { WorkerStatsCard } from '@/entrypoints/sidepanel/version-switcher/worker-stats-card';
 import { cloudflareErrorMessageKey } from '@/shared/cloudflare-api/error-message-key';
@@ -20,6 +20,11 @@ interface VersionSwitcherProps {
 // needs the same resolved-token state regardless of whether a worker has
 // matched yet.
 export function VersionSwitcher({ lookup, hostname, refreshKey, onRefresh }: VersionSwitcherProps) {
+  // Doesn't depend on `resolved`, so it's safe to call before the early
+  // returns below — see deployment-bar.tsx for why the actual tail
+  // connection (useLiveTail) lives there instead of here.
+  const [tailViewOpen, setTailViewOpen] = useState(false);
+
   // Only reachable in theory — the dynamic tab's manual-detection mode
   // (the only caller of useWorkerLookup that can produce 'idle') renders its
   // own pending placeholder instead of this component while idle. Handled
@@ -71,15 +76,21 @@ export function VersionSwitcher({ lookup, hostname, refreshKey, onRefresh }: Ver
         hostname={hostname}
         refreshKey={refreshKey}
         onRefresh={onRefresh}
+        tailViewOpen={tailViewOpen}
+        onOpenTailView={() => setTailViewOpen(true)}
+        onCloseTailView={() => setTailViewOpen(false)}
       />
 
-      <WorkerStatsCard resolved={resolved} />
-
-      <RecentErrorsPanel resolved={resolved} />
-
-      <LiveTailPanel resolved={resolved} />
-
-      <BindingsPanel resolved={resolved} />
+      {/* Live Tail takes over the whole content area below the deployment
+          header while open — see deployment-bar.tsx — so these are hidden
+          rather than stacked underneath it. */}
+      {!tailViewOpen && (
+        <>
+          <WorkerStatsCard resolved={resolved} />
+          <RecentErrorsPanel resolved={resolved} />
+          <BindingsPanel resolved={resolved} />
+        </>
+      )}
     </div>
   );
 }

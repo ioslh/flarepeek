@@ -16,7 +16,11 @@ import type { ResolvedWorker } from '@/shared/worker-panel/use-worker-lookup';
 export type LiveTailState =
   | { status: 'idle' }
   | { status: 'starting' }
-  | { status: 'streaming'; events: LiveTailEvent[] }
+  | { status: 'streaming'; events: LiveTailEvent[]; paused: boolean }
+  // Optimistic: entered the instant stop() is called, before the socket's
+  // own close event (which can lag noticeably behind a busy stream) has a
+  // chance to arrive — see stop()'s comment.
+  | { status: 'stopping'; events: LiveTailEvent[] }
   | { status: 'ended'; events: LiveTailEvent[]; reason: 'stopped' | 'closed' }
   | { status: 'error'; kind: CloudflareApiErrorKind };
 
@@ -25,6 +29,7 @@ export interface UseLiveTailResult {
   start: () => void;
   stop: () => void;
   clear: () => void;
+  togglePause: () => void;
 }
 
 interface ActiveSession {
@@ -39,13 +44,13 @@ interface ActiveSession {
 
 // Owns the whole tail session lifecycle: POST to create it, open the
 // returned websocket, stream parsed events into state, and DELETE the
-// session again on stop/unmount. Must be called at the top of
-// live-tail-panel.tsx, *outside* the Accordion tree — Radix's
-// AccordionContent unmounts its children when collapsed, and putting this
-// hook inside it would silently kill the connection every time the user
-// folds the section (recent-errors-panel.tsx's useRecentErrors call site is
-// the precedent for calling a data hook above the Accordion for this exact
-// reason).
+// session again on stop/unmount. Called unconditionally at the top of
+// deployment-bar.tsx, alongside its other data hooks — that component stays
+// mounted for as long as this pinned/live tab does (see
+// docs/sidepanel-tabs-design.md's lazy-mount / keep-alive rule), which is
+// what lets a session started here keep running after the Live Tail view is
+// closed (see docs/sidepanel-tabs-design.md's mounting-strategy section for
+// the same "stays alive, just hidden" pattern applied to tabs).
 export function useLiveTail(resolved: ResolvedWorker): UseLiveTailResult {
   const [state, setState] = useState<LiveTailState>({ status: 'idle' });
 
@@ -93,6 +98,14 @@ export function useLiveTail(resolved: ResolvedWorker): UseLiveTailResult {
       }
 
       const socket = new WebSocket(sessionInfo.websocketUrl, TAIL_WEBSOCKET_SUBPROTOCOL);
+      // The broker sends tail events as binary frames (confirmed via
+      // DevTools' Network > Messages panel: only the client's own {"debug":
+      // false} handshake is a text frame, every inbound event is "Binary
+      // Message"). wrangler doesn't hit this because Node's `ws` hands both
+      // frame types to the same Buffer-based callback; the browser's default
+      // binaryType ('blob') would need an async .text() read, so switch to
+      // 'arraybuffer' and decode synchronously in onmessage instead.
+      socket.binaryType = 'arraybuffer';
       const session: ActiveSession = {
         accountId: resolved.worker.accountId,
         scriptName: resolved.worker.scriptName,
@@ -109,16 +122,22 @@ export function useLiveTail(resolved: ResolvedWorker): UseLiveTailResult {
         // comment in shared/cloudflare-api/tail.ts; wrangler sends this same
         // {debug:false} immediately after open.
         socket.send(JSON.stringify({ debug: false }));
-        setState({ status: 'streaming', events: [] });
+        setState({ status: 'streaming', events: [], paused: false });
       };
 
       socket.onmessage = (event) => {
-        if (typeof event.data !== 'string') return;
-        const parsed = parseTailEvent(event.data);
-        if (!parsed) return;
+        const raw =
+          typeof event.data === 'string'
+            ? event.data
+            : new TextDecoder().decode(event.data as ArrayBuffer);
+        const parsed = parseTailEvent(raw);
+        if (!parsed) {
+          console.warn('[flarepeek] tail frame failed to parse', raw);
+          return;
+        }
         setState((prev) =>
-          prev.status === 'streaming'
-            ? { status: 'streaming', events: pushCapped(prev.events, parsed) }
+          prev.status === 'streaming' && !prev.paused
+            ? { ...prev, events: pushCapped(prev.events, parsed) }
             : prev,
         );
       };
@@ -139,7 +158,7 @@ export function useLiveTail(resolved: ResolvedWorker): UseLiveTailResult {
         }
         setState((prev) => ({
           status: 'ended',
-          events: prev.status === 'streaming' ? prev.events : [],
+          events: prev.status === 'streaming' || prev.status === 'stopping' ? prev.events : [],
           reason: session.userStopped ? 'stopped' : 'closed',
         }));
       };
@@ -156,6 +175,14 @@ export function useLiveTail(resolved: ResolvedWorker): UseLiveTailResult {
       return;
     }
     session.userStopped = true;
+    // Flip to 'stopping' immediately, before the socket has actually closed
+    // — the close handshake can lag well behind a busy stream, and without
+    // this the Stop button just sits there looking unpressed until it
+    // eventually arrives (reported as "clicking Stop does nothing").
+    setState((prev) => ({
+      status: 'stopping',
+      events: prev.status === 'streaming' || prev.status === 'stopping' ? prev.events : [],
+    }));
     if (session.socket.readyState === WebSocket.CLOSED) {
       // onclose already ran, or never will — finalize directly rather than
       // waiting on an event that isn't coming.
@@ -163,7 +190,7 @@ export function useLiveTail(resolved: ResolvedWorker): UseLiveTailResult {
       void stopTail(session.client, session.accountId, session.scriptName, session.tailId);
       setState((prev) => ({
         status: 'ended',
-        events: prev.status === 'streaming' ? prev.events : [],
+        events: prev.status === 'stopping' ? prev.events : [],
         reason: 'stopped',
       }));
       return;
@@ -172,7 +199,15 @@ export function useLiveTail(resolved: ResolvedWorker): UseLiveTailResult {
   }, []);
 
   const clear = useCallback(() => {
-    setState((prev) => (prev.status === 'streaming' ? { status: 'streaming', events: [] } : prev));
+    setState((prev) => (prev.status === 'streaming' ? { ...prev, events: [] } : prev));
+  }, []);
+
+  // Freezes the visible list without touching the connection: incoming
+  // frames are dropped (not buffered) while paused, per onmessage's guard
+  // above — this is a glance tool, not a log aggregator, so there's nothing
+  // to "catch up" on resume.
+  const togglePause = useCallback(() => {
+    setState((prev) => (prev.status === 'streaming' ? { ...prev, paused: !prev.paused } : prev));
   }, []);
 
   // Mandatory cleanup on unmount (tab switch away, side panel closed, or the
@@ -197,5 +232,5 @@ export function useLiveTail(resolved: ResolvedWorker): UseLiveTailResult {
     };
   }, []);
 
-  return { state, start, stop, clear };
+  return { state, start, stop, clear, togglePause };
 }

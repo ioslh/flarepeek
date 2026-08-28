@@ -428,17 +428,32 @@
   "liveTailOpenInDashboard": {
     "message": "在 Cloudflare Dashboard 中查看 Instant Logs"
   },
-  "liveTailIdleDescription": {
-    "message": "实时查看这个 Worker 的请求、console 日志和异常。"
-  },
   "liveTailDurableObjectCaution": {
     "message": "开启实时日志可能会短暂重启该 Worker 的 Durable Object，并断开现有的 WebSocket 连接。"
   },
-  "liveTailStart": {
-    "message": "开始"
+  "liveTailRunningInBackground": {
+    "message": "实时日志仍在后台运行——点击重新打开。"
+  },
+  "liveTailConnecting": {
+    "message": "连接中…"
+  },
+  "liveTailStopping": {
+    "message": "停止中…"
   },
   "liveTailStop": {
     "message": "停止"
+  },
+  "liveTailPause": {
+    "message": "暂停"
+  },
+  "liveTailResume": {
+    "message": "继续"
+  },
+  "liveTailPausedNote": {
+    "message": "已暂停——继续之前不会显示新事件。"
+  },
+  "liveTailClose": {
+    "message": "关闭"
   },
   "liveTailRestart": {
     "message": "重新开始"
