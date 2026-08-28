@@ -3,6 +3,15 @@
   "description": "FlarePeek \u2014 Chrome extension devtools for Cloudflare Workers developers",
   "private": true,
   "version": "0.0.3",
+  "license": "MIT",
+  "homepage": "https://flarepeek.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ioslh/flarepeek.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ioslh/flarepeek/issues"
+  },
   "type": "module",
   "scripts": {
     "dev": "wxt",
