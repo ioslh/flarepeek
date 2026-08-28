@@ -1,4 +1,5 @@
 import { initTabBadgeOrchestrator } from '@/entrypoints/background/tab-badge/tab-badge-orchestrator';
+import { seedDevApiTokens } from '@/entrypoints/background/dev-token-seed';
 
 export default defineBackground(() => {
   // openPanelOnActionClick is a persisted, per-extension Chrome preference —
@@ -10,4 +11,5 @@ export default defineBackground(() => {
   chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: false }).catch(() => {});
 
   initTabBadgeOrchestrator();
+  void seedDevApiTokens();
 });

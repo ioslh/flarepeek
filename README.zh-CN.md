@@ -40,6 +40,8 @@ pnpm zip           # 打包成可上传 Chrome Web Store 的 zip
 
 首次加载到 Chrome 调试：`pnpm build` 后，在 `chrome://extensions` 打开开发者模式 → 加载已解压的扩展程序 → 选择 `.output/chrome-mv3`。
 
+**避免每次重载都要重新粘贴 API Token**：把 `.env.example` 复制为 `.env.development.local`，在 `WXT_DEV_CF_API_TOKENS` 里填一个或多个逗号分隔的 Cloudflare API Token（配多个也方便测试多账号切换）。仅在开发构建下、且插件存储里还没有任何 Token 时，会自动校验并写入——参见 `entrypoints/background/dev-token-seed.ts`。`.env.development.local` 已被 gitignore，且按 mode 加载，`pnpm build`/`pnpm zip` 永远不会读取它，不会混进正式构建产物。
+
 ## 许可证
 
 [MIT](./LICENSE)

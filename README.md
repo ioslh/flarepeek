@@ -38,6 +38,8 @@ pnpm zip           # Package a zip ready to upload to the Chrome Web Store
 
 To load it into Chrome for the first time: run `pnpm build`, then open `chrome://extensions`, enable Developer mode → Load unpacked → select `.output/chrome-mv3`.
 
+**Skip re-pasting an API token on every reload**: copy `.env.example` to `.env.development.local` and set `WXT_DEV_CF_API_TOKENS` to one or more comma-separated Cloudflare API tokens (handy for testing multi-account/token-switching too). In dev builds only, and only when the extension's storage has no token saved yet, these are verified and seeded in automatically — see `entrypoints/background/dev-token-seed.ts`. `.env.development.local` is gitignored and, being mode-scoped, is never loaded by `pnpm build`/`pnpm zip`, so nothing in it ends up in a shipped build.
+
 ## Contributing
 
 Contributions are welcome. Please read [AGENTS.md](./AGENTS.md) for the project's coding conventions before opening a PR — CI runs `pnpm format:check`, `pnpm lint`, `pnpm compile`, `pnpm test`, and `pnpm build` on every pull request.

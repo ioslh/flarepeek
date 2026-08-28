@@ -21,6 +21,7 @@ test-results
 # Secrets
 .env
 .env.*
+!.env.example
 
 # Editor directories and files
 .vscode/*
