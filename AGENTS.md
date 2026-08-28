@@ -1,6 +1,6 @@
 # AGENTS.md
 
-This file holds the repo's long-standing coding conventions — everyone (including AI agents) writing code in this repo must follow it. One-time technology choices live in [README.md](./README.md); this file only records conventions that stay in effect over time.
+This file holds the repo's long-standing coding conventions — everyone (including AI agents) writing code in this repo must follow it. One-time technology choices live in [docs/tech-stack.md](./docs/tech-stack.md); this file only records conventions that stay in effect over time.
 
 ## Directory structure
 

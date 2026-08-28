@@ -24,7 +24,7 @@ export interface PanelTabs {
   isActiveDynamic: boolean;
   // Which pinned hostnames have been viewed at least once this session and
   // should therefore stay mounted (hidden, not unmounted) when not active —
-  // see SIDEPANEL-TABS-DESIGN.md's lazy-mount / keep-alive rule.
+  // see docs/sidepanel-tabs-design.md's lazy-mount / keep-alive rule.
   mountedHostnames: string[];
   selectPinnedTab: (hostname: string) => void;
   focusDynamicTab: () => void;
@@ -43,7 +43,7 @@ export interface PanelTabs {
 // Replaces entrypoints/sidepanel/use-pinned-hostname.ts. Composes the
 // pinned-tab list (persisted) with the live browser tab (ephemeral) into
 // one "which hostname is the panel showing right now" model — see
-// SIDEPANEL-TABS-DESIGN.md for the full interaction design.
+// docs/sidepanel-tabs-design.md for the full interaction design.
 export function usePanelTabs(tokens: StoredToken[] | undefined): PanelTabs {
   const pinnedTabs = usePinnedTabs();
   const dynamicHostname = useLiveTabHostname();

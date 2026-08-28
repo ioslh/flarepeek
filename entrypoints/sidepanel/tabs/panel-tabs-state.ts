@@ -19,7 +19,7 @@ interface ResolveActiveTabResult {
 // it's just redirecting the same content to its canonical pinned instance
 // instead of showing a duplicate. Focus already sitting on some other
 // pinned tab never gets pulled away by browser-tab activity — see
-// SIDEPANEL-TABS-DESIGN.md's "单向关系" rule.
+// docs/sidepanel-tabs-design.md's "one-way relationship" rule.
 export function resolveActiveTab(params: ResolveActiveTabParams): ResolveActiveTabResult {
   const { pinnedHostnames, dynamicHostname, activeHostname, isActiveDynamic } = params;
 

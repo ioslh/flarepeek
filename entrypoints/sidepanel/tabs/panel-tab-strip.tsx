@@ -131,7 +131,7 @@ function TabEntry({ hostname, isActive, onSelect, action, isLive }: TabEntryProp
 
 // Always rendered, regardless of how many tabs are pinned — pinned tabs and
 // the dynamic tab form one list with one styling rule, no separate
-// "single-tab" presentation. See SIDEPANEL-TABS-DESIGN.md.
+// "single-tab" presentation. See docs/sidepanel-tabs-design.md.
 export function PanelTabStrip({
   pinnedTabs,
   dynamicHostname,

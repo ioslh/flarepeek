@@ -12,7 +12,7 @@ interface AddPanelTabPopoverProps {
 }
 
 // Only rendered once the tab strip itself exists (≥1 pinned tab) — see
-// SIDEPANEL-TABS-DESIGN.md's progressive-disclosure rule. Lets the user pin
+// docs/sidepanel-tabs-design.md's progressive-disclosure rule. Lets the user pin
 // a hostname they haven't actually navigated to yet (e.g. to debug it),
 // unlike the dynamic tab's pin button which can only ever pin what the
 // active browser tab is currently showing.
