@@ -3,3 +3,4 @@
 .wrangler
 node_modules
 pnpm-lock.yaml
+site/worker-configuration.d.ts
