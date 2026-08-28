@@ -1,50 +1,60 @@
 # FlarePeek
 
-面向 Cloudflare Workers 开发者的 Chrome 插件。用户登录 Cloudflare 账号后，打开一个由 Workers 提供服务的 zone 域名时，插件自动识别对应的 Worker，并提供开发辅助工具——例如一键把生产域名的流量临时切换到某个 preview version（基于 [Version Overrides](https://developers.cloudflare.com/workers/versions-and-deployments/version-overrides/)），查看灰度部署状态、Worker 请求/错误指标等。
+English | [简体中文](./README.zh-CN.md)
 
-## 技术选型
+A Chrome extension for Cloudflare Workers developers. Once you're signed in with your Cloudflare account and open a zone hostname served by a Worker, FlarePeek automatically identifies the Worker and gives you development tools right there — for example, temporarily routing a production hostname's traffic to a specific preview version (built on [Version Overrides](https://developers.cloudflare.com/workers/versions-and-deployments/version-overrides/)), inspecting gradual-deployment status, and viewing Worker request/error metrics.
 
-以下是项目启动时确定的一次性技术选型，除非有充分理由否则不应中途更换。长期编码规范见 [AGENTS.md](./AGENTS.md)。
+## Tech stack
 
-| 类别                  | 选择                                                                                                                                      | 备注                                                                                                                                                                              |
-| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 扩展开发框架          | [WXT](https://wxt.dev/)                                                                                                                   | 活跃维护、Vite 驱动、跨浏览器、bundle 体积小。Plasmo 官方已自评进入少人维护状态，故不选                                                                                           |
-| 语言                  | TypeScript                                                                                                                                | 全项目强制，禁用 `any`                                                                                                                                                            |
-| UI 框架               | React                                                                                                                                     | 生态最大、AI 辅助编码资料最多                                                                                                                                                     |
-| 样式方案              | Tailwind CSS                                                                                                                              | 原子化写法，适合插件内小型 UI 快速迭代                                                                                                                                            |
-| 组件库                | [shadcn/ui](https://ui.shadcn.com/)（[Radix Primitives](https://www.radix-ui.com/) + Tailwind）+ [lucide-react](https://lucide.dev/) 图标 | 生成到 `shared/ui/` 的源码级组件，不是运行时依赖包；建立在已锁定的 Tailwind 之上而非替换它，提供无障碍的 Dialog/Popover/DropdownMenu 等原语，避免继续手写焦点陷阱/Escape 关闭逻辑 |
-| 包管理器              | pnpm                                                                                                                                      | WXT 官方样例默认使用                                                                                                                                                              |
-| Lint / Format         | ESLint 9 + Prettier                                                                                                                       | `eslint-plugin-react` 7.x 与 ESLint 10 的 flat config 运行时不兼容（`context.getFilename is not a function`），暂时锁定 ESLint 9；该插件发新版本支持 10 后再升级                  |
-| Manifest 版本         | MV3                                                                                                                                       | MV2 已停止支持                                                                                                                                                                    |
-| Cloudflare API 客户端 | 官方 [`cloudflare`](https://www.npmjs.com/package/cloudflare) npm SDK                                                                     | 类型齐全，避免手写 fetch 封装和追踪 API 版本变化                                                                                                                                  |
-| 状态管理              | WXT `storage` API + React Context                                                                                                         | 先不引入额外状态库；真正复杂后再评估 Zustand                                                                                                                                      |
-| 测试                  | Vitest（单元）+ Playwright（e2e，支持测试 Chrome 扩展）                                                                                   |                                                                                                                                                                                   |
-| 国际化                | `browser.i18n` + `public/_locales/`                                                                                                       | 从第一天接入；`_locales` 必须放在 `public/` 下 WXT 才会读取并生成类型                                                                                                             |
-| 项目结构              | 单仓库                                                                                                                                    | 暂不拆分为 monorepo                                                                                                                                                               |
+These are the one-time technology choices made when the project started; don't switch away from them mid-project without a good reason. The long-standing coding conventions live in [AGENTS.md](./AGENTS.md).
 
-## 认证方式
+| Category              | Choice                                                                                                                                     | Notes                                                                                                                                                                                                                                                                                     |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Extension framework   | [WXT](https://wxt.dev/)                                                                                                                    | Actively maintained, Vite-powered, cross-browser, small bundle size. Plasmo's own maintainers describe it as lightly maintained now, so it wasn't chosen.                                                                                                                                 |
+| Language              | TypeScript                                                                                                                                 | Mandatory project-wide; `any` is banned.                                                                                                                                                                                                                                                  |
+| UI framework          | React                                                                                                                                      | Largest ecosystem, most AI-assisted-coding material available.                                                                                                                                                                                                                            |
+| Styling               | Tailwind CSS                                                                                                                               | Utility-first, well suited to iterating quickly on the small UI surfaces inside an extension.                                                                                                                                                                                             |
+| Component library     | [shadcn/ui](https://ui.shadcn.com/) ([Radix Primitives](https://www.radix-ui.com/) + Tailwind) + [lucide-react](https://lucide.dev/) icons | Generated into `shared/ui/` as source-level components, not a runtime dependency; built on top of the already-locked-in Tailwind rather than replacing it, and provides accessible Dialog/Popover/DropdownMenu primitives instead of hand-rolling focus-trap/Escape-to-close logic again. |
+| Package manager       | pnpm                                                                                                                                       | The default used by WXT's own official examples.                                                                                                                                                                                                                                          |
+| Lint / Format         | ESLint 9 + Prettier                                                                                                                        | `eslint-plugin-react` 7.x isn't runtime-compatible with ESLint 10's flat config (`context.getFilename is not a function`), so this is pinned to ESLint 9 for now — revisit once that plugin ships support for 10.                                                                         |
+| Manifest version      | MV3                                                                                                                                        | MV2 support has ended.                                                                                                                                                                                                                                                                    |
+| Cloudflare API client | The official [`cloudflare`](https://www.npmjs.com/package/cloudflare) npm SDK                                                              | Fully typed, avoids hand-rolling a fetch wrapper and tracking API version changes ourselves.                                                                                                                                                                                              |
+| State management      | WXT's `storage` API + React Context                                                                                                        | No extra state library for now; revisit Zustand only if this genuinely gets more complex.                                                                                                                                                                                                 |
+| Testing               | Vitest (unit) + Playwright (e2e, with Chrome extension testing support)                                                                    |                                                                                                                                                                                                                                                                                           |
+| i18n                  | `browser.i18n` + `public/_locales/`                                                                                                        | Wired in from day one; `_locales` has to live under `public/` for WXT to pick it up and generate types.                                                                                                                                                                                   |
+| Project layout        | Single repo                                                                                                                                | Not split into a monorepo for now.                                                                                                                                                                                                                                                        |
 
-Cloudflare 未对第三方应用开放公开的 OAuth client 注册流程（`wrangler login` 使用的 OAuth 是 Cloudflare 内部专用 client）。因此本插件采用 **Scoped API Token** 方式登录：用户通过插件内预填权限模板的链接跳转到 Cloudflare Dashboard 创建一个最小权限的 API Token，粘贴回插件保存。
+## Authentication
 
-## 开发
+Cloudflare doesn't offer a public OAuth client registration flow for third-party apps (the OAuth `wrangler login` uses is an internal Cloudflare-only client). Because of that, this extension signs in with a **scoped API token** instead: the extension links out to the Cloudflare Dashboard with a permission template pre-filled, the user creates a minimal-permission API token there, and pastes it back into the extension to store.
+
+## Development
 
 ```sh
-pnpm install       # 安装依赖
-pnpm dev           # 启动开发服务器（Chrome，带 HMR）
-pnpm dev:firefox   # 启动开发服务器（Firefox）
+pnpm install       # Install dependencies
+pnpm dev           # Start the dev server (Chrome, with HMR)
+pnpm dev:firefox   # Start the dev server (Firefox)
 
-pnpm compile       # TypeScript 类型检查
-pnpm lint          # ESLint 检查
-pnpm lint:fix      # ESLint 自动修复
-pnpm format        # Prettier 格式化
-pnpm format:check  # 仅检查格式，不写入
+pnpm compile       # TypeScript type-check
+pnpm lint          # ESLint check
+pnpm lint:fix      # ESLint autofix
+pnpm format        # Prettier format
+pnpm format:check  # Check formatting only, don't write
 
-pnpm test          # Vitest 单元测试
-pnpm test:watch    # Vitest watch 模式
-pnpm build         # 构建生产版本到 .output/chrome-mv3
-pnpm test:e2e      # Playwright e2e（依赖 pnpm build 先产出 .output/chrome-mv3）
+pnpm test          # Vitest unit tests
+pnpm test:watch    # Vitest watch mode
+pnpm build         # Build the production bundle to .output/chrome-mv3
+pnpm test:e2e      # Playwright e2e (needs pnpm build to have produced .output/chrome-mv3 first)
 
-pnpm zip           # 打包成可上传 Chrome Web Store 的 zip
+pnpm zip           # Package a zip ready to upload to the Chrome Web Store
 ```
 
-首次加载到 Chrome 调试：`pnpm build` 后，在 `chrome://extensions` 打开开发者模式 → 加载已解压的扩展程序 → 选择 `.output/chrome-mv3`。
+To load it into Chrome for the first time: run `pnpm build`, then open `chrome://extensions`, enable Developer mode → Load unpacked → select `.output/chrome-mv3`.
+
+## Contributing
+
+Contributions are welcome. Please read [AGENTS.md](./AGENTS.md) for the project's coding conventions before opening a PR — CI runs `pnpm format:check`, `pnpm lint`, `pnpm compile`, `pnpm test`, and `pnpm build` on every pull request.
+
+## License
+
+[MIT](./LICENSE)
