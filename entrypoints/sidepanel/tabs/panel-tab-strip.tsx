@@ -21,6 +21,9 @@ interface TabEntryAction {
   icon: ReactNode;
   label: string;
   onClick: () => void;
+  // Colors the action's hover state red instead of orange — used for unpin
+  // (a destructive/removal action), not for pin.
+  isDestructive?: boolean;
 }
 
 interface TabEntryProps {
@@ -36,11 +39,11 @@ interface TabEntryProps {
 }
 
 // One tab, pinned or dynamic — deliberately near-identical rendering for
-// both: plain text only, accent-colored when active, no favicon, no
-// background/border at any state. The row's action (unpin's ✕, the dynamic
-// tab's pin) sits *after* the text and is collapsed to zero width until
-// hover, so a resting tab is nothing but its hostname (plus the live dot,
-// for the dynamic one).
+// both: condensed hostname text on a chip that picks up a soft accent
+// background when active (no favicon at any state). The row's action
+// (unpin's ✕, the dynamic tab's pin) sits *after* the text and is collapsed
+// to zero width until hover, so a resting tab is just its hostname (plus the
+// live dot, for the dynamic one).
 function TabEntry({ hostname, isActive, onSelect, action, isLive }: TabEntryProps) {
   const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.key !== 'Enter' && event.key !== ' ') return;
@@ -57,7 +60,10 @@ function TabEntry({ hostname, isActive, onSelect, action, isLive }: TabEntryProp
       tabIndex={0}
       onClick={onSelect}
       onKeyDown={handleKeyDown}
-      className="group flex shrink-0 cursor-pointer items-center rounded-md py-0.5"
+      className={cn(
+        'group flex shrink-0 cursor-pointer items-center gap-0.5 rounded-md px-2 py-1 transition-colors',
+        isActive ? 'bg-accent' : 'hover:bg-muted',
+      )}
     >
       {isLive && (
         <>
@@ -75,7 +81,7 @@ function TabEntry({ hostname, isActive, onSelect, action, isLive }: TabEntryProp
               <span
                 aria-hidden="true"
                 className={cn(
-                  'mr-1.5 size-1.5 shrink-0 rounded-full bg-current',
+                  'mr-1 size-1.5 shrink-0 rounded-full bg-current',
                   isActive ? 'text-primary' : 'text-neutral-400 group-hover:text-neutral-600',
                 )}
               />
@@ -116,7 +122,10 @@ function TabEntry({ hostname, isActive, onSelect, action, isLive }: TabEntryProp
                   action.onClick();
                 }}
                 aria-label={action.label}
-                className="flex shrink-0 scale-50 items-center justify-center text-neutral-400 transition-transform duration-200 ease-out group-hover:scale-100 hover:text-neutral-900 focus-visible:scale-100"
+                className={cn(
+                  'flex shrink-0 scale-50 items-center justify-center rounded-sm text-neutral-400 transition-transform duration-200 ease-out group-hover:scale-100 focus-visible:scale-100',
+                  action.isDestructive ? 'hover:text-destructive' : 'hover:text-primary',
+                )}
               >
                 {action.icon}
               </button>
@@ -156,7 +165,7 @@ export function PanelTabStrip({
   const showGroupDivider = pinnedTabs.length > 0 && (showDynamicEntry || showDynamicEmpty);
 
   return (
-    <div role="tablist" className="flex min-w-0 flex-1 items-center gap-2 overflow-x-auto">
+    <div role="tablist" className="flex min-w-0 flex-1 items-center gap-1 overflow-x-auto">
       {pinnedTabs.map((tab) => (
         <TabEntry
           key={tab.hostname}
@@ -167,11 +176,14 @@ export function PanelTabStrip({
             icon: <X className="h-4" />,
             label: browser.i18n.getMessage('panelTabUnpinTooltip'),
             onClick: () => onUnpin(tab.hostname),
+            isDestructive: true,
           }}
         />
       ))}
 
-      {showGroupDivider && <span aria-hidden="true" className="h-5 w-px shrink-0 bg-border" />}
+      {showGroupDivider && (
+        <span aria-hidden="true" className="mx-0.5 h-6 w-px shrink-0 bg-border" />
+      )}
 
       {showDynamicEntry && dynamicHostname && (
         <TabEntry
