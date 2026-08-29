@@ -2,6 +2,8 @@
 
 English | [简体中文](./README.zh-CN.md)
 
+[Chrome Web Store](https://chromewebstore.google.com/detail/ffdbljcgdjkbbbbodnjbbgpahhnkfbnl)
+
 A Chrome extension for Cloudflare Workers developers. Once you're signed in with your Cloudflare account and open a zone hostname served by a Worker, FlarePeek automatically identifies the Worker and gives you development tools right there — for example, temporarily routing a production hostname's traffic to a specific preview version (built on [Version Overrides](https://developers.cloudflare.com/workers/versions-and-deployments/version-overrides/)), inspecting gradual-deployment status, and viewing Worker request/error metrics.
 
 ## Documentation

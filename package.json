@@ -1,8 +1,8 @@
 {
   "name": "flarepeek",
-  "description": "FlarePeek \u2014 Chrome extension devtools for Cloudflare Workers developers",
+  "description": "FlarePeek - a browser extension devtools for Cloudflare Workers developers",
   "private": true,
-  "version": "0.0.3",
+  "version": "0.0.4",
   "license": "MIT",
   "homepage": "https://flarepeek.com",
   "repository": {

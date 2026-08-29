@@ -1,5 +1,5 @@
-import { defineConfig } from 'wxt';
 import tailwindcss from '@tailwindcss/vite';
+import { defineConfig } from 'wxt';
 
 // See https://wxt.dev/api/config.html
 export default defineConfig({
@@ -9,7 +9,7 @@ export default defineConfig({
   }),
   manifest: {
     default_locale: 'en',
-    name: '__MSG_extensionName__',
+    name: 'FlarePeek - a browser extension devtools for Cloudflare Workers developers',
     description: '__MSG_extensionDescription__',
     // No manual `action` override needed here — the popup entrypoint makes
     // WXT set action.default_popup automatically, so clicking the toolbar
